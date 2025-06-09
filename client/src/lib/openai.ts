@@ -1,8 +1,18 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({ 
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY || "default_key"
-});
+// Initialize OpenAI with fallback handling
+let openai: OpenAI | null = null;
+try {
+  if (import.meta.env.VITE_OPENAI_API_KEY) {
+    openai = new OpenAI({ 
+      apiKey: import.meta.env.VITE_OPENAI_API_KEY
+    });
+  } else {
+    console.warn("VITE_OPENAI_API_KEY not found - AI features will be disabled on client");
+  }
+} catch (error) {
+  console.error("Failed to initialize OpenAI client on client:", error);
+}
 
 // Rate negotiation analysis
 export async function analyzeRateNegotiation(loadData: {
@@ -13,6 +23,10 @@ export async function analyzeRateNegotiation(loadData: {
   ratePerMile: number;
   pickupTime: string;
 }) {
+  if (!openai) {
+    throw new Error("OpenAI API key is required for rate negotiation analysis. Please configure VITE_OPENAI_API_KEY.");
+  }
+
   try {
     const prompt = `Analyze this trucking load for rate negotiation:
     - Route: ${loadData.origin} to ${loadData.destination}

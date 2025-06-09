@@ -276,37 +276,52 @@ export class LoadBoardScraper {
 
   // AI driver-load matching
   private async calculateDriverMatch(load: ScrapedLoadData, driver: any): Promise<{ score: number; reasoning: string }> {
-    const prompt = `Calculate compatibility score (0-100) between this driver and load:
-    
-    Driver: ${JSON.stringify(driver.preferences || {})}
-    Current location: ${driver.currentLocation}
-    
-    Load: Route ${load.origin} to ${load.destination}, ${load.miles} miles, $${load.ratePerMile}/mile
-    Equipment: ${load.equipmentType || 'Van'}
-    
-    Consider distance from pickup, route preferences, equipment type, and rate expectations.
-    Return JSON: { "score": 0-100, "reasoning": "explanation", "concerns": ["list"], "benefits": ["list"] }`;
+    if (!openai) {
+      return {
+        score: 70,
+        reasoning: "Basic compatibility match (AI unavailable)"
+      };
+    }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an AI dispatcher expert at optimal driver-load matching."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      response_format: { type: "json_object" }
-    });
+    try {
+      const prompt = `Calculate compatibility score (0-100) between this driver and load:
+      
+      Driver: ${JSON.stringify(driver.preferences || {})}
+      Current location: ${driver.currentLocation}
+      
+      Load: Route ${load.origin} to ${load.destination}, ${load.miles} miles, $${load.ratePerMile}/mile
+      Equipment: ${load.equipmentType || 'Van'}
+      
+      Consider distance from pickup, route preferences, equipment type, and rate expectations.
+      Return JSON: { "score": 0-100, "reasoning": "explanation", "concerns": ["list"], "benefits": ["list"] }`;
 
-    const result = JSON.parse(response.choices[0].message.content || '{}');
-    return {
-      score: result.score || 70,
-      reasoning: result.reasoning || "Standard compatibility match"
-    };
+      const response = await openai!.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You are an AI dispatcher expert at optimal driver-load matching."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || '{}');
+      return {
+        score: result.score || 70,
+        reasoning: result.reasoning || "AI compatibility analysis completed"
+      };
+    } catch (error) {
+      console.error("OpenAI API error in driver matching:", error);
+      return {
+        score: 70,
+        reasoning: "Driver matching failed, using default score"
+      };
+    }
   }
 
   // Data transformation functions
