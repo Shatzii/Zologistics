@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+
+  /* Custom trucking theme colors */
+  --primary-50: hsl(207, 90%, 97%);
+  --primary-100: hsl(207, 90%, 92%);
+  --primary-500: hsl(207, 90%, 54%);
+  --primary-600: hsl(207, 90%, 45%);
+  --primary-700: hsl(207, 90%, 35%);
+  
+  --secondary-100: hsl(38, 92%, 85%);
+  --secondary-500: hsl(38, 92%, 65%);
+  --secondary-600: hsl(38, 92%, 55%);
+  
+  --success-100: hsl(122, 39%, 85%);
+  --success-500: hsl(122, 39%, 49%);
+  --success-600: hsl(122, 39%, 43%);
+  
+  --warning-100: hsl(43, 96%, 56%);
+  --warning-500: hsl(36, 100%, 50%);
+  --warning-600: hsl(32, 100%, 47%);
+  
+  --error-100: hsl(0, 93%, 90%);
+  --error-500: hsl(0, 93%, 58%);
+  --error-600: hsl(0, 93%, 52%);
+  
+  --dark-900: hsl(0, 0%, 7%);
+  --dark-800: hsl(0, 0%, 12%);
+  --dark-700: hsl(0, 0%, 18%);
+  --dark-600: hsl(0, 0%, 25%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Custom trucking UI styles */
+.trucking-gradient {
+  background: linear-gradient(135deg, hsl(207, 90%, 54%) 0%, hsl(207, 90%, 45%) 100%);
+}
+
+.pulse-success {
+  animation: pulse-success 2s infinite;
+}
+
+@keyframes pulse-success {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.font-mono {
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Status indicator colors */
+.status-available {
+  @apply bg-green-500;
+}
+
+.status-en-route {
+  @apply bg-yellow-500;
+}
+
+.status-off-duty {
+  @apply bg-red-500;
+}
+
+/* Match score styling */
+.match-high {
+  @apply bg-green-100 text-green-800 dark:bg-green-600/20 dark:text-green-400;
+}
+
+.match-medium {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-600/20 dark:text-yellow-400;
+}
+
+.match-low {
+  @apply bg-red-100 text-red-800 dark:bg-red-600/20 dark:text-red-400;
+}
