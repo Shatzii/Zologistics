@@ -1,42 +1,82 @@
-import { users, drivers, loads, negotiations, alerts, type User, type Driver, type Load, type Negotiation, type Alert, type InsertUser, type InsertDriver, type InsertLoad, type InsertNegotiation, type InsertAlert } from "@shared/schema";
+import { users, drivers, loads, negotiations, alerts, companies, scrapingSessions, analytics, notifications, type User, type Driver, type Load, type Negotiation, type Alert, type Company, type ScrapingSession, type Analytics, type Notification, type InsertUser, type InsertDriver, type InsertLoad, type InsertNegotiation, type InsertAlert, type InsertCompany, type InsertScrapingSession, type InsertAnalytics, type InsertNotification } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 
 export interface IStorage {
-  // Users
+  // Users & Authentication
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-
-  // Drivers
-  getDrivers(): Promise<Driver[]>;
+  updateUserLastLogin(id: number): Promise<User | undefined>;
+  
+  // Companies
+  getCompany(id: number): Promise<Company | undefined>;
+  createCompany(company: InsertCompany): Promise<Company>;
+  
+  // Drivers - Enhanced for mobile
+  getDrivers(companyId?: number): Promise<Driver[]>;
   getDriver(id: number): Promise<Driver | undefined>;
+  getDriverByUserId(userId: number): Promise<Driver | undefined>;
   createDriver(driver: InsertDriver): Promise<Driver>;
   updateDriverStatus(id: number, status: string, location?: string): Promise<Driver | undefined>;
+  updateDriverLocation(id: number, coordinates: { lat: number; lng: number }): Promise<Driver | undefined>;
+  updateDriverDeviceToken(id: number, deviceToken: string): Promise<Driver | undefined>;
 
-  // Loads
-  getLoads(): Promise<Load[]>;
+  // Loads - Enhanced for real integration
+  getLoads(companyId?: number, filters?: LoadFilters): Promise<Load[]>;
   getLoad(id: number): Promise<Load | undefined>;
+  getLoadByExternalId(externalId: string): Promise<Load | undefined>;
   createLoad(load: InsertLoad): Promise<Load>;
   updateLoadStatus(id: number, status: string): Promise<Load | undefined>;
   assignLoadToDriver(loadId: number, driverId: number): Promise<Load | undefined>;
-
-  // Negotiations
-  getNegotiations(): Promise<Negotiation[]>;
+  updateLoadMarketRate(id: number, marketRate: string): Promise<Load | undefined>;
+  
+  // Negotiations - Enhanced AI features
+  getNegotiations(loadId?: number): Promise<Negotiation[]>;
   getNegotiation(id: number): Promise<Negotiation | undefined>;
   createNegotiation(negotiation: InsertNegotiation): Promise<Negotiation>;
   updateNegotiationStatus(id: number, status: string, finalRate?: string): Promise<Negotiation | undefined>;
-
+  addNegotiationStep(id: number, step: any): Promise<Negotiation | undefined>;
+  
+  // Load Board Scraping
+  createScrapingSession(session: InsertScrapingSession): Promise<ScrapingSession>;
+  updateScrapingSession(id: number, updates: Partial<ScrapingSession>): Promise<ScrapingSession | undefined>;
+  getLatestScrapingSession(source: string): Promise<ScrapingSession | undefined>;
+  
+  // Analytics
+  createAnalytic(analytic: InsertAnalytics): Promise<Analytics>;
+  getAnalytics(companyId: number, metric: string, period: string, startDate: Date, endDate: Date): Promise<Analytics[]>;
+  
+  // Notifications
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]>;
+  markNotificationRead(id: number): Promise<Notification | undefined>;
+  
   // Alerts
-  getAlerts(): Promise<Alert[]>;
+  getAlerts(companyId?: number): Promise<Alert[]>;
   createAlert(alert: InsertAlert): Promise<Alert>;
   markAlertAsRead(id: number): Promise<Alert | undefined>;
 
   // Dashboard metrics
-  getDashboardMetrics(): Promise<{
+  getDashboardMetrics(companyId?: number): Promise<{
     activeLoads: number;
     availableDrivers: number;
     avgRate: number;
     aiMatches: number;
+    totalRevenue: number;
+    completedLoads: number;
+    avgNegotiationSuccess: number;
   }>;
+}
+
+export interface LoadFilters {
+  status?: string;
+  source?: string;
+  minRate?: number;
+  maxRate?: number;
+  equipmentType?: string;
+  assignedDriverId?: number;
 }
 
 export class MemStorage implements IStorage {
