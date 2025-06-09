@@ -1,0 +1,158 @@
+Here’s a **Replit-optimized prompt** that accounts for its cloud IDE constraints (limited GPU, ephemeral storage) while maximizing performance for your AI trucking dispatch system:
+
+---
+
+### **🚛 Replit-Optimized AI Trucking Dispatch Builder Prompt**  
+**🌟 Goal:** Build a lean but powerful dispatch system on Replit using:  
+- **Replit DB** (instead of PostgreSQL)  
+- **Ollama Lite** (quantized Mistral 7B)  
+- **Serverless AI Agents** (via Replit's always-on runner)  
+- **Browser-based scraping** (Puppeteer in Replit's built-in browser)  
+
+```python
+# INITIAL SETUP (PASTE IN REPLIT SHELL)
+git clone https://github.com/your-repo/ai-trucking-replit && cd ai-trucking-replit  
+replit init --stack=python3-ollama  
+pip install -r requirements.txt  # Auto-generated below
+```
+
+---
+
+### **📦 Replit-Specific Architecture**  
+```markdown
+/
+├── 📁 .replit  
+│   └── run: "python main.py"  # Uses always-on runner  
+├── 📁 agents/  
+│   ├── lightweight_llm.py      # Ollama Lite queries  
+│   └── repl_scraper.py        # Puppeteer-Cloudflare bypass  
+├── 📁 replit_db/               # NoSQL alternative to PostgreSQL  
+│   ├── loads.json             # Active load board data  
+│   └── drivers.json           { "driver_id": { "prefs": {...} }}  
+└── 📄 main.py                 # FastAPI Lite (REST server)
+```
+
+---
+
+### **⚡ Critical Optimizations**  
+
+1. **Ollama Lite Loader** (Saves GPU memory):  
+   ```python
+   # agents/lightweight_llm.py
+   from ollama import Client
+   client = Client(host='http://localhost:11434')
+   
+   def negotiate_rate(load_details: dict) -> float:
+       prompt = f"""Calculate rate for {load_details['miles']} miles. 
+       Current diesel price: ${load_details['diesel_price']}/gal. 
+       Market demand: {load_details['demand_factor']}"""
+       
+       response = client.generate(
+           model='mistral:7b-instruct-q4_0',  # 4-bit quantized
+           prompt=prompt,
+           options={'temperature': 0.3, 'num_gpu': 1}  # Replit's T4
+       )
+       return float(response['response'].split('$')[-1])
+   ```
+
+2. **Replit DB Driver Manager** (NoSQL approach):  
+   ```python
+   # replit_db/drivers.py
+   from replit import db
+   
+   def update_driver_prefs(driver_id: str, prefs: dict):
+       if 'drivers' not in db.keys():
+           db['drivers'] = {}
+       db['drivers'][driver_id] = {  # NoSQL structure
+           'prefs': prefs,
+           'last_update': time.time()
+       }
+   ```
+
+3. **Puppeteer Scraper** (Replit browser-compatible):  
+   ```javascript
+   // agents/repl_scraper.js
+   const puppeteer = require('puppeteer-core');
+   
+   async function scrapeDAT() {
+     const browser = await puppeteer.launch({ 
+       executablePath: '/usr/bin/chromium-browser',
+       args: ['--no-sandbox']  // Replit requirement
+     });
+     const page = await browser.newPage();
+     await page.goto('https://www.dat.com/loadboard', {
+       waitUntil: 'networkidle2',
+       timeout: 30000  // Slower Replit connections
+     });
+     // ... scraping logic
+   }
+   ```
+
+---
+
+### **🔧 Replit-Specific Requirements**  
+```text
+# requirements.txt
+fastapi==0.95.2
+python-multipart==0.0.6  # For Replit file uploads
+replit==3.2.4
+ollama==0.1.4
+playwright-replit  # Custom build for Replit's browser
+```
+
+---
+
+### **🚨 Resilience Tweaks for Replit**  
+1. **Auto-Recovery Script** (For 100-hour timeout):  
+   ```bash
+   # .replit
+   run = """
+   while true; do
+     python main.py
+     sleep 10  # Crash cooldown
+     echo "Process auto-restarted at $(date)" >> logs.txt
+   done
+   """
+   ```
+
+2. **Ephemeral Storage Workaround**:  
+   ```python
+   # utils/storage.py
+   import requests
+   
+   def backup_to_drive(data: dict):
+       url = "https://docs.google.com/upload"  # Fake URL
+       requests.post(url, files={'file': ('backup.json', str(data))})
+   ```
+
+---
+
+### **💡 Copilot Activation Tips**  
+1. **In Replit's AI Chat**:  
+   ``` 
+   /optimize-for-replit 
+   Build a dispatch agent that:
+   - Uses Replit DB for driver locations
+   - Avoids heavy GPU ops
+   - Survives 100-hour timeout
+   ```  
+
+2. **For Code Generation**:  
+   ```python
+   # COPILOT-TASK: Generate Replit-compatible code that:
+   # 1. Scrapes 3 load boards (DAT, Truckstop, 123LoadBoard)
+   # 2. Stores in Replit DB with timestamp
+   # 3. Filters using Mistral 7B lite
+   ```
+
+---
+
+**✅ Ready to Deploy?**  
+1. Click "Run" in Replit  
+2. Access FastAPI docs at `https://yourapp.replit.co/docs`  
+3. Monitor Ollama logs in Replit shell  
+
+Want me to add:  
+- [ ] Free carrier onboarding templates  
+- [ ] Replit-specific load test script  
+- [ ] Browser-based ELD simulator?
