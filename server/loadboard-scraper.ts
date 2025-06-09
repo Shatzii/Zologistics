@@ -86,7 +86,7 @@ export class LoadBoardScraper {
     } catch (error) {
       await this.updateSession(sessionId, {
         status: 'failed',
-        errors: { message: error.message },
+        errors: { message: error instanceof Error ? error.message : String(error) },
         completedAt: new Date()
       });
       throw error;
@@ -125,7 +125,7 @@ export class LoadBoardScraper {
     } catch (error) {
       await this.updateSession(sessionId, {
         status: 'failed',
-        errors: { message: error.message },
+        errors: { message: error instanceof Error ? error.message : String(error) },
         completedAt: new Date()
       });
       return []; // Return empty array for failed scraping
@@ -165,7 +165,7 @@ export class LoadBoardScraper {
     } catch (error) {
       await this.updateSession(sessionId, {
         status: 'failed',
-        errors: { message: error.message },
+        errors: { message: error instanceof Error ? error.message : String(error) },
         completedAt: new Date()
       });
       return [];

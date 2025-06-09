@@ -42,7 +42,7 @@ export async function analyzeRateNegotiation(loadData: {
     - confidence: number (0-100)
     - analysis: string (brief explanation)`;
 
-    const response = await openai.chat.completions.create({
+    const response = await openai!.chat.completions.create({
       model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       messages: [
         {
@@ -65,6 +65,10 @@ export async function analyzeRateNegotiation(loadData: {
 
 // Driver-load matching
 export async function analyzeDriverLoadMatch(driverPreferences: any, loadData: any) {
+  if (!openai) {
+    throw new Error("OpenAI API key is required for driver-load matching. Please configure VITE_OPENAI_API_KEY.");
+  }
+
   try {
     const prompt = `Analyze compatibility between this driver and load:
     
@@ -73,16 +77,16 @@ export async function analyzeDriverLoadMatch(driverPreferences: any, loadData: a
     
     Provide a JSON response with:
     - matchScore: number (0-100)
-    - reasoning: string
-    - concerns: string[]
-    - benefits: string[]`;
+    - reasons: array of strings explaining the match
+    - concerns: array of potential issues
+    - recommendation: string summary`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+    const response = await openai!.chat.completions.create({
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: "You are an AI dispatcher expert at matching drivers with optimal loads based on preferences and efficiency."
+          content: "You are an AI dispatcher that matches drivers with loads based on preferences and efficiency."
         },
         {
           role: "user",
