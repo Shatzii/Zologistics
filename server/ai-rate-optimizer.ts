@@ -2,7 +2,17 @@ import OpenAI from "openai";
 import { storage } from "./storage";
 import type { Load, Negotiation, InsertNegotiation } from "@shared/schema";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Initialize OpenAI with fallback handling
+let openai: OpenAI | null = null;
+try {
+  if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  } else {
+    console.warn("OPENAI_API_KEY not found - AI features will be disabled");
+  }
+} catch (error) {
+  console.error("Failed to initialize OpenAI client:", error);
+}
 
 export interface MarketAnalysis {
   currentMarketRate: number;
@@ -92,7 +102,11 @@ export class AIRateOptimizer {
 
   // Comprehensive market analysis using AI
   private async performMarketAnalysis(load: Load): Promise<MarketAnalysis> {
-    const prompt = `Perform comprehensive market rate analysis for this trucking load:
+    let analysis: any = {};
+
+    if (openai) {
+      try {
+        const prompt = `Perform comprehensive market rate analysis for this trucking load:
 
 LOAD DETAILS:
 - Route: ${load.origin} to ${load.destination}
@@ -139,22 +153,27 @@ Return detailed JSON analysis with:
   "analysis": "detailed_explanation"
 }`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a senior freight market analyst with access to real-time trucking market data, fuel prices, and economic indicators. Provide accurate, data-driven rate analysis."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      response_format: { type: "json_object" }
-    });
+        const response = await openai!.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a senior freight market analyst with access to real-time trucking market data, fuel prices, and economic indicators. Provide accurate, data-driven rate analysis."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          response_format: { type: "json_object" }
+        });
 
-    const analysis = JSON.parse(response.choices[0].message.content || '{}');
+        analysis = JSON.parse(response.choices[0].message.content || '{}');
+      } catch (error) {
+        console.error("OpenAI API error:", error);
+        // Fall back to basic analysis if AI fails
+      }
+    }
     
     return {
       currentMarketRate: analysis.currentMarketRate || parseFloat(load.rate),
@@ -393,43 +412,48 @@ Return detailed JSON analysis with:
     volatility: number;
     prediction: number;
   }> {
-    // This would query historical load data for the route
-    // For now, returning a structured response based on AI analysis
-    
-    const prompt = `Analyze rate trends for trucking route ${route.origin} to ${route.destination} over the last ${days} days.
-    
-    Consider seasonal patterns, economic factors, and market dynamics.
-    
-    Return JSON: {
-      "averageRate": number,
-      "trend": "increasing|decreasing|stable",
-      "volatility": 0-1,
-      "prediction": number,
-      "factors": ["factor1", "factor2"]
-    }`;
+    let analysis: any = {};
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a freight market analyst specializing in rate trend analysis."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      response_format: { type: "json_object" }
-    });
+    if (openai) {
+      try {
+        const prompt = `Analyze rate trends for trucking route ${route.origin} to ${route.destination} over the last ${days} days.
+        
+        Consider seasonal patterns, economic factors, and market dynamics.
+        
+        Return JSON: {
+          "averageRate": number,
+          "trend": "increasing|decreasing|stable",
+          "volatility": 0-1,
+          "prediction": number,
+          "factors": ["factor1", "factor2"]
+        }`;
 
-    const analysis = JSON.parse(response.choices[0].message.content || '{}');
+        const response = await openai!.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a freight market analyst specializing in rate trend analysis."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          response_format: { type: "json_object" }
+        });
+
+        analysis = JSON.parse(response.choices[0].message.content || '{}');
+      } catch (error) {
+        console.error("OpenAI API error in rate trends:", error);
+      }
+    }
     
     return {
-      averageRate: analysis.averageRate || 0,
+      averageRate: analysis.averageRate || 2.50, // Default rate per mile
       trend: analysis.trend || 'stable',
       volatility: analysis.volatility || 0.1,
-      prediction: analysis.prediction || 0
+      prediction: analysis.prediction || 2.50
     };
   }
 }

@@ -2,7 +2,17 @@ import OpenAI from "openai";
 import { storage } from "./storage";
 import type { InsertLoad, InsertScrapingSession } from "@shared/schema";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Initialize OpenAI with fallback handling
+let openai: OpenAI | null = null;
+try {
+  if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  } else {
+    console.warn("OPENAI_API_KEY not found - AI market analysis will be disabled");
+  }
+} catch (error) {
+  console.error("Failed to initialize OpenAI client in loadboard scraper:", error);
+}
 
 export interface LoadBoardCredentials {
   datApiKey?: string;
@@ -216,37 +226,52 @@ export class LoadBoardScraper {
 
   // AI market rate calculation
   private async calculateMarketRate(load: ScrapedLoadData): Promise<{ marketRate: string; analysis: string }> {
-    const prompt = `Analyze this trucking load and calculate the fair market rate:
-    - Route: ${load.origin} to ${load.destination}
-    - Distance: ${load.miles} miles
-    - Current rate: $${load.rate} ($${load.ratePerMile}/mile)
-    - Equipment: ${load.equipmentType || 'Van'}
-    - Weight: ${load.weight || 'Unknown'} lbs
-    - Commodity: ${load.commodity || 'General freight'}
-    
-    Consider current fuel prices, seasonal demand, route difficulty, and market conditions.
-    Return JSON with: { "marketRate": "total_amount", "ratePerMile": "per_mile_rate", "analysis": "brief_explanation", "confidence": 0-100 }`;
+    if (!openai) {
+      return {
+        marketRate: load.rate,
+        analysis: "Basic market analysis (AI unavailable)"
+      };
+    }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a trucking market rate analyst with access to current market data."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      response_format: { type: "json_object" }
-    });
+    try {
+      const prompt = `Analyze this trucking load and calculate the fair market rate:
+      - Route: ${load.origin} to ${load.destination}
+      - Distance: ${load.miles} miles
+      - Current rate: $${load.rate} ($${load.ratePerMile}/mile)
+      - Equipment: ${load.equipmentType || 'Van'}
+      - Weight: ${load.weight || 'Unknown'} lbs
+      - Commodity: ${load.commodity || 'General freight'}
+      
+      Consider current fuel prices, seasonal demand, route difficulty, and market conditions.
+      Return JSON with: { "marketRate": "total_amount", "ratePerMile": "per_mile_rate", "analysis": "brief_explanation", "confidence": 0-100 }`;
 
-    const result = JSON.parse(response.choices[0].message.content || '{}');
-    return {
-      marketRate: result.marketRate || load.rate,
-      analysis: result.analysis || "Market analysis completed"
-    };
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You are a trucking market rate analyst with access to current market data."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || '{}');
+      return {
+        marketRate: result.marketRate || load.rate,
+        analysis: result.analysis || "AI market analysis completed"
+      };
+    } catch (error) {
+      console.error("OpenAI API error in market rate calculation:", error);
+      return {
+        marketRate: load.rate,
+        analysis: "Market analysis failed, using current rate"
+      };
+    }
   }
 
   // AI driver-load matching
