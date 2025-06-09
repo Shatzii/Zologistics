@@ -79,6 +79,415 @@ export interface LoadFilters {
   assignedDriverId?: number;
 }
 
+export class DatabaseStorage implements IStorage {
+  // Users & Authentication
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...insertUser,
+        role: insertUser.role || "dispatcher",
+        isActive: insertUser.isActive ?? true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUserLastLogin(id: number): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ lastLogin: new Date(), updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  // Companies
+  async getCompany(id: number): Promise<Company | undefined> {
+    const [company] = await db.select().from(companies).where(eq(companies.id, id));
+    return company;
+  }
+
+  async createCompany(insertCompany: InsertCompany): Promise<Company> {
+    const [company] = await db
+      .insert(companies)
+      .values({
+        ...insertCompany,
+        isActive: insertCompany.isActive ?? true,
+        createdAt: new Date(),
+      })
+      .returning();
+    return company;
+  }
+
+  // Drivers - Enhanced for mobile
+  async getDrivers(companyId?: number): Promise<Driver[]> {
+    const query = companyId 
+      ? db.select().from(drivers).where(eq(drivers.companyId, companyId))
+      : db.select().from(drivers);
+    return await query;
+  }
+
+  async getDriver(id: number): Promise<Driver | undefined> {
+    const [driver] = await db.select().from(drivers).where(eq(drivers.id, id));
+    return driver;
+  }
+
+  async getDriverByUserId(userId: number): Promise<Driver | undefined> {
+    const [driver] = await db.select().from(drivers).where(eq(drivers.userId, userId));
+    return driver;
+  }
+
+  async createDriver(insertDriver: InsertDriver): Promise<Driver> {
+    const [driver] = await db
+      .insert(drivers)
+      .values({
+        ...insertDriver,
+        isActive: insertDriver.isActive ?? true,
+        createdAt: new Date(),
+      })
+      .returning();
+    return driver;
+  }
+
+  async updateDriverStatus(id: number, status: string, location?: string): Promise<Driver | undefined> {
+    const updates: any = { status, lastActive: new Date() };
+    if (location) updates.currentLocation = location;
+    
+    const [driver] = await db
+      .update(drivers)
+      .set(updates)
+      .where(eq(drivers.id, id))
+      .returning();
+    return driver;
+  }
+
+  async updateDriverLocation(id: number, coordinates: { lat: number; lng: number }): Promise<Driver | undefined> {
+    const [driver] = await db
+      .update(drivers)
+      .set({ 
+        gpsCoordinates: coordinates,
+        lastActive: new Date()
+      })
+      .where(eq(drivers.id, id))
+      .returning();
+    return driver;
+  }
+
+  async updateDriverDeviceToken(id: number, deviceToken: string): Promise<Driver | undefined> {
+    const [driver] = await db
+      .update(drivers)
+      .set({ deviceToken })
+      .where(eq(drivers.id, id))
+      .returning();
+    return driver;
+  }
+
+  // Loads - Enhanced for real integration
+  async getLoads(companyId?: number, filters?: LoadFilters): Promise<Load[]> {
+    let query = db.select().from(loads);
+    
+    if (companyId) {
+      query = query.where(eq(loads.companyId, companyId));
+    }
+    
+    if (filters) {
+      // Add filtering logic here based on LoadFilters
+      // This would be expanded with proper WHERE clauses
+    }
+    
+    return await query.orderBy(desc(loads.createdAt));
+  }
+
+  async getLoad(id: number): Promise<Load | undefined> {
+    const [load] = await db.select().from(loads).where(eq(loads.id, id));
+    return load;
+  }
+
+  async getLoadByExternalId(externalId: string): Promise<Load | undefined> {
+    const [load] = await db.select().from(loads).where(eq(loads.externalId, externalId));
+    return load;
+  }
+
+  async createLoad(insertLoad: InsertLoad): Promise<Load> {
+    const [load] = await db
+      .insert(loads)
+      .values({
+        ...insertLoad,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return load;
+  }
+
+  async updateLoadStatus(id: number, status: string): Promise<Load | undefined> {
+    const [load] = await db
+      .update(loads)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(loads.id, id))
+      .returning();
+    return load;
+  }
+
+  async assignLoadToDriver(loadId: number, driverId: number): Promise<Load | undefined> {
+    const [load] = await db
+      .update(loads)
+      .set({ 
+        assignedDriverId: driverId, 
+        status: "assigned",
+        updatedAt: new Date()
+      })
+      .where(eq(loads.id, loadId))
+      .returning();
+    return load;
+  }
+
+  async updateLoadMarketRate(id: number, marketRate: string): Promise<Load | undefined> {
+    const [load] = await db
+      .update(loads)
+      .set({ marketRate, updatedAt: new Date() })
+      .where(eq(loads.id, id))
+      .returning();
+    return load;
+  }
+
+  // Negotiations - Enhanced AI features
+  async getNegotiations(loadId?: number): Promise<Negotiation[]> {
+    const query = loadId 
+      ? db.select().from(negotiations).where(eq(negotiations.loadId, loadId))
+      : db.select().from(negotiations);
+    return await query.orderBy(desc(negotiations.createdAt));
+  }
+
+  async getNegotiation(id: number): Promise<Negotiation | undefined> {
+    const [negotiation] = await db.select().from(negotiations).where(eq(negotiations.id, id));
+    return negotiation;
+  }
+
+  async createNegotiation(insertNegotiation: InsertNegotiation): Promise<Negotiation> {
+    const [negotiation] = await db
+      .insert(negotiations)
+      .values({
+        ...insertNegotiation,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return negotiation;
+  }
+
+  async updateNegotiationStatus(id: number, status: string, finalRate?: string): Promise<Negotiation | undefined> {
+    const updates: any = { status, updatedAt: new Date() };
+    if (finalRate) updates.finalRate = finalRate;
+    
+    const [negotiation] = await db
+      .update(negotiations)
+      .set(updates)
+      .where(eq(negotiations.id, id))
+      .returning();
+    return negotiation;
+  }
+
+  async addNegotiationStep(id: number, step: any): Promise<Negotiation | undefined> {
+    const [current] = await db.select().from(negotiations).where(eq(negotiations.id, id));
+    if (!current) return undefined;
+    
+    const steps = current.negotiationSteps as any[] || [];
+    steps.push({ ...step, timestamp: new Date() });
+    
+    const [negotiation] = await db
+      .update(negotiations)
+      .set({ 
+        negotiationSteps: steps,
+        updatedAt: new Date()
+      })
+      .where(eq(negotiations.id, id))
+      .returning();
+    return negotiation;
+  }
+
+  // Load Board Scraping
+  async createScrapingSession(insertSession: InsertScrapingSession): Promise<ScrapingSession> {
+    const [session] = await db
+      .insert(scrapingSessions)
+      .values({
+        ...insertSession,
+        startedAt: new Date(),
+      })
+      .returning();
+    return session;
+  }
+
+  async updateScrapingSession(id: number, updates: Partial<ScrapingSession>): Promise<ScrapingSession | undefined> {
+    const [session] = await db
+      .update(scrapingSessions)
+      .set(updates)
+      .where(eq(scrapingSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async getLatestScrapingSession(source: string): Promise<ScrapingSession | undefined> {
+    const [session] = await db
+      .select()
+      .from(scrapingSessions)
+      .where(eq(scrapingSessions.source, source))
+      .orderBy(desc(scrapingSessions.startedAt))
+      .limit(1);
+    return session;
+  }
+
+  // Analytics
+  async createAnalytic(insertAnalytic: InsertAnalytics): Promise<Analytics> {
+    const [analytic] = await db
+      .insert(analytics)
+      .values({
+        ...insertAnalytic,
+        createdAt: new Date(),
+      })
+      .returning();
+    return analytic;
+  }
+
+  async getAnalytics(companyId: number, metric: string, period: string, startDate: Date, endDate: Date): Promise<Analytics[]> {
+    return await db
+      .select()
+      .from(analytics)
+      .where(
+        and(
+          eq(analytics.companyId, companyId),
+          eq(analytics.metric, metric),
+          eq(analytics.period, period),
+          gte(analytics.date, startDate),
+          lte(analytics.date, endDate)
+        )
+      )
+      .orderBy(analytics.date);
+  }
+
+  // Notifications
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const [notification] = await db
+      .insert(notifications)
+      .values({
+        ...insertNotification,
+        createdAt: new Date(),
+      })
+      .returning();
+    return notification;
+  }
+
+  async getUserNotifications(userId: number, unreadOnly?: boolean): Promise<Notification[]> {
+    const query = unreadOnly 
+      ? db.select().from(notifications).where(
+          and(eq(notifications.userId, userId), eq(notifications.isRead, false))
+        )
+      : db.select().from(notifications).where(eq(notifications.userId, userId));
+    
+    return await query.orderBy(desc(notifications.createdAt));
+  }
+
+  async markNotificationRead(id: number): Promise<Notification | undefined> {
+    const [notification] = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, id))
+      .returning();
+    return notification;
+  }
+
+  // Alerts
+  async getAlerts(companyId?: number): Promise<Alert[]> {
+    const query = companyId 
+      ? db.select().from(alerts).where(eq(alerts.companyId, companyId))
+      : db.select().from(alerts);
+    return await query.orderBy(desc(alerts.createdAt)).limit(10);
+  }
+
+  async createAlert(insertAlert: InsertAlert): Promise<Alert> {
+    const [alert] = await db
+      .insert(alerts)
+      .values({
+        ...insertAlert,
+        isRead: insertAlert.isRead ?? false,
+        createdAt: new Date(),
+      })
+      .returning();
+    return alert;
+  }
+
+  async markAlertAsRead(id: number): Promise<Alert | undefined> {
+    const [alert] = await db
+      .update(alerts)
+      .set({ isRead: true })
+      .where(eq(alerts.id, id))
+      .returning();
+    return alert;
+  }
+
+  // Dashboard metrics
+  async getDashboardMetrics(companyId?: number): Promise<{
+    activeLoads: number;
+    availableDrivers: number;
+    avgRate: number;
+    aiMatches: number;
+    totalRevenue: number;
+    completedLoads: number;
+    avgNegotiationSuccess: number;
+  }> {
+    // Use SQL aggregations for better performance
+    const activeLoadsQuery = companyId 
+      ? db.select({ count: sql<number>`count(*)` }).from(loads).where(
+          and(eq(loads.companyId, companyId), sql`status IN ('available', 'assigned')`)
+        )
+      : db.select({ count: sql<number>`count(*)` }).from(loads).where(sql`status IN ('available', 'assigned')`);
+
+    const availableDriversQuery = companyId
+      ? db.select({ count: sql<number>`count(*)` }).from(drivers).where(
+          and(eq(drivers.companyId, companyId), eq(drivers.status, "available"))
+        )
+      : db.select({ count: sql<number>`count(*)` }).from(drivers).where(eq(drivers.status, "available"));
+
+    const [activeLoadsResult] = await activeLoadsQuery;
+    const [availableDriversResult] = await availableDriversQuery;
+
+    // Calculate average rate and other metrics
+    const avgRateQuery = companyId
+      ? db.select({ avg: sql<number>`AVG(CAST(rate_per_mile AS DECIMAL))` }).from(loads).where(eq(loads.companyId, companyId))
+      : db.select({ avg: sql<number>`AVG(CAST(rate_per_mile AS DECIMAL))` }).from(loads);
+
+    const [avgRateResult] = await avgRateQuery;
+
+    return {
+      activeLoads: activeLoadsResult.count || 0,
+      availableDrivers: availableDriversResult.count || 0,
+      avgRate: Number(avgRateResult.avg) || 0,
+      aiMatches: 0, // Calculate from loads with high match scores
+      totalRevenue: 0, // Calculate from completed loads
+      completedLoads: 0, // Count completed loads
+      avgNegotiationSuccess: 0, // Calculate from negotiations
+    };
+  }
+}
+
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private drivers: Map<number, Driver>;
@@ -330,4 +739,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
