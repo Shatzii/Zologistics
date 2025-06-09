@@ -133,7 +133,12 @@ export class MemStorage implements IStorage {
 
   async createDriver(insertDriver: InsertDriver): Promise<Driver> {
     const id = this.currentDriverId++;
-    const driver: Driver = { ...insertDriver, id };
+    const driver: Driver = { 
+      ...insertDriver, 
+      id,
+      phoneNumber: insertDriver.phoneNumber ?? null,
+      preferences: insertDriver.preferences ?? null
+    };
     this.drivers.set(id, driver);
     return driver;
   }
@@ -165,6 +170,8 @@ export class MemStorage implements IStorage {
     const load: Load = { 
       ...insertLoad, 
       id,
+      matchScore: insertLoad.matchScore ?? null,
+      assignedDriverId: insertLoad.assignedDriverId ?? null,
       createdAt: new Date()
     };
     this.loads.set(id, load);
@@ -206,6 +213,9 @@ export class MemStorage implements IStorage {
     const negotiation: Negotiation = { 
       ...insertNegotiation, 
       id,
+      finalRate: insertNegotiation.finalRate ?? null,
+      aiAnalysis: insertNegotiation.aiAnalysis ?? null,
+      confidenceScore: insertNegotiation.confidenceScore ?? null,
       createdAt: new Date()
     };
     this.negotiations.set(id, negotiation);
@@ -237,6 +247,7 @@ export class MemStorage implements IStorage {
     const alert: Alert = { 
       ...insertAlert, 
       id,
+      isRead: insertAlert.isRead ?? false,
       createdAt: new Date()
     };
     this.alerts.set(id, alert);

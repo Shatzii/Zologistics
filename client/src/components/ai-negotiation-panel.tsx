@@ -45,8 +45,8 @@ export function AIRateNegotiationPanel() {
   });
 
   // Get the most recent active negotiation
-  const activeNegotiation = negotiations?.find((n: any) => n.status === 'in_progress');
-  const associatedLoad = activeNegotiation && loads?.find((l: any) => l.id === activeNegotiation.loadId);
+  const activeNegotiation = negotiations ? negotiations.find((n: any) => n.status === 'in_progress') : null;
+  const associatedLoad = activeNegotiation && loads ? loads.find((l: any) => l.id === activeNegotiation.loadId) : null;
 
   return (
     <Card>
@@ -160,13 +160,13 @@ export function AIRateNegotiationPanel() {
                 <Checkbox
                   id="auto-negotiate"
                   checked={autoNegotiate}
-                  onCheckedChange={setAutoNegotiate}
+                  onCheckedChange={(checked) => setAutoNegotiate(checked === true)}
                 />
                 <label
                   htmlFor="auto-negotiate"
                   className="text-sm text-gray-700 dark:text-gray-300"
                 >
-                  Enable auto-negotiation for matches >90%
+                  Enable auto-negotiation for matches {'>'} 90%
                 </label>
               </div>
 
