@@ -188,6 +188,55 @@ export function DriverPainPointSolutions() {
     nextBreakDue: new Date(Date.now() + 3600000)
   };
 
+  const safePersonalizedLoads = personalizedLoads || {
+    adventureLoads: [
+      {
+        id: "adv-001",
+        title: "Scenic Mountain Route",
+        destination: "Colorado Rockies",
+        bonusPayment: 500,
+        category: "scenic_drives",
+        experienceRating: 4.8,
+        photographyOpportunity: true
+      },
+      {
+        id: "adv-002", 
+        title: "Coastal Highway Delivery",
+        destination: "Pacific Coast",
+        bonusPayment: 750,
+        category: "coastal_routes",
+        experienceRating: 4.9,
+        photographyOpportunity: true
+      }
+    ],
+    personalizedRoute: {
+      familyVisits: [
+        {
+          familyMemberId: "Mom & Dad",
+          estimatedVisitTime: new Date(Date.now() + 86400000 * 3),
+          duration: 8
+        }
+      ],
+      adventureStops: [
+        {
+          location: "Grand Canyon",
+          activity: "Photography",
+          recommendedDuration: 2
+        }
+      ],
+      totalPersonalizationScore: 85
+    },
+    lifestyleOpportunities: [
+      {
+        title: "Photography Workshop",
+        type: "education",
+        opportunity: "National Geographic Workshop",
+        personalGrowthValue: 90
+      }
+    ],
+    familyVisitScore: 42
+  };
+
   return (
     <div className="driver-theme min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -416,14 +465,14 @@ export function DriverPainPointSolutions() {
                   
                   <div>
                     <div className="driver-text-secondary mb-2">On-Duty Time</div>
-                    <Progress value={(hosStatus.onDutyTime / 14) * 100} className="h-3 mb-2" />
-                    <div className="driver-text-emphasis">{hosStatus.onDutyTime}h / 14h</div>
+                    <Progress value={(safeHosStatus.onDutyTime / 14) * 100} className="h-3 mb-2" />
+                    <div className="driver-text-emphasis">{safeHosStatus.onDutyTime}h / 14h</div>
                   </div>
                   
                   <div>
                     <div className="driver-text-secondary mb-2">Next Break Due</div>
                     <div className="driver-text-emphasis">
-                      {new Date(hosStatus.nextBreakDue).toLocaleTimeString()}
+                      {new Date(safeHosStatus.nextBreakDue).toLocaleTimeString()}
                     </div>
                     <div className="driver-text-secondary text-sm">Auto-reminder enabled</div>
                   </div>
@@ -463,7 +512,7 @@ export function DriverPainPointSolutions() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {personalizedLoads.personalizedRoute?.familyVisits.map((visit, index) => (
+                    {safePersonalizedLoads.personalizedRoute?.familyVisits.map((visit, index) => (
                       <div key={index} className="p-3 bg-gray-800 rounded-lg">
                         <div className="driver-text-emphasis">{visit.familyMemberId}</div>
                         <div className="driver-text-secondary text-sm">
@@ -475,7 +524,7 @@ export function DriverPainPointSolutions() {
                     <div className="border-t border-gray-600 pt-4">
                       <div className="flex justify-between">
                         <span className="driver-text-secondary">Family Visit Score</span>
-                        <span className="driver-text-emphasis text-green-400">{personalizedLoads.familyVisitScore}/50</span>
+                        <span className="driver-text-emphasis text-green-400">{safePersonalizedLoads.familyVisitScore}/50</span>
                       </div>
                     </div>
                   </div>
@@ -490,7 +539,7 @@ export function DriverPainPointSolutions() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {personalizedLoads.adventureLoads.slice(0, 6).map((load) => (
+                  {safePersonalizedLoads.adventureLoads.slice(0, 6).map((load) => (
                     <div key={load.id} className="p-4 bg-gray-800 rounded-lg border border-gray-600">
                       <div className="flex items-center justify-between mb-2">
                         <Badge className="bg-purple-600">{load.category.replace('_', ' ')}</Badge>
