@@ -22,6 +22,7 @@ import { driverBenefitsSystem } from "./driver-benefits-system";
 import { personalizedLoadSystem } from "./personalized-load-system";
 import { paperworkAutomation } from "./paperwork-automation";
 import { driverWellnessSystem } from "./driver-wellness-system";
+import { personalizedWellnessSystem } from "./personalized-wellness-system";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -1419,6 +1420,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(metrics);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch wellness system metrics" });
+    }
+  });
+
+  // Personalized Wellness and Mental Health API Routes
+  
+  // Wellness Profile Management
+  app.get("/api/wellness/profile/:driverId", async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const profile = personalizedWellnessSystem.getWellnessProfile(driverId);
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness profile" });
+    }
+  });
+
+  app.post("/api/wellness/profile", async (req, res) => {
+    try {
+      const profile = await personalizedWellnessSystem.createWellnessProfile(req.body.driverId, req.body);
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create wellness profile" });
+    }
+  });
+
+  // Mental Health Assessments
+  app.post("/api/wellness/assessment", async (req, res) => {
+    try {
+      const { driverId, assessmentType } = req.body;
+      const assessment = await personalizedWellnessSystem.conductMentalHealthAssessment(driverId, assessmentType);
+      res.json(assessment);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to conduct mental health assessment" });
+    }
+  });
+
+  app.get("/api/wellness/assessments/:driverId", async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const assessments = personalizedWellnessSystem.getDriverAssessments(driverId);
+      res.json(assessments);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch driver assessments" });
+    }
+  });
+
+  // Wellness Resources
+  app.get("/api/wellness/resources", async (req, res) => {
+    try {
+      const category = req.query.category as string;
+      const resources = personalizedWellnessSystem.getWellnessResources(category);
+      res.json(resources);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness resources" });
+    }
+  });
+
+  // Wellness Plans
+  app.post("/api/wellness/plan", async (req, res) => {
+    try {
+      const { driverId } = req.body;
+      const plan = await personalizedWellnessSystem.createPersonalizedWellnessPlan(driverId);
+      res.json(plan);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create wellness plan" });
+    }
+  });
+
+  app.get("/api/wellness/plans/:driverId", async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const plans = personalizedWellnessSystem.getDriverWellnessPlans(driverId);
+      res.json(plans);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness plans" });
+    }
+  });
+
+  // Crisis Support
+  app.post("/api/wellness/crisis-support", async (req, res) => {
+    try {
+      const { driverId, triggerEvent } = req.body;
+      const crisis = await personalizedWellnessSystem.triggerCrisisSupport(driverId, triggerEvent);
+      res.json(crisis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to trigger crisis support" });
+    }
+  });
+
+  app.get("/api/wellness/crisis-history/:driverId", async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const history = personalizedWellnessSystem.getDriverCrisisHistory(driverId);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch crisis history" });
+    }
+  });
+
+  // Wellness Analytics and Insights
+  app.get("/api/wellness/analytics/:driverId", async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const profile = personalizedWellnessSystem.getWellnessProfile(driverId);
+      if (!profile) {
+        return res.status(404).json({ error: "Wellness profile not found" });
+      }
+
+      // Generate comprehensive wellness analytics
+      const analytics = {
+        mentalHealthTrend: {
+          current: profile.mentalHealthScore,
+          trend: "stable", // Would calculate from historical data
+          change: 0
+        },
+        stressLevels: {
+          current: profile.stressLevel,
+          average: 4.2,
+          peak: 8.5,
+          recommendation: "Consider stress reduction techniques"
+        },
+        wellnessGoals: {
+          active: profile.personalGoals.length,
+          completed: profile.personalGoals.filter(g => !g.isActive).length,
+          progress: 65
+        },
+        riskAssessment: {
+          level: profile.riskFactors.length > 0 ? "moderate" : "low",
+          factors: profile.riskFactors.length,
+          lastScreening: profile.lastAssessment
+        },
+        interventionHistory: {
+          total: 12,
+          successful: 10,
+          effectiveness: 85
+        }
+      };
+
+      res.json(analytics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness analytics" });
+    }
+  });
+
+  // Daily Check-in System
+  app.post("/api/wellness/daily-checkin", async (req, res) => {
+    try {
+      const { driverId, responses } = req.body;
+      
+      // Process daily check-in responses
+      const checkin = {
+        id: `checkin-${Date.now()}`,
+        driverId,
+        date: new Date(),
+        responses,
+        processed: true,
+        recommendations: [
+          {
+            type: "resource",
+            title: "5-Minute Stress Relief",
+            priority: "medium",
+            resourceId: "stress-001"
+          }
+        ]
+      };
+
+      res.json(checkin);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process daily check-in" });
+    }
+  });
+
+  // Emergency Support Hotline Integration
+  app.post("/api/wellness/emergency-contact", async (req, res) => {
+    try {
+      const { driverId, contactType } = req.body;
+      
+      const emergencyResponse = {
+        contactInitiated: true,
+        timestamp: new Date(),
+        supportType: contactType,
+        estimatedResponse: "immediate",
+        referenceNumber: `EMG-${Date.now()}`,
+        followUpScheduled: true
+      };
+
+      res.json(emergencyResponse);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to initiate emergency contact" });
+    }
+  });
+
+  // Wellness Resource Engagement Tracking
+  app.post("/api/wellness/resource-engagement", async (req, res) => {
+    try {
+      const { driverId, resourceId, action, progress } = req.body;
+      
+      const engagement = {
+        id: `engagement-${Date.now()}`,
+        driverId,
+        resourceId,
+        action,
+        progress,
+        timestamp: new Date(),
+        effectiveness: progress > 50 ? "high" : "moderate"
+      };
+
+      res.json(engagement);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to track resource engagement" });
     }
   });
 

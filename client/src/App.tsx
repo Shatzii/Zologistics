@@ -20,6 +20,7 @@ import NotFound from "@/pages/not-found";
 import { DriverWellnessDashboard } from "@/components/driver-wellness-dashboard";
 import { DriverPainPointSolutions } from "@/components/driver-pain-point-solutions";
 import EnhancedDriversPage from "@/pages/enhanced-drivers";
+import WellnessPage from "@/pages/wellness";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -81,6 +82,7 @@ function Router() {
         <Route path="/reports" component={ReportsPage} />
         <Route path="/settings" component={SettingsPage} />
         <Route path="/wellness" component={DriverWellnessDashboard} />
+        <Route path="/personalized-wellness" component={WellnessPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>
