@@ -992,6 +992,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Additional endpoints for comprehensive dashboard
+  app.get("/api/iot/devices", async (req, res) => {
+    try {
+      const devices = iotService.getAllDevices();
+      res.json(devices);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch IoT devices" });
+    }
+  });
+
+  app.get("/api/autonomous/vehicles", async (req, res) => {
+    try {
+      const vehicles = autonomousVehicleService.getAllVehicles();
+      res.json(vehicles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch autonomous vehicles" });
+    }
+  });
+
+  app.get("/api/blockchain/contracts", async (req, res) => {
+    try {
+      const contracts = blockchainService.getAllContracts();
+      res.json(contracts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch blockchain contracts" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
