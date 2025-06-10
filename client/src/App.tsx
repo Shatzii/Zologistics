@@ -1,25 +1,42 @@
+import { useState, useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ROUTES, isValidRoute } from "@/config/routes";
+import { EnhancedSidebar } from "@/components/enhanced-sidebar";
+import { QuickCommandPalette } from "@/components/quick-command-palette";
 
-// Import all page components
+// Import available page components
 import Dashboard from "@/pages/dashboard";
 import LoadsPage from "@/pages/loads";
 import DriversPage from "@/pages/drivers";
 import NegotiationsPage from "@/pages/negotiations";
-import AnalyticsPage from "@/pages/analytics";
-import ReportsPage from "@/pages/reports";
-import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
-import { Sidebar } from "@/components/sidebar";
-import { NavigationHeader } from "@/components/navigation-header";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [location] = useLocation();
+  
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setCommandPaletteOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Check if current route is mobile
   const isMobile = location.startsWith('/mobile');
   
   if (isMobile) {
@@ -28,25 +45,24 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <Sidebar />
+      <EnhancedSidebar 
+        collapsed={sidebarCollapsed} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+      />
       <div className="flex-1 flex flex-col">
-        <NavigationHeader />
         <main className="flex-1 overflow-auto">
           {children}
         </main>
       </div>
+      <QuickCommandPalette 
+        open={commandPaletteOpen} 
+        onOpenChange={setCommandPaletteOpen} 
+      />
     </div>
   );
 }
 
 function Router() {
-  const [location] = useLocation();
-  
-  // Redirect invalid routes to 404
-  if (!isValidRoute(location) && location !== '/404') {
-    return <Route path="*" component={NotFound} />;
-  }
-
   return (
     <AppLayout>
       <Switch>
@@ -54,10 +70,6 @@ function Router() {
         <Route path="/loads" component={LoadsPage} />
         <Route path="/drivers" component={DriversPage} />
         <Route path="/negotiations" component={NegotiationsPage} />
-        <Route path="/analytics" component={AnalyticsPage} />
-        <Route path="/reports" component={ReportsPage} />
-        <Route path="/settings" component={SettingsPage} />
-        <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
