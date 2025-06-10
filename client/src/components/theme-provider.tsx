@@ -22,30 +22,27 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   storageKey = "ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
 
     root.classList.remove("light", "dark");
+    body.classList.remove("light", "dark");
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      root.classList.add(systemTheme);
-      return;
-    }
-
-    root.classList.add(theme);
+    // Force dark theme for driver-optimized experience
+    root.classList.add("dark");
+    body.classList.add("dark", "driver-theme");
+    
+    // Apply driver theme styles directly
+    root.style.backgroundColor = "#0a0a0a";
+    body.style.backgroundColor = "#0a0a0a";
+    body.style.color = "#00d4ff";
   }, [theme]);
 
   const value = {

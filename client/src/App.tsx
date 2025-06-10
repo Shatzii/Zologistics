@@ -50,13 +50,13 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex driver-theme">
       <EnhancedSidebar 
         collapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 overflow-auto">
+      <div className="flex-1 flex flex-col bg-background">
+        <main className="flex-1 overflow-auto bg-background">
           {children}
         </main>
       </div>
@@ -90,11 +90,13 @@ function Router() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light">
+    <ThemeProvider defaultTheme="dark">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <div className="driver-theme min-h-screen">
+            <Toaster />
+            <Router />
+          </div>
         </TooltipProvider>
       </QueryClientProvider>
     </ThemeProvider>

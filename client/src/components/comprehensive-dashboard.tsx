@@ -100,14 +100,14 @@ export function ComprehensiveDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-3xl font-bold driver-text-critical">
             Comprehensive Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="driver-text-secondary">
             Complete overview of your trucking operations
           </p>
         </div>

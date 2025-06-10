@@ -11,6 +11,27 @@
   --driver-text-primary: #00d4ff;
   --driver-text-secondary: #4db8e8;
   --driver-text-muted: #6ba3d1;
+
+  /* Tailwind CSS overrides */
+  --background: #0a0a0a;
+  --foreground: #00d4ff;
+  --card: #1a1a1a;
+  --card-foreground: #00d4ff;
+  --popover: #1a1a1a;
+  --popover-foreground: #00d4ff;
+  --primary: #00d4ff;
+  --primary-foreground: #0a0a0a;
+  --secondary: #242424;
+  --secondary-foreground: #4db8e8;
+  --muted: #242424;
+  --muted-foreground: #6ba3d1;
+  --accent: #333333;
+  --accent-foreground: #00d4ff;
+  --destructive: #ff3366;
+  --destructive-foreground: #00d4ff;
+  --border: #333333;
+  --input: #242424;
+  --ring: #00d4ff;
   
   /* High-visibility status colors */
   --driver-success: #00ff88;
@@ -28,6 +49,24 @@
   /* Eye strain reduction */
   --driver-shadow: rgba(0, 0, 0, 0.8);
   --driver-glow: rgba(0, 180, 255, 0.3);
+}
+
+/* Base Layer Overrides */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--driver-bg-primary) !important;
+    color: var(--driver-text-primary) !important;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  html {
+    background-color: var(--driver-bg-primary) !important;
+  }
 }
 
 /* Driver Theme Application */
