@@ -1036,6 +1036,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // High-Impact Improvement APIs
+  
+  // 1. Predictive Analytics
+  app.get("/api/predictive/market-predictions", async (req, res) => {
+    try {
+      const predictions = predictiveAnalytics.getMarketPredictions();
+      res.json(predictions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch market predictions" });
+    }
+  });
+
+  app.get("/api/predictive/demand-hotspots", async (req, res) => {
+    try {
+      const hotspots = predictiveAnalytics.getDemandHotspots();
+      res.json(hotspots);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch demand hotspots" });
+    }
+  });
+
+  // 2. Advanced Fleet Optimization
+  app.get("/api/fleet/optimized-routes", async (req, res) => {
+    try {
+      const routes = fleetOptimizer.getOptimizedRoutes();
+      res.json(routes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch optimized routes" });
+    }
+  });
+
+  app.get("/api/fleet/utilization", async (req, res) => {
+    try {
+      const utilization = await fleetOptimizer.analyzeFleetUtilization();
+      res.json(utilization);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze fleet utilization" });
+    }
+  });
+
+  // 3. Real-Time Collaboration
+  app.get("/api/collaboration/active-sessions", async (req, res) => {
+    try {
+      const sessions = collaborationManager.getActiveSessions();
+      res.json(sessions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch active sessions" });
+    }
+  });
+
+  app.get("/api/collaboration/metrics", async (req, res) => {
+    try {
+      const metrics = collaborationManager.getCollaborationMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch collaboration metrics" });
+    }
+  });
+
+  // 4. Customer Portal
+  app.get("/api/customer/tracking/:trackingNumber", async (req, res) => {
+    try {
+      const { trackingNumber } = req.params;
+      const shipment = await customerPortal.getShipmentTracking(trackingNumber);
+      if (!shipment) {
+        return res.status(404).json({ error: "Shipment not found" });
+      }
+      res.json(shipment);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch shipment tracking" });
+    }
+  });
+
+  app.get("/api/customer/metrics", async (req, res) => {
+    try {
+      const metrics = customerPortal.getShipmentMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch customer metrics" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

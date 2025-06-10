@@ -2,6 +2,171 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Driver-Optimized Theme Variables */
+:root {
+  /* Research-based color palette for truck drivers */
+  --driver-bg-primary: #0a0a0a;
+  --driver-bg-secondary: #1a1a1a;
+  --driver-bg-tertiary: #242424;
+  --driver-text-primary: #f0f0f0;
+  --driver-text-secondary: #b0b0b0;
+  --driver-text-muted: #808080;
+  
+  /* High-visibility status colors */
+  --driver-success: #00ff88;
+  --driver-warning: #ffb000;
+  --driver-danger: #ff3366;
+  --driver-info: #00b4ff;
+  --driver-accent: #7c3aed;
+  
+  /* Specialized cab environment colors */
+  --driver-border: #333333;
+  --driver-hover: #2a2a2a;
+  --driver-active: #3a3a3a;
+  --driver-focus: #4a4a4a;
+  
+  /* Eye strain reduction */
+  --driver-shadow: rgba(0, 0, 0, 0.8);
+  --driver-glow: rgba(0, 180, 255, 0.3);
+}
+
+/* Driver Theme Application */
+.driver-theme {
+  background-color: var(--driver-bg-primary);
+  color: var(--driver-text-primary);
+  font-size: 18px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+}
+
+/* Enhanced readability for cab environment */
+.driver-card {
+  background-color: var(--driver-bg-secondary);
+  border: 1px solid var(--driver-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--driver-shadow);
+  backdrop-filter: blur(10px);
+}
+
+/* Large touch targets for gloved hands */
+.driver-button {
+  min-height: 48px;
+  min-width: 120px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px var(--driver-shadow);
+}
+
+.driver-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--driver-shadow);
+}
+
+/* High contrast text for safety */
+.driver-text-critical {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--driver-text-primary);
+  text-shadow: 0 1px 3px var(--driver-shadow);
+}
+
+.driver-text-emphasis {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--driver-text-primary);
+}
+
+/* Status indicators with research-based colors */
+.driver-status-available {
+  background-color: var(--driver-success);
+  color: var(--driver-bg-primary);
+  box-shadow: 0 0 10px var(--driver-success);
+}
+
+.driver-status-busy {
+  background-color: var(--driver-warning);
+  color: var(--driver-bg-primary);
+  box-shadow: 0 0 10px var(--driver-warning);
+}
+
+.driver-status-offline {
+  background-color: var(--driver-danger);
+  color: var(--driver-text-primary);
+  box-shadow: 0 0 10px var(--driver-danger);
+}
+
+/* Anti-glare optimizations */
+.driver-anti-glare {
+  background: linear-gradient(135deg, var(--driver-bg-primary) 0%, var(--driver-bg-secondary) 100%);
+  border: 1px solid var(--driver-border);
+}
+
+/* Voice command indicator */
+.driver-voice-active {
+  border: 2px solid var(--driver-info);
+  box-shadow: 0 0 20px var(--driver-glow);
+  animation: pulse-blue 2s infinite;
+}
+
+@keyframes pulse-blue {
+  0%, 100% { box-shadow: 0 0 20px var(--driver-glow); }
+  50% { box-shadow: 0 0 30px var(--driver-glow); }
+}
+
+/* Emergency alert styling */
+.driver-emergency {
+  background-color: var(--driver-danger);
+  color: var(--driver-text-primary);
+  border: 3px solid #ffffff;
+  animation: flash-emergency 1s infinite;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+@keyframes flash-emergency {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Vibration-resistant text */
+.driver-vibration-safe {
+  font-weight: 600;
+  text-shadow: 1px 1px 2px var(--driver-shadow);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Distance-readable interface elements */
+.driver-dashboard-metric {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--driver-text-primary);
+  text-align: center;
+  padding: 16px;
+  background: var(--driver-bg-secondary);
+  border-radius: 12px;
+  border: 2px solid var(--driver-border);
+  box-shadow: inset 0 2px 8px var(--driver-shadow);
+}
+
+/* Accessibility enhancements */
+.driver-focus-visible:focus-visible {
+  outline: 3px solid var(--driver-info);
+  outline-offset: 2px;
+  box-shadow: 0 0 15px var(--driver-glow);
+}
+
+/* Reduced motion for motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .driver-theme * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);
