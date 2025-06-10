@@ -14,6 +14,10 @@ import { voiceAssistantService } from "./voice-assistant";
 import { sustainabilityService } from "./sustainability-tracking";
 import { multiModalService } from "./multi-modal-transport";
 import { securitySuite } from "./security-suite";
+import { predictiveAnalytics } from "./predictive-analytics";
+import { fleetOptimizer } from "./advanced-fleet-optimization";
+import { collaborationManager } from "./real-time-collaboration";
+import { customerPortal } from "./customer-portal-api";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
