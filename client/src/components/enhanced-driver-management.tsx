@@ -131,8 +131,10 @@ export function EnhancedDriverManagement() {
   };
 
   const handleCreateDriver = (formData: FormData) => {
+    const name = formData.get("name") as string;
     const driverData = {
-      name: formData.get("name"),
+      name,
+      initials: name.split(' ').map(n => n[0]).join('').toUpperCase(),
       email: formData.get("email"),
       phoneNumber: formData.get("phoneNumber"),
       currentLocation: formData.get("currentLocation"),

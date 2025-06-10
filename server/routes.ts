@@ -312,11 +312,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/drivers", async (req, res) => {
     try {
+      console.log("Creating driver with data:", req.body);
       const validatedData = insertDriverSchema.parse(req.body);
+      console.log("Validated data:", validatedData);
       const driver = await storage.createDriver(validatedData);
+      console.log("Created driver:", driver);
       res.json(driver);
     } catch (error) {
-      res.status(400).json({ error: "Invalid driver data" });
+      console.error("Driver creation error:", error);
+      if (error instanceof Error) {
+        res.status(400).json({ 
+          error: "Invalid driver data", 
+          details: error.message,
+          received: req.body 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to create driver" });
+      }
     }
   });
 
