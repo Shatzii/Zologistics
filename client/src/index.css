@@ -4,13 +4,13 @@
 
 /* Driver-Optimized Theme Variables */
 :root {
-  /* Research-based color palette for truck drivers */
+  /* Bluish neon color palette for truck drivers */
   --driver-bg-primary: #0a0a0a;
   --driver-bg-secondary: #1a1a1a;
   --driver-bg-tertiary: #242424;
-  --driver-text-primary: #f0f0f0;
-  --driver-text-secondary: #b0b0b0;
-  --driver-text-muted: #808080;
+  --driver-text-primary: #00d4ff;
+  --driver-text-secondary: #4db8e8;
+  --driver-text-muted: #6ba3d1;
   
   /* High-visibility status colors */
   --driver-success: #00ff88;
@@ -64,18 +64,25 @@
   box-shadow: 0 4px 16px var(--driver-shadow);
 }
 
-/* High contrast text for safety */
+/* High contrast text with neon glow effects */
 .driver-text-critical {
   font-size: 22px;
   font-weight: 700;
   color: var(--driver-text-primary);
-  text-shadow: 0 1px 3px var(--driver-shadow);
+  text-shadow: 
+    0 0 5px #00d4ff,
+    0 0 10px #00d4ff,
+    0 0 15px #00d4ff,
+    0 1px 3px var(--driver-shadow);
 }
 
 .driver-text-emphasis {
   font-size: 20px;
   font-weight: 600;
   color: var(--driver-text-primary);
+  text-shadow: 
+    0 0 3px #00d4ff,
+    0 0 6px #00d4ff;
 }
 
 /* Status indicators with research-based colors */
@@ -95,6 +102,14 @@
   background-color: var(--driver-danger);
   color: var(--driver-text-primary);
   box-shadow: 0 0 10px var(--driver-danger);
+}
+
+/* Secondary text with subtle neon glow */
+.driver-text-secondary {
+  color: var(--driver-text-secondary);
+  text-shadow: 
+    0 0 2px #4db8e8,
+    0 0 4px #4db8e8;
 }
 
 /* Anti-glare optimizations */
