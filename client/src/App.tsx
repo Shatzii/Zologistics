@@ -75,6 +75,7 @@ function Router() {
         <Route path="/" component={Dashboard} />
         <Route path="/loads" component={LoadsPage} />
         <Route path="/drivers" component={DriversPage} />
+        <Route path="/enhanced-drivers" component={EnhancedDriversPage} />
         <Route path="/negotiations" component={NegotiationsPage} />
         <Route path="/analytics" component={AnalyticsPage} />
         <Route path="/reports" component={ReportsPage} />

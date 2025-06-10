@@ -39,6 +39,12 @@ const navigation = [
     badge: null
   },
   {
+    name: "Enhanced Drivers",
+    href: "/enhanced-drivers",
+    icon: Users,
+    badge: "New"
+  },
+  {
     name: "Negotiations",
     href: "/negotiations",
     icon: MessageSquare,
