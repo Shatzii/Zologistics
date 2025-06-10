@@ -318,25 +318,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/drivers", async (req, res) => {
+  app.get("/api/drivers/:id", async (req, res) => {
     try {
-      console.log("Creating driver with data:", req.body);
-      const validatedData = insertDriverSchema.parse(req.body);
-      console.log("Validated data:", validatedData);
-      const driver = await storage.createDriver(validatedData);
-      console.log("Created driver:", driver);
+      const { id } = req.params;
+      const driver = await storage.getDriver(parseInt(id));
+      if (!driver) {
+        return res.status(404).json({ error: "Driver not found" });
+      }
       res.json(driver);
     } catch (error) {
-      console.error("Driver creation error:", error);
-      if (error instanceof Error) {
-        res.status(400).json({ 
-          error: "Invalid driver data", 
-          details: error.message,
-          received: req.body 
-        });
-      } else {
-        res.status(500).json({ error: "Failed to create driver" });
+      res.status(500).json({ error: "Failed to fetch driver" });
+    }
+  });
+
+  app.post("/api/drivers", async (req, res) => {
+    try {
+      const driverData = req.body;
+      const driver = await storage.createDriver(driverData);
+      res.status(201).json(driver);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create driver" });
+    }
+  });
+
+  app.put("/api/drivers/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const driverData = req.body;
+      const driver = await storage.updateDriver(parseInt(id), driverData);
+      if (!driver) {
+        return res.status(404).json({ error: "Driver not found" });
       }
+      res.json(driver);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update driver" });
+    }
+  });
+
+  app.delete("/api/drivers/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const success = await storage.deleteDriver(parseInt(id));
+      if (!success) {
+        return res.status(404).json({ error: "Driver not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete driver" });
     }
   });
 

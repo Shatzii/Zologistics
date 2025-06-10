@@ -19,6 +19,8 @@ export interface IStorage {
   getDriver(id: number): Promise<Driver | undefined>;
   getDriverByUserId(userId: number): Promise<Driver | undefined>;
   createDriver(driver: InsertDriver): Promise<Driver>;
+  updateDriver(id: number, driver: Partial<InsertDriver>): Promise<Driver | undefined>;
+  deleteDriver(id: number): Promise<boolean>;
   updateDriverStatus(id: number, status: string, location?: string): Promise<Driver | undefined>;
   updateDriverLocation(id: number, coordinates: { lat: number; lng: number }): Promise<Driver | undefined>;
   updateDriverDeviceToken(id: number, deviceToken: string): Promise<Driver | undefined>;

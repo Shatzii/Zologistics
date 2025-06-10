@@ -14,7 +14,9 @@ import {
   Settings,
   ChevronLeft,
   Bell,
-  Search
+  Search,
+  Heart,
+  Shield
 } from "lucide-react";
 
 const navigation = [
@@ -59,6 +61,18 @@ const navigation = [
     href: "/settings",
     icon: Settings,
     badge: null
+  },
+  {
+    name: "Driver Wellness",
+    href: "/wellness",
+    icon: Heart,
+    badge: "NEW"
+  },
+  {
+    name: "Driver Solutions",
+    href: "/driver-solutions",
+    icon: Shield,
+    badge: "5"
   }
 ];
 

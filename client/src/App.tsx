@@ -17,6 +17,8 @@ import AnalyticsPage from "@/pages/analytics";
 import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
+import { DriverWellnessDashboard } from "@/components/driver-wellness-dashboard";
+import { DriverPainPointSolutions } from "@/components/driver-pain-point-solutions";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -76,6 +78,8 @@ function Router() {
         <Route path="/analytics" component={AnalyticsPage} />
         <Route path="/reports" component={ReportsPage} />
         <Route path="/settings" component={SettingsPage} />
+        <Route path="/wellness" component={DriverWellnessDashboard} />
+        <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
