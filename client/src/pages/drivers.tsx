@@ -202,10 +202,10 @@ export default function DriversPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {driver.phone && (
+                  {driver.phoneNumber && (
                     <div className="flex items-center gap-2 text-sm">
                       <Phone className="w-4 h-4 text-muted-foreground" />
-                      <span>{driver.phone}</span>
+                      <span>{driver.phoneNumber}</span>
                     </div>
                   )}
                   {driver.email && (
@@ -221,15 +221,13 @@ export default function DriversPage() {
                     </div>
                   )}
                   <div className="flex justify-between items-center pt-2 border-t">
-                    <span className="text-sm text-muted-foreground">Experience:</span>
-                    <span className="text-sm font-medium">{driver.experience || 0} years</span>
+                    <span className="text-sm text-muted-foreground">License:</span>
+                    <span className="text-sm font-medium">{driver.licenseNumber || 'N/A'}</span>
                   </div>
-                  {driver.truckType && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Truck Type:</span>
-                      <Badge variant="outline">{driver.truckType}</Badge>
-                    </div>
-                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Status:</span>
+                    <Badge variant="outline">{driver.status}</Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>

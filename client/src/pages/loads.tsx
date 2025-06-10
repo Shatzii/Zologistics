@@ -152,7 +152,7 @@ export default function LoadsPage() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Avg Rate/Mile</p>
                 <p className="text-2xl font-bold">
-                  ${loads?.reduce((acc, load) => acc + parseFloat(load.ratePerMile), 0) / (loads?.length || 1) || 0}
+                  ${loads && loads.length > 0 ? (loads.reduce((acc, load) => acc + parseFloat(load.ratePerMile), 0) / loads.length).toFixed(2) : '0.00'}
                 </p>
               </div>
             </div>

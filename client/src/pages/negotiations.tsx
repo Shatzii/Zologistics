@@ -217,7 +217,7 @@ export default function NegotiationsPage() {
                     )}
 
                     <div className="flex justify-between items-center text-xs text-muted-foreground">
-                      <span>Created: {new Date(negotiation.createdAt).toLocaleDateString()}</span>
+                      <span>Created: {negotiation.createdAt ? new Date(negotiation.createdAt).toLocaleDateString() : 'N/A'}</span>
                       {negotiation.autoNegotiated && (
                         <Badge variant="secondary" className="text-xs">Auto</Badge>
                       )}
