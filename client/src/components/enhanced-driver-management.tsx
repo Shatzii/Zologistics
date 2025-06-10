@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { 
   Plus, Search, Filter, MapPin, Clock, Phone, Mail,
-  User, Truck, Activity, AlertCircle, CheckCircle,
+  User, Users, Truck, Activity, AlertCircle, CheckCircle,
   Eye, Edit, MoreHorizontal, Navigation, Fuel, Thermometer
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -100,7 +100,7 @@ export function EnhancedDriverManagement() {
   }) : [];
 
   const getStatusBadge = (status: string) => {
-    const variants = {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
       available: "default",
       busy: "secondary", 
       driving: "default",
@@ -113,7 +113,7 @@ export function EnhancedDriverManagement() {
       offline: "text-gray-500"
     };
     return (
-      <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
+      <Badge variant={variants[status] || "secondary"}>
         <div className={`w-2 h-2 rounded-full mr-2 ${colors[status as keyof typeof colors] || "bg-gray-500"} bg-current`} />
         {status}
       </Badge>

@@ -461,19 +461,38 @@ export function ComprehensiveDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4">
+            <Button 
+              variant="outline" 
+              className="flex flex-col items-center gap-2 h-auto py-4"
+              onClick={() => window.location.href = '/loads'}
+            >
               <Package className="h-6 w-6" />
               <span>New Load</span>
             </Button>
-            <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4">
+            <Button 
+              variant="outline" 
+              className="flex flex-col items-center gap-2 h-auto py-4"
+              onClick={() => window.location.href = '/drivers'}
+            >
               <Users className="h-6 w-6" />
               <span>Add Driver</span>
             </Button>
-            <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4">
+            <Button 
+              variant="outline" 
+              className="flex flex-col items-center gap-2 h-auto py-4"
+              onClick={() => window.location.href = '/analytics'}
+            >
               <Navigation className="h-6 w-6" />
               <span>Route Plan</span>
             </Button>
-            <Button variant="outline" className="flex flex-col items-center gap-2 h-auto py-4">
+            <Button 
+              variant="outline" 
+              className="flex flex-col items-center gap-2 h-auto py-4"
+              onClick={() => {
+                // Demo document scanning functionality
+                alert('Document scanning feature activated! This would open camera/file picker in a production environment.');
+              }}
+            >
               <Camera className="h-6 w-6" />
               <span>Scan Document</span>
             </Button>
