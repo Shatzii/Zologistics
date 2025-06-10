@@ -172,12 +172,12 @@ export function DriverPainPointSolutions() {
     { icon: <CameraIcon className="w-6 h-6" />, name: 'Photography', count: 25, bonus: '$300 avg' }
   ];
 
-  // Use fallback data if API responses aren't ready yet
-  const safeAutomationMetrics = automationMetrics || {
-    documentsSaved: 847,
-    timeSavedHours: 156,
-    accuracyRate: 99.2,
-    autoApprovalRate: 94.7
+  // Use fallback data if API responses aren't ready yet, with null checks for API data
+  const safeAutomationMetrics = {
+    documentsSaved: automationMetrics?.documentsSaved ?? 847,
+    timeSavedHours: automationMetrics?.timeSavedHours ?? 156,
+    accuracyRate: automationMetrics?.accuracyRate ?? 99.2,
+    autoApprovalRate: automationMetrics?.autoApprovalRate ?? 94.7
   };
 
   const safeHosStatus = hosStatus || {
