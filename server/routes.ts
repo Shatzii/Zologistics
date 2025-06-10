@@ -5,6 +5,15 @@ import { insertDriverSchema, insertLoadSchema, insertNegotiationSchema, insertAl
 import { registerMobileRoutes } from "./mobile-api";
 import { aiRateOptimizer } from "./ai-rate-optimizer";
 import { createLoadBoardScraper } from "./loadboard-scraper";
+import { iotService } from "./iot-integration";
+import { blockchainService } from "./blockchain-contracts";
+import { computerVisionService } from "./computer-vision";
+import { autonomousVehicleService } from "./autonomous-vehicle-integration";
+import { weatherIntelligenceService } from "./weather-intelligence";
+import { voiceAssistantService } from "./voice-assistant";
+import { sustainabilityService } from "./sustainability-tracking";
+import { multiModalService } from "./multi-modal-transport";
+import { securitySuite } from "./security-suite";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -575,6 +584,345 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(status);
     } catch (error) {
       res.status(500).json({ error: "Failed to get system status" });
+    }
+  });
+
+  // ============ CUTTING-EDGE FEATURES API ENDPOINTS ============
+  
+  // 1. IoT Integration - Real-time vehicle data
+  app.get("/api/iot/devices", async (req, res) => {
+    try {
+      const devices = iotService.getAllDevices();
+      res.json(devices);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get IoT devices" });
+    }
+  });
+
+  app.get("/api/iot/device/:deviceId", async (req, res) => {
+    try {
+      const device = iotService.getDeviceData(req.params.deviceId);
+      if (!device) {
+        return res.status(404).json({ error: "Device not found" });
+      }
+      res.json(device);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get device data" });
+    }
+  });
+
+  // 2. Blockchain Smart Contracts
+  app.post("/api/blockchain/contract", async (req, res) => {
+    try {
+      const { loadId, carrierId, shipperId, terms } = req.body;
+      const contract = await blockchainService.createSmartContract(loadId, carrierId, shipperId, terms);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create smart contract" });
+    }
+  });
+
+  app.get("/api/blockchain/contracts", async (req, res) => {
+    try {
+      const contracts = blockchainService.getAllContracts();
+      res.json(contracts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get contracts" });
+    }
+  });
+
+  app.post("/api/blockchain/contract/:contractId/sign", async (req, res) => {
+    try {
+      const { party, signature } = req.body;
+      const contract = await blockchainService.signContract(req.params.contractId, party, signature);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to sign contract" });
+    }
+  });
+
+  // 3. Computer Vision - Document analysis
+  app.post("/api/vision/analyze-document", async (req, res) => {
+    try {
+      const { imageUrl, expectedType } = req.body;
+      const analysis = await computerVisionService.analyzeDocument(imageUrl, expectedType);
+      res.json(analysis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze document" });
+    }
+  });
+
+  app.post("/api/vision/inspect-load", async (req, res) => {
+    try {
+      const { loadId, driverId, inspectionType, imageUrls } = req.body;
+      const inspection = await computerVisionService.performLoadInspection(loadId, driverId, inspectionType, imageUrls);
+      res.json(inspection);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to perform load inspection" });
+    }
+  });
+
+  app.get("/api/vision/inspections/:loadId", async (req, res) => {
+    try {
+      const inspections = await computerVisionService.getInspectionsByLoad(parseInt(req.params.loadId));
+      res.json(inspections);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get inspections" });
+    }
+  });
+
+  // 4. Autonomous Vehicle Integration
+  app.get("/api/autonomous/vehicles", async (req, res) => {
+    try {
+      const vehicles = autonomousVehicleService.getAllVehicles();
+      res.json(vehicles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get autonomous vehicles" });
+    }
+  });
+
+  app.post("/api/autonomous/optimize-route", async (req, res) => {
+    try {
+      const { loadId, vehicleId } = req.body;
+      const route = await autonomousVehicleService.optimizeRouteForAutonomy(loadId, vehicleId);
+      res.json(route);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to optimize route for autonomy" });
+    }
+  });
+
+  app.get("/api/autonomous/handover-events/:vehicleId?", async (req, res) => {
+    try {
+      const events = autonomousVehicleService.getHandoverEvents(req.params.vehicleId);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get handover events" });
+    }
+  });
+
+  // 5. Weather Intelligence
+  app.get("/api/weather/:lat/:lng", async (req, res) => {
+    try {
+      const weather = await weatherIntelligenceService.getWeatherData(
+        parseFloat(req.params.lat), 
+        parseFloat(req.params.lng)
+      );
+      res.json(weather);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get weather data" });
+    }
+  });
+
+  app.post("/api/weather/analyze-route", async (req, res) => {
+    try {
+      const { loadId, waypoints } = req.body;
+      const analysis = await weatherIntelligenceService.analyzeRouteWeather(loadId, waypoints);
+      res.json(analysis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze route weather" });
+    }
+  });
+
+  app.get("/api/weather/impact/:loadId", async (req, res) => {
+    try {
+      const impact = await weatherIntelligenceService.assessWeatherImpact(parseInt(req.params.loadId));
+      res.json(impact);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to assess weather impact" });
+    }
+  });
+
+  // 6. Voice Assistant
+  app.post("/api/voice/command", async (req, res) => {
+    try {
+      const { userId, transcript } = req.body;
+      const command = await voiceAssistantService.processVoiceCommand(userId, transcript);
+      res.json(command);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process voice command" });
+    }
+  });
+
+  app.get("/api/voice/commands/:userId", async (req, res) => {
+    try {
+      const commands = voiceAssistantService.getUserCommands(parseInt(req.params.userId));
+      res.json(commands);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get user commands" });
+    }
+  });
+
+  app.get("/api/voice/supported-commands", async (req, res) => {
+    try {
+      const commands = voiceAssistantService.getSupportedCommands();
+      res.json(commands);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get supported commands" });
+    }
+  });
+
+  // 7. Sustainability Tracking
+  app.post("/api/sustainability/carbon-footprint", async (req, res) => {
+    try {
+      const { loadId, vehicleData } = req.body;
+      const footprint = await sustainabilityService.calculateCarbonFootprint(loadId, vehicleData);
+      res.json(footprint);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to calculate carbon footprint" });
+    }
+  });
+
+  app.post("/api/sustainability/eco-route", async (req, res) => {
+    try {
+      const { loadId } = req.body;
+      const ecoRoute = await sustainabilityService.generateEcoRoute(loadId);
+      res.json(ecoRoute);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate eco route" });
+    }
+  });
+
+  app.get("/api/sustainability/report/:companyId/:period", async (req, res) => {
+    try {
+      const report = await sustainabilityService.generateSustainabilityReport(
+        parseInt(req.params.companyId), 
+        req.params.period as any
+      );
+      res.json(report);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate sustainability report" });
+    }
+  });
+
+  app.get("/api/sustainability/recommendations/:companyId", async (req, res) => {
+    try {
+      const recommendations = await sustainabilityService.generateSustainabilityRecommendations(
+        parseInt(req.params.companyId)
+      );
+      res.json(recommendations);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate recommendations" });
+    }
+  });
+
+  // 8. Multi-Modal Transport
+  app.post("/api/multimodal/options", async (req, res) => {
+    try {
+      const { loadId } = req.body;
+      const options = await multiModalService.generateMultiModalOptions(loadId);
+      res.json(options);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate multi-modal options" });
+    }
+  });
+
+  app.get("/api/multimodal/transport-modes", async (req, res) => {
+    try {
+      const modes = multiModalService.getTransportModes();
+      res.json(modes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get transport modes" });
+    }
+  });
+
+  app.get("/api/multimodal/transfer-hubs", async (req, res) => {
+    try {
+      const hubs = multiModalService.getTransferHubs();
+      res.json(hubs);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get transfer hubs" });
+    }
+  });
+
+  app.post("/api/multimodal/optimize", async (req, res) => {
+    try {
+      const { routeId, priorities } = req.body;
+      const optimizedRoute = await multiModalService.optimizeRoute(routeId, priorities);
+      res.json(optimizedRoute);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to optimize multi-modal route" });
+    }
+  });
+
+  // 9. Security Suite
+  app.get("/api/security/events", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 100;
+      const events = securitySuite.getSecurityEvents(limit);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get security events" });
+    }
+  });
+
+  app.get("/api/security/threats", async (req, res) => {
+    try {
+      const threats = securitySuite.getThreatDetections();
+      res.json(threats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get threat detections" });
+    }
+  });
+
+  app.get("/api/security/compliance", async (req, res) => {
+    try {
+      const compliance = securitySuite.getComplianceChecks();
+      res.json(compliance);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get compliance status" });
+    }
+  });
+
+  app.get("/api/security/report", async (req, res) => {
+    try {
+      const report = await securitySuite.generateSecurityReport();
+      res.json(report);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate security report" });
+    }
+  });
+
+  app.post("/api/security/encrypt", async (req, res) => {
+    try {
+      const { data, dataType } = req.body;
+      const encrypted = securitySuite.encryptSensitiveData(data, dataType);
+      res.json({ encrypted });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to encrypt data" });
+    }
+  });
+
+  // 10. Advanced AI Rate Optimization (Enhanced)
+  app.get("/api/ai/rate-trends", async (req, res) => {
+    try {
+      const { origin, destination, days } = req.query;
+      const trends = await aiRateOptimizer.analyzeRateTrends(
+        { origin: origin as string, destination: destination as string }, 
+        parseInt(days as string) || 30
+      );
+      res.json(trends);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze rate trends" });
+    }
+  });
+
+  app.post("/api/ai/optimize-multiple", async (req, res) => {
+    try {
+      const { loadIds, dispatcherId } = req.body;
+      const results = await aiRateOptimizer.optimizeMultipleLoads(loadIds, dispatcherId);
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to optimize multiple loads" });
+    }
+  });
+
+  app.post("/api/ai/auto-negotiate", async (req, res) => {
+    try {
+      const { negotiationId } = req.body;
+      const result = await aiRateOptimizer.performAutoNegotiation(negotiationId);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to perform auto-negotiation" });
     }
   });
 
