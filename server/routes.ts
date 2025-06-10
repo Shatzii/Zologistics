@@ -19,6 +19,9 @@ import { fleetOptimizer } from "./advanced-fleet-optimization";
 import { collaborationManager } from "./real-time-collaboration";
 import { customerPortal } from "./customer-portal-api";
 import { driverBenefitsSystem } from "./driver-benefits-system";
+import { personalizedLoadSystem } from "./personalized-load-system";
+import { paperworkAutomation } from "./paperwork-automation";
+import { driverWellnessSystem } from "./driver-wellness-system";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -1186,6 +1189,208 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(metrics);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch benefits metrics" });
+    }
+  });
+
+  // Personalized Load System
+  app.get("/api/personalized-loads/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const personalizedData = await personalizedLoadSystem.getPersonalizedLoads(parseInt(driverId));
+      res.json(personalizedData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch personalized loads" });
+    }
+  });
+
+  app.get("/api/adventure-loads", async (req, res) => {
+    try {
+      const adventureLoads = await personalizedLoadSystem.getAvailableAdventureLoads();
+      res.json(adventureLoads);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch adventure loads" });
+    }
+  });
+
+  app.get("/api/adventure-loads/:adventureId", async (req, res) => {
+    try {
+      const { adventureId } = req.params;
+      const adventureLoad = await personalizedLoadSystem.getAdventureLoad(adventureId);
+      res.json(adventureLoad);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch adventure load details" });
+    }
+  });
+
+  app.post("/api/driver/preferences/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const preferences = req.body;
+      const success = await personalizedLoadSystem.updateDriverPreferences(parseInt(driverId), preferences);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update driver preferences" });
+    }
+  });
+
+  // Paperwork Automation System
+  app.get("/api/paperwork/documents/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const documents = await paperworkAutomation.getDriverDocuments(parseInt(driverId));
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch driver documents" });
+    }
+  });
+
+  app.get("/api/paperwork/expenses/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const expenses = await paperworkAutomation.getDriverExpenses(parseInt(driverId));
+      res.json(expenses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch driver expenses" });
+    }
+  });
+
+  app.get("/api/paperwork/hos/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const hosStatus = await paperworkAutomation.getHOSStatus(parseInt(driverId));
+      res.json(hosStatus);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch HOS status" });
+    }
+  });
+
+  app.post("/api/paperwork/voice-command", async (req, res) => {
+    try {
+      const { driverId, audioData } = req.body;
+      const command = await paperworkAutomation.processVoiceToText(driverId, audioData);
+      res.json(command);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process voice command" });
+    }
+  });
+
+  app.post("/api/paperwork/receipt-photo", async (req, res) => {
+    try {
+      const { driverId, imageData } = req.body;
+      const expense = await paperworkAutomation.processReceiptPhoto(driverId, imageData);
+      res.json(expense);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process receipt photo" });
+    }
+  });
+
+  app.get("/api/paperwork/tax-report/:driverId/:year", async (req, res) => {
+    try {
+      const { driverId, year } = req.params;
+      const taxReport = await paperworkAutomation.generateTaxReport(parseInt(driverId), parseInt(year));
+      res.json(taxReport);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate tax report" });
+    }
+  });
+
+  app.get("/api/paperwork/automation-metrics", async (req, res) => {
+    try {
+      const metrics = paperworkAutomation.getAutomationMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch automation metrics" });
+    }
+  });
+
+  // Driver Wellness & Mental Health System
+  app.get("/api/wellness/profile/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const profile = await driverWellnessSystem.getWellnessProfile(parseInt(driverId));
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness profile" });
+    }
+  });
+
+  app.get("/api/wellness/interventions/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const interventions = await driverWellnessSystem.getActiveInterventions(parseInt(driverId));
+      res.json(interventions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness interventions" });
+    }
+  });
+
+  app.get("/api/wellness/resources", async (req, res) => {
+    try {
+      const { category } = req.query;
+      const resources = await driverWellnessSystem.getMentalHealthResources(category as string);
+      res.json(resources);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch mental health resources" });
+    }
+  });
+
+  app.get("/api/wellness/goals/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const goals = await driverWellnessSystem.getWellnessGoals(parseInt(driverId));
+      res.json(goals);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness goals" });
+    }
+  });
+
+  app.post("/api/wellness/complete-intervention", async (req, res) => {
+    try {
+      const { interventionId, effectiveness, feedback } = req.body;
+      const success = await driverWellnessSystem.completeIntervention(interventionId, effectiveness, feedback);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to complete intervention" });
+    }
+  });
+
+  app.get("/api/wellness/stress-alerts/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const alerts = await driverWellnessSystem.getStressAlerts(parseInt(driverId));
+      res.json(alerts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch stress alerts" });
+    }
+  });
+
+  app.post("/api/wellness/update-metrics/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const metrics = req.body;
+      const success = await driverWellnessSystem.updateWellnessMetrics(parseInt(driverId), metrics);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update wellness metrics" });
+    }
+  });
+
+  app.post("/api/wellness/create-intervention", async (req, res) => {
+    try {
+      const { driverId, interventionData } = req.body;
+      const intervention = await driverWellnessSystem.createCustomIntervention(driverId, interventionData);
+      res.json(intervention);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create custom intervention" });
+    }
+  });
+
+  app.get("/api/wellness/system-metrics", async (req, res) => {
+    try {
+      const metrics = driverWellnessSystem.getWellnessSystemMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness system metrics" });
     }
   });
 
