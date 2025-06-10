@@ -13,6 +13,8 @@ import Dashboard from "@/pages/dashboard";
 import LoadsPage from "@/pages/loads";
 import DriversPage from "@/pages/drivers";
 import NegotiationsPage from "@/pages/negotiations";
+import AnalyticsPage from "@/pages/analytics";
+import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -70,6 +72,8 @@ function Router() {
         <Route path="/loads" component={LoadsPage} />
         <Route path="/drivers" component={DriversPage} />
         <Route path="/negotiations" component={NegotiationsPage} />
+        <Route path="/analytics" component={AnalyticsPage} />
+        <Route path="/settings" component={SettingsPage} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
