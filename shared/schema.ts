@@ -244,3 +244,173 @@ export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 
 export type Alert = typeof alerts.$inferSelect;
 export type InsertAlert = z.infer<typeof insertAlertSchema>;
+
+// Wellness and Mental Health Support Tables
+
+// Driver wellness profiles with comprehensive mental health tracking
+export const wellnessProfiles = pgTable("wellness_profiles", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  mentalHealthScore: integer("mental_health_score").default(0), // 0-100 scale
+  stressLevel: integer("stress_level").default(0), // 0-10 scale
+  fatigueLevel: integer("fatigue_level").default(0), // 0-10 scale
+  sleepQuality: integer("sleep_quality").default(0), // 0-10 scale
+  personalGoals: jsonb("personal_goals"), // Array of wellness goals
+  preferences: jsonb("preferences"), // Support preferences and communication style
+  riskFactors: jsonb("risk_factors"), // Mental health risk assessment
+  lastAssessment: timestamp("last_assessment"),
+  emergencyContact: jsonb("emergency_contact"), // Emergency mental health contact
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Mental health assessments and check-ins
+export const mentalHealthAssessments = pgTable("mental_health_assessments", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  assessmentType: text("assessment_type").notNull(), // 'daily_checkin', 'weekly_assessment', 'crisis_screening', 'annual_review'
+  responses: jsonb("responses").notNull(), // Assessment question responses
+  totalScore: integer("total_score"),
+  riskLevel: text("risk_level"), // 'low', 'moderate', 'high', 'critical'
+  recommendations: jsonb("recommendations"), // AI-generated wellness recommendations
+  followUpRequired: boolean("follow_up_required").default(false),
+  followUpDate: timestamp("follow_up_date"),
+  completedAt: timestamp("completed_at").defaultNow(),
+});
+
+// Wellness resources and support materials
+export const wellnessResources = pgTable("wellness_resources", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  category: text("category").notNull(), // 'stress_management', 'sleep_hygiene', 'mental_health', 'physical_wellness', 'family_support'
+  type: text("type").notNull(), // 'article', 'video', 'audio', 'exercise', 'meditation', 'workshop'
+  content: jsonb("content").notNull(), // Resource content and metadata
+  targetAudience: jsonb("target_audience"), // Driver demographics and risk factors
+  effectiveness: decimal("effectiveness", { precision: 3, scale: 2 }), // 0.00-10.00 effectiveness rating
+  duration: integer("duration"), // Duration in minutes
+  tags: jsonb("tags"), // Searchable tags
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Driver engagement with wellness resources
+export const wellnessEngagement = pgTable("wellness_engagement", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  resourceId: integer("resource_id").notNull(),
+  startedAt: timestamp("started_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+  progress: integer("progress").default(0), // 0-100 percentage
+  rating: integer("rating"), // 1-5 star rating
+  feedback: text("feedback"),
+  helpful: boolean("helpful"),
+  timeSpent: integer("time_spent"), // Minutes spent on resource
+});
+
+// Crisis support and intervention tracking
+export const crisisSupport = pgTable("crisis_support", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  triggerEvent: text("trigger_event"), // What triggered the crisis support
+  riskLevel: text("risk_level").notNull(), // 'moderate', 'high', 'critical'
+  interventionType: text("intervention_type"), // 'automated_checkin', 'counselor_contact', 'emergency_services'
+  status: text("status").default('active'), // 'active', 'resolved', 'escalated'
+  supportActions: jsonb("support_actions"), // Actions taken during crisis
+  outcome: text("outcome"),
+  followUpPlan: jsonb("follow_up_plan"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Personalized wellness plans and goals
+export const wellnessPlans = pgTable("wellness_plans", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  planName: text("plan_name").notNull(),
+  goals: jsonb("goals").notNull(), // Specific wellness goals and milestones
+  activities: jsonb("activities"), // Recommended activities and exercises
+  schedule: jsonb("schedule"), // When to perform activities
+  duration: integer("duration"), // Plan duration in days
+  progress: jsonb("progress"), // Goal completion tracking
+  adaptations: jsonb("adaptations"), // AI-driven plan adaptations based on progress
+  isActive: boolean("is_active").default(true),
+  startDate: timestamp("start_date").defaultNow(),
+  endDate: timestamp("end_date"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
+// Wellness analytics and insights
+export const wellnessAnalytics = pgTable("wellness_analytics", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").notNull(),
+  dateRange: jsonb("date_range"), // Start and end dates for analytics period
+  metrics: jsonb("metrics"), // Comprehensive wellness metrics
+  trends: jsonb("trends"), // Trend analysis and patterns
+  insights: jsonb("insights"), // AI-generated insights and recommendations
+  alerts: jsonb("alerts"), // Wellness alerts and warnings
+  benchmarks: jsonb("benchmarks"), // Industry and personal benchmarks
+  generatedAt: timestamp("generated_at").defaultNow(),
+});
+
+// Insert schemas for wellness tables
+export const insertWellnessProfileSchema = createInsertSchema(wellnessProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertMentalHealthAssessmentSchema = createInsertSchema(mentalHealthAssessments).omit({
+  id: true,
+  completedAt: true,
+});
+
+export const insertWellnessResourceSchema = createInsertSchema(wellnessResources).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertWellnessEngagementSchema = createInsertSchema(wellnessEngagement).omit({
+  id: true,
+  startedAt: true,
+});
+
+export const insertCrisisSupportSchema = createInsertSchema(crisisSupport).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertWellnessPlanSchema = createInsertSchema(wellnessPlans).omit({
+  id: true,
+  startDate: true,
+  lastUpdated: true,
+});
+
+export const insertWellnessAnalyticsSchema = createInsertSchema(wellnessAnalytics).omit({
+  id: true,
+  generatedAt: true,
+});
+
+// Wellness Types
+export type WellnessProfile = typeof wellnessProfiles.$inferSelect;
+export type InsertWellnessProfile = z.infer<typeof insertWellnessProfileSchema>;
+
+export type MentalHealthAssessment = typeof mentalHealthAssessments.$inferSelect;
+export type InsertMentalHealthAssessment = z.infer<typeof insertMentalHealthAssessmentSchema>;
+
+export type WellnessResource = typeof wellnessResources.$inferSelect;
+export type InsertWellnessResource = z.infer<typeof insertWellnessResourceSchema>;
+
+export type WellnessEngagement = typeof wellnessEngagement.$inferSelect;
+export type InsertWellnessEngagement = z.infer<typeof insertWellnessEngagementSchema>;
+
+export type CrisisSupport = typeof crisisSupport.$inferSelect;
+export type InsertCrisisSupport = z.infer<typeof insertCrisisSupportSchema>;
+
+export type WellnessPlan = typeof wellnessPlans.$inferSelect;
+export type InsertWellnessPlan = z.infer<typeof insertWellnessPlanSchema>;
+
+export type WellnessAnalytics = typeof wellnessAnalytics.$inferSelect;
+export type InsertWellnessAnalytics = z.infer<typeof insertWellnessAnalyticsSchema>;

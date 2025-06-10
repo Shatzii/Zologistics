@@ -1,10 +1,17 @@
 import { 
   users, drivers, loads, negotiations, alerts, companies, scrapingSessions, analytics, notifications,
+  wellnessProfiles, mentalHealthAssessments, wellnessResources, wellnessEngagement, 
+  crisisSupport, wellnessPlans, wellnessAnalytics,
   type User, type Driver, type Load, type Negotiation, type Alert, type Company, 
   type ScrapingSession, type Analytics, type Notification,
+  type WellnessProfile, type MentalHealthAssessment, type WellnessResource,
+  type WellnessEngagement, type CrisisSupport, type WellnessPlan, type WellnessAnalytics,
   type InsertUser, type InsertDriver, type InsertLoad, type InsertNegotiation, 
   type InsertAlert, type InsertCompany, type InsertScrapingSession, 
-  type InsertAnalytics, type InsertNotification
+  type InsertAnalytics, type InsertNotification, type InsertWellnessProfile,
+  type InsertMentalHealthAssessment, type InsertWellnessResource,
+  type InsertWellnessEngagement, type InsertCrisisSupport, type InsertWellnessPlan,
+  type InsertWellnessAnalytics
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, asc } from "drizzle-orm";
@@ -86,6 +93,32 @@ export interface IStorage {
     completedLoads: number;
     avgNegotiationSuccess: number;
   }>;
+
+  // Wellness and Mental Health Support
+  getWellnessProfile(driverId: number): Promise<WellnessProfile | undefined>;
+  createWellnessProfile(profile: InsertWellnessProfile): Promise<WellnessProfile>;
+  updateWellnessProfile(driverId: number, profile: Partial<InsertWellnessProfile>): Promise<WellnessProfile | undefined>;
+  
+  createMentalHealthAssessment(assessment: InsertMentalHealthAssessment): Promise<MentalHealthAssessment>;
+  getDriverAssessments(driverId: number): Promise<MentalHealthAssessment[]>;
+  getAssessment(id: number): Promise<MentalHealthAssessment | undefined>;
+  
+  getWellnessResources(category?: string): Promise<WellnessResource[]>;
+  createWellnessResource(resource: InsertWellnessResource): Promise<WellnessResource>;
+  
+  createWellnessEngagement(engagement: InsertWellnessEngagement): Promise<WellnessEngagement>;
+  getDriverEngagement(driverId: number): Promise<WellnessEngagement[]>;
+  
+  createCrisisSupport(crisis: InsertCrisisSupport): Promise<CrisisSupport>;
+  getDriverCrisisHistory(driverId: number): Promise<CrisisSupport[]>;
+  updateCrisisSupport(id: number, updates: Partial<InsertCrisisSupport>): Promise<CrisisSupport | undefined>;
+  
+  createWellnessPlan(plan: InsertWellnessPlan): Promise<WellnessPlan>;
+  getDriverWellnessPlans(driverId: number): Promise<WellnessPlan[]>;
+  updateWellnessPlan(id: number, plan: Partial<InsertWellnessPlan>): Promise<WellnessPlan | undefined>;
+  
+  createWellnessAnalytics(analytics: InsertWellnessAnalytics): Promise<WellnessAnalytics>;
+  getDriverWellnessAnalytics(driverId: number): Promise<WellnessAnalytics[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -514,6 +547,192 @@ export class DatabaseStorage implements IStorage {
       completedLoads: avgRateResult.length,
       avgNegotiationSuccess: 0 // Would calculate from negotiations
     };
+  }
+
+  // Wellness and Mental Health Support Implementation
+  async getWellnessProfile(driverId: number): Promise<WellnessProfile | undefined> {
+    const [profile] = await db
+      .select()
+      .from(wellnessProfiles)
+      .where(eq(wellnessProfiles.driverId, driverId));
+    return profile;
+  }
+
+  async createWellnessProfile(insertProfile: InsertWellnessProfile): Promise<WellnessProfile> {
+    const [profile] = await db
+      .insert(wellnessProfiles)
+      .values({
+        ...insertProfile,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+      .returning();
+    return profile;
+  }
+
+  async updateWellnessProfile(driverId: number, updates: Partial<InsertWellnessProfile>): Promise<WellnessProfile | undefined> {
+    const [profile] = await db
+      .update(wellnessProfiles)
+      .set({
+        ...updates,
+        updatedAt: new Date()
+      })
+      .where(eq(wellnessProfiles.driverId, driverId))
+      .returning();
+    return profile;
+  }
+
+  async createMentalHealthAssessment(insertAssessment: InsertMentalHealthAssessment): Promise<MentalHealthAssessment> {
+    const [assessment] = await db
+      .insert(mentalHealthAssessments)
+      .values({
+        ...insertAssessment,
+        completedAt: new Date()
+      })
+      .returning();
+    return assessment;
+  }
+
+  async getDriverAssessments(driverId: number): Promise<MentalHealthAssessment[]> {
+    return await db
+      .select()
+      .from(mentalHealthAssessments)
+      .where(eq(mentalHealthAssessments.driverId, driverId))
+      .orderBy(desc(mentalHealthAssessments.completedAt));
+  }
+
+  async getAssessment(id: number): Promise<MentalHealthAssessment | undefined> {
+    const [assessment] = await db
+      .select()
+      .from(mentalHealthAssessments)
+      .where(eq(mentalHealthAssessments.id, id));
+    return assessment;
+  }
+
+  async getWellnessResources(category?: string): Promise<WellnessResource[]> {
+    const query = db
+      .select()
+      .from(wellnessResources)
+      .where(eq(wellnessResources.isActive, true));
+
+    if (category) {
+      return await query.where(eq(wellnessResources.category, category));
+    }
+    
+    return await query;
+  }
+
+  async createWellnessResource(insertResource: InsertWellnessResource): Promise<WellnessResource> {
+    const [resource] = await db
+      .insert(wellnessResources)
+      .values({
+        ...insertResource,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+      .returning();
+    return resource;
+  }
+
+  async createWellnessEngagement(insertEngagement: InsertWellnessEngagement): Promise<WellnessEngagement> {
+    const [engagement] = await db
+      .insert(wellnessEngagement)
+      .values({
+        ...insertEngagement,
+        startedAt: new Date()
+      })
+      .returning();
+    return engagement;
+  }
+
+  async getDriverEngagement(driverId: number): Promise<WellnessEngagement[]> {
+    return await db
+      .select()
+      .from(wellnessEngagement)
+      .where(eq(wellnessEngagement.driverId, driverId))
+      .orderBy(desc(wellnessEngagement.startedAt));
+  }
+
+  async createCrisisSupport(insertCrisis: InsertCrisisSupport): Promise<CrisisSupport> {
+    const [crisis] = await db
+      .insert(crisisSupport)
+      .values({
+        ...insertCrisis,
+        createdAt: new Date()
+      })
+      .returning();
+    return crisis;
+  }
+
+  async getDriverCrisisHistory(driverId: number): Promise<CrisisSupport[]> {
+    return await db
+      .select()
+      .from(crisisSupport)
+      .where(eq(crisisSupport.driverId, driverId))
+      .orderBy(desc(crisisSupport.createdAt));
+  }
+
+  async updateCrisisSupport(id: number, updates: Partial<InsertCrisisSupport>): Promise<CrisisSupport | undefined> {
+    const [crisis] = await db
+      .update(crisisSupport)
+      .set(updates)
+      .where(eq(crisisSupport.id, id))
+      .returning();
+    return crisis;
+  }
+
+  async createWellnessPlan(insertPlan: InsertWellnessPlan): Promise<WellnessPlan> {
+    const [plan] = await db
+      .insert(wellnessPlans)
+      .values({
+        ...insertPlan,
+        startDate: new Date(),
+        lastUpdated: new Date()
+      })
+      .returning();
+    return plan;
+  }
+
+  async getDriverWellnessPlans(driverId: number): Promise<WellnessPlan[]> {
+    return await db
+      .select()
+      .from(wellnessPlans)
+      .where(and(
+        eq(wellnessPlans.driverId, driverId),
+        eq(wellnessPlans.isActive, true)
+      ))
+      .orderBy(desc(wellnessPlans.startDate));
+  }
+
+  async updateWellnessPlan(id: number, updates: Partial<InsertWellnessPlan>): Promise<WellnessPlan | undefined> {
+    const [plan] = await db
+      .update(wellnessPlans)
+      .set({
+        ...updates,
+        lastUpdated: new Date()
+      })
+      .where(eq(wellnessPlans.id, id))
+      .returning();
+    return plan;
+  }
+
+  async createWellnessAnalytics(insertAnalytics: InsertWellnessAnalytics): Promise<WellnessAnalytics> {
+    const [analytics] = await db
+      .insert(wellnessAnalytics)
+      .values({
+        ...insertAnalytics,
+        generatedAt: new Date()
+      })
+      .returning();
+    return analytics;
+  }
+
+  async getDriverWellnessAnalytics(driverId: number): Promise<WellnessAnalytics[]> {
+    return await db
+      .select()
+      .from(wellnessAnalytics)
+      .where(eq(wellnessAnalytics.driverId, driverId))
+      .orderBy(desc(wellnessAnalytics.generatedAt));
   }
 }
 
