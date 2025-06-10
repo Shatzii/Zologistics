@@ -69,19 +69,17 @@ export function ComprehensiveDashboard() {
     refetchInterval: 30000,
   });
 
-  const { data: realTimeData } = useWebSocket('/api/ws/dashboard');
-
-  const { data: iotDevices } = useQuery({
+  const { data: iotDevices = [] } = useQuery({
     queryKey: ['/api/iot/devices'],
     refetchInterval: 10000,
   });
 
-  const { data: autonomousVehicles } = useQuery({
+  const { data: autonomousVehicles = [] } = useQuery({
     queryKey: ['/api/autonomous/vehicles'],
     refetchInterval: 15000,
   });
 
-  const { data: blockchainContracts } = useQuery({
+  const { data: blockchainContracts = [] } = useQuery({
     queryKey: ['/api/blockchain/contracts'],
     refetchInterval: 20000,
   });
@@ -183,7 +181,7 @@ export function ComprehensiveDashboard() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Connected Devices</span>
-              <Badge variant="secondary">{iotDevices?.length || 0}</Badge>
+              <Badge variant="secondary">{iotDevices.length}</Badge>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
@@ -212,7 +210,7 @@ export function ComprehensiveDashboard() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Fleet Status</span>
-              <Badge variant="secondary">{autonomousVehicles?.length || 0} Vehicles</Badge>
+              <Badge variant="secondary">{autonomousVehicles.length} Vehicles</Badge>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
@@ -241,7 +239,7 @@ export function ComprehensiveDashboard() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Smart Contracts</span>
-              <Badge variant="secondary">{blockchainContracts?.length || 0}</Badge>
+              <Badge variant="secondary">{blockchainContracts.length}</Badge>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
