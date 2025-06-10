@@ -19,6 +19,7 @@ import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 import { DriverWellnessDashboard } from "@/components/driver-wellness-dashboard";
 import { DriverPainPointSolutions } from "@/components/driver-pain-point-solutions";
+import EnhancedDriversPage from "@/pages/enhanced-drivers";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
