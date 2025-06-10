@@ -18,6 +18,7 @@ import { predictiveAnalytics } from "./predictive-analytics";
 import { fleetOptimizer } from "./advanced-fleet-optimization";
 import { collaborationManager } from "./real-time-collaboration";
 import { customerPortal } from "./customer-portal-api";
+import { driverBenefitsSystem } from "./driver-benefits-system";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -1115,6 +1116,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(metrics);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch customer metrics" });
+    }
+  });
+
+  // Driver Benefits & Rewards System
+  app.get("/api/driver/benefits/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const benefits = await driverBenefitsSystem.getDriverBenefits(parseInt(driverId));
+      res.json(benefits);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch driver benefits" });
+    }
+  });
+
+  app.get("/api/driver/rewards/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const rewards = await driverBenefitsSystem.getDriverRewards(parseInt(driverId));
+      res.json(rewards);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch driver rewards" });
+    }
+  });
+
+  app.post("/api/driver/instant-pay", async (req, res) => {
+    try {
+      const { driverId, loadId, amount } = req.body;
+      const payment = await driverBenefitsSystem.requestInstantPayment(driverId, loadId, amount);
+      res.json(payment);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process instant payment" });
+    }
+  });
+
+  app.get("/api/driver/value-calculator/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const valueCalculation = await driverBenefitsSystem.calculateDriverValue(parseInt(driverId));
+      res.json(valueCalculation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to calculate driver value" });
+    }
+  });
+
+  app.get("/api/driver/wellness/:driverId", async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const wellness = await driverBenefitsSystem.getDriverWellness(parseInt(driverId));
+      res.json(wellness);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness data" });
+    }
+  });
+
+  app.post("/api/driver/claim-benefit", async (req, res) => {
+    try {
+      const { benefitId } = req.body;
+      const success = await driverBenefitsSystem.claimBenefit(benefitId);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to claim benefit" });
+    }
+  });
+
+  app.get("/api/benefits/metrics", async (req, res) => {
+    try {
+      const metrics = driverBenefitsSystem.getBenefitsMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch benefits metrics" });
     }
   });
 
