@@ -27,6 +27,8 @@ import { selfHostedAI } from "./self-hosted-ai-engine";
 import { complianceEngine } from "./international-compliance";
 import { localizationEngine } from "./localization-engine";
 import { advancedComplianceSuite } from "./advanced-compliance-suite";
+import { collaborativeDriverNetwork } from "./collaborative-driver-network";
+import { globalLogisticsOptimizer } from "./global-logistics-optimization";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2308,6 +2310,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Failed to export technology:", error);
       res.status(500).json({ message: error.message || "Failed to export technology" });
+    }
+  });
+
+  // Collaborative Driver Network routes
+  app.get('/api/collaboration/participants', async (req, res) => {
+    try {
+      const participants = collaborativeDriverNetwork.getAllParticipants();
+      res.json(participants);
+    } catch (error) {
+      console.error("Error fetching collaboration participants:", error);
+      res.status(500).json({ message: "Failed to fetch participants" });
+    }
+  });
+
+  app.get('/api/collaboration/opportunities', async (req, res) => {
+    try {
+      const opportunities = collaborativeDriverNetwork.getAllOpportunities();
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching collaboration opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch opportunities" });
+    }
+  });
+
+  app.get('/api/collaboration/partnerships', async (req, res) => {
+    try {
+      const partnerships = collaborativeDriverNetwork.getAllPartnerships();
+      res.json(partnerships);
+    } catch (error) {
+      console.error("Error fetching partnerships:", error);
+      res.status(500).json({ message: "Failed to fetch partnerships" });
+    }
+  });
+
+  app.get('/api/collaboration/metrics', async (req, res) => {
+    try {
+      const metrics = collaborativeDriverNetwork.getNetworkMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error fetching network metrics:", error);
+      res.status(500).json({ message: "Failed to fetch metrics" });
+    }
+  });
+
+  app.post('/api/collaboration/find-opportunities/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const opportunities = await collaborativeDriverNetwork.findCollaborationOpportunities(driverId);
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error finding collaboration opportunities:", error);
+      res.status(500).json({ message: "Failed to find opportunities" });
+    }
+  });
+
+  app.post('/api/collaboration/create-partnership', async (req, res) => {
+    try {
+      const { opportunityId, participants } = req.body;
+      const partnership = await collaborativeDriverNetwork.createPartnership(opportunityId, participants);
+      res.json(partnership);
+    } catch (error) {
+      console.error("Error creating partnership:", error);
+      res.status(500).json({ message: "Failed to create partnership" });
+    }
+  });
+
+  // Global Logistics Optimization routes
+  app.get('/api/global-logistics/network', async (req, res) => {
+    try {
+      const network = globalLogisticsOptimizer.getGlobalNetwork();
+      res.json(network);
+    } catch (error) {
+      console.error("Error fetching global logistics network:", error);
+      res.status(500).json({ message: "Failed to fetch network data" });
+    }
+  });
+
+  app.get('/api/global-logistics/optimizations', async (req, res) => {
+    try {
+      const optimizations = globalLogisticsOptimizer.getAllOptimizations();
+      res.json(optimizations);
+    } catch (error) {
+      console.error("Error fetching optimizations:", error);
+      res.status(500).json({ message: "Failed to fetch optimizations" });
+    }
+  });
+
+  app.get('/api/global-logistics/participants', async (req, res) => {
+    try {
+      const participants = globalLogisticsOptimizer.getNetworkParticipants();
+      res.json(participants);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+      res.status(500).json({ message: "Failed to fetch participants" });
+    }
+  });
+
+  app.post('/api/global-logistics/systemic-impact', async (req, res) => {
+    try {
+      const impact = await globalLogisticsOptimizer.calculateSystemicImpact();
+      res.json(impact);
+    } catch (error) {
+      console.error("Error calculating systemic impact:", error);
+      res.status(500).json({ message: "Failed to calculate impact" });
+    }
+  });
+
+  app.post('/api/global-logistics/future-scenarios', async (req, res) => {
+    try {
+      const { timeHorizon } = req.body;
+      const scenarios = await globalLogisticsOptimizer.projectFutureScenarios(timeHorizon || 30);
+      res.json(scenarios);
+    } catch (error) {
+      console.error("Error projecting future scenarios:", error);
+      res.status(500).json({ message: "Failed to project scenarios" });
     }
   });
 
