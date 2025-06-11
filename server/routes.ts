@@ -2428,6 +2428,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // International Region Management routes
+  app.get('/api/international-compliance/status/:regionId', async (req, res) => {
+    try {
+      const { regionId } = req.params;
+      const status = complianceEngine.getRegionComplianceStatus(regionId);
+      res.json(status);
+    } catch (error) {
+      console.error("Error fetching region compliance status:", error);
+      res.status(500).json({ message: "Failed to fetch region status" });
+    }
+  });
+
+  app.post('/api/international-compliance/switch-region/:regionId', async (req, res) => {
+    try {
+      const { regionId } = req.params;
+      const result = await complianceEngine.switchActiveRegion(regionId);
+      res.json({ success: true, region: regionId, timestamp: new Date().toISOString(), ...result });
+    } catch (error) {
+      console.error("Error switching region:", error);
+      res.status(500).json({ message: "Failed to switch region" });
+    }
+  });
+
+  app.get('/api/international-compliance/regions', async (req, res) => {
+    try {
+      const regions = complianceEngine.getAvailableRegions();
+      res.json(regions);
+    } catch (error) {
+      console.error("Error fetching available regions:", error);
+      res.status(500).json({ message: "Failed to fetch regions" });
+    }
+  });
+
   app.get("/api/compliance/technology/:technologyId", async (req, res) => {
     try {
       const { technologyId } = req.params;

@@ -25,6 +25,8 @@ import RevolutionaryFeaturesPage from "@/pages/revolutionary-features";
 import SelfHostedAIPage from "@/pages/self-hosted-ai";
 import InternationalCompliancePage from "@/pages/international-compliance";
 import AdvancedCompliancePage from "@/pages/advanced-compliance";
+import InternationalRegionsPage from "@/pages/international-regions";
+import CollaborativeNetworkPage from "@/pages/collaborative-network";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -91,6 +93,8 @@ function Router() {
         <Route path="/self-hosted-ai" component={SelfHostedAIPage} />
         <Route path="/international-compliance" component={InternationalCompliancePage} />
         <Route path="/advanced-compliance" component={AdvancedCompliancePage} />
+        <Route path="/international-regions" component={InternationalRegionsPage} />
+        <Route path="/collaborative-network" component={CollaborativeNetworkPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>

@@ -16,7 +16,9 @@ import {
   Bell,
   Search,
   Heart,
-  Shield
+  Shield,
+  Globe,
+  Handshake
 } from "lucide-react";
 
 const navigation = [
