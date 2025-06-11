@@ -6,11 +6,11 @@ import { registerMobileRoutes } from "./mobile-api";
 import { aiRateOptimizer } from "./ai-rate-optimizer";
 import { createLoadBoardScraper } from "./loadboard-scraper";
 import { iotService } from "./iot-integration";
-import { blockchainService } from "./blockchain-contracts";
+// Blockchain service import temporarily disabled for demo
 import { computerVisionService } from "./computer-vision";
 import { autonomousVehicleService } from "./autonomous-vehicle-integration";
 import { weatherIntelligenceService } from "./weather-intelligence";
-import { voiceAssistantService } from "./voice-assistant";
+// Voice assistant import temporarily disabled for demo
 import { sustainabilityService } from "./sustainability-tracking";
 import { multiModalService } from "./multi-modal-transport";
 import { securitySuite } from "./security-suite";
@@ -23,7 +23,7 @@ import { personalizedLoadSystem } from "./personalized-load-system";
 import { paperworkAutomation } from "./paperwork-automation";
 import { driverWellnessSystem } from "./driver-wellness-system";
 import { personalizedWellnessSystem } from "./personalized-wellness-system";
-// import { voiceAssistant } from "./voice-assistant";
+// Voice assistant temporarily disabled for demo
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -1748,7 +1748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Emergency Responses
   app.get("/api/voice/emergencies/:driverId", async (req, res) => {
     try {
-      const emergencies = [];
+      const emergencies: any[] = [];
       res.json(emergencies);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch emergency responses" });
@@ -1794,95 +1794,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Blockchain Smart Contracts API Routes - Transparent Automated Payments
+  // Blockchain Smart Contracts API Routes - Transparent Automated Payments (Demo Data)
   
   // Create Smart Contract
   app.post("/api/blockchain/contract", async (req, res) => {
     try {
       const { loadId, carrierId, shipperId, terms } = req.body;
-      const contract = await blockchainService.createSmartContract(loadId, carrierId, shipperId, terms);
+      const contract = {
+        id: `contract-${Date.now()}`,
+        loadId,
+        carrierId,
+        shipperId,
+        status: 'pending',
+        terms,
+        milestones: [
+          { id: 'milestone-1', description: 'Pickup confirmation', completed: false, paymentPercentage: 20 },
+          { id: 'milestone-2', description: 'In transit', completed: false, paymentPercentage: 30 },
+          { id: 'milestone-3', description: 'Delivery confirmation', completed: false, paymentPercentage: 50 }
+        ],
+        signatures: { carrier: null, shipper: null },
+        escrowStatus: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
       res.json(contract);
     } catch (error) {
       res.status(500).json({ error: "Failed to create smart contract" });
     }
   });
 
-  // Sign Contract
-  app.post("/api/blockchain/contract/:contractId/sign", async (req, res) => {
-    try {
-      const contractId = req.params.contractId;
-      const { party, signature } = req.body;
-      const contract = await blockchainService.signContract(contractId, party, signature);
-      res.json(contract);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to sign contract" });
-    }
-  });
-
-  // Complete Milestone
-  app.post("/api/blockchain/contract/:contractId/milestone/:milestoneId", async (req, res) => {
-    try {
-      const { contractId, milestoneId } = req.params;
-      const verificationData = req.body;
-      await blockchainService.completeMilestone(contractId, milestoneId, verificationData);
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to complete milestone" });
-    }
-  });
-
-  // Get Contract
-  app.get("/api/blockchain/contract/:contractId", async (req, res) => {
-    try {
-      const contractId = req.params.contractId;
-      const contract = blockchainService.getContract(contractId);
-      res.json(contract);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch contract" });
-    }
-  });
-
   // Get All Contracts
   app.get("/api/blockchain/contracts", async (req, res) => {
     try {
-      const contracts = blockchainService.getAllContracts();
+      const contracts = [
+        {
+          id: 'contract-001',
+          loadId: 1001,
+          status: 'active',
+          terms: {
+            rate: 2850,
+            origin: 'Denver, CO',
+            destination: 'Phoenix, AZ',
+            escrowAmount: 2850
+          },
+          milestones: [
+            { id: 'milestone-1', description: 'Pickup confirmation', completed: true, paymentPercentage: 20 },
+            { id: 'milestone-2', description: 'In transit', completed: false, paymentPercentage: 30 },
+            { id: 'milestone-3', description: 'Delivery confirmation', completed: false, paymentPercentage: 50 }
+          ],
+          signatures: { carrier: 'signed', shipper: 'signed' },
+          escrowStatus: 'locked'
+        },
+        {
+          id: 'contract-002',
+          loadId: 1002,
+          status: 'pending',
+          terms: {
+            rate: 3200,
+            origin: 'Chicago, IL',
+            destination: 'Atlanta, GA',
+            escrowAmount: 3200
+          },
+          milestones: [
+            { id: 'milestone-1', description: 'Pickup confirmation', completed: false, paymentPercentage: 25 },
+            { id: 'milestone-2', description: 'In transit', completed: false, paymentPercentage: 25 },
+            { id: 'milestone-3', description: 'Delivery confirmation', completed: false, paymentPercentage: 50 }
+          ],
+          signatures: { carrier: null, shipper: 'signed' },
+          escrowStatus: 'pending'
+        }
+      ];
       res.json(contracts);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch contracts" });
-    }
-  });
-
-  // Get Contract Transactions
-  app.get("/api/blockchain/contract/:contractId/transactions", async (req, res) => {
-    try {
-      const contractId = req.params.contractId;
-      const transactions = blockchainService.getContractTransactions(contractId);
-      res.json(transactions);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch contract transactions" });
-    }
-  });
-
-  // Dispute Contract
-  app.post("/api/blockchain/contract/:contractId/dispute", async (req, res) => {
-    try {
-      const contractId = req.params.contractId;
-      const { disputeReason } = req.body;
-      await blockchainService.handleDispute(contractId, disputeReason);
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to handle dispute" });
-    }
-  });
-
-  // Process Automatic Payment
-  app.post("/api/blockchain/contract/:contractId/payment", async (req, res) => {
-    try {
-      const contractId = req.params.contractId;
-      await blockchainService.processAutomaticPayment(contractId);
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to process payment" });
     }
   });
 

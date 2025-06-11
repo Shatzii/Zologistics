@@ -84,6 +84,7 @@ function Router() {
         <Route path="/settings" component={SettingsPage} />
         <Route path="/wellness" component={DriverWellnessDashboard} />
         <Route path="/personalized-wellness" component={WellnessPage} />
+        <Route path="/revolutionary-features" component={RevolutionaryFeaturesPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>
