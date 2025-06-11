@@ -23,6 +23,7 @@ import { personalizedLoadSystem } from "./personalized-load-system";
 import { paperworkAutomation } from "./paperwork-automation";
 import { driverWellnessSystem } from "./driver-wellness-system";
 import { personalizedWellnessSystem } from "./personalized-wellness-system";
+// import { voiceAssistant } from "./voice-assistant";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
@@ -1630,6 +1631,258 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(engagement);
     } catch (error) {
       res.status(500).json({ error: "Failed to track resource engagement" });
+    }
+  });
+
+  // Voice Assistant API Routes - Revolutionary Hands-Free Dispatch (Demo Data)
+  
+  // Start Voice Session
+  app.post("/api/voice/session/start", async (req, res) => {
+    try {
+      const { driverId } = req.body;
+      const session = {
+        id: `session-${Date.now()}`,
+        driverId,
+        startTime: new Date(),
+        commands: [],
+        context: { driving: false, emergencyMode: false },
+        conversationHistory: [{
+          role: 'assistant',
+          content: 'Voice assistant activated. How can I help you today?',
+          timestamp: new Date()
+        }]
+      };
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start voice session" });
+    }
+  });
+
+  // Process Voice Command
+  app.post("/api/voice/command", async (req, res) => {
+    try {
+      const { driverId, audioData } = req.body;
+      const mockCommands = [
+        "Accept load 2001",
+        "What's the weather like on my route?", 
+        "I need assistance with navigation",
+        "Emergency - truck breakdown on I-80",
+        "Can you negotiate a better rate for this load?",
+        "Schedule my mandatory break"
+      ];
+      const transcript = mockCommands[Math.floor(Math.random() * mockCommands.length)];
+      
+      const command = {
+        id: `cmd-${Date.now()}`,
+        driverId,
+        transcript,
+        intent: 'load_acceptance',
+        confidence: 0.95,
+        response: 'Load accepted successfully. Rate: $2,850, Distance: 485 miles.',
+        actionTaken: 'load_accepted',
+        timestamp: new Date()
+      };
+      res.json(command);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process voice command" });
+    }
+  });
+
+  // End Voice Session
+  app.post("/api/voice/session/end", async (req, res) => {
+    try {
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to end voice session" });
+    }
+  });
+
+  // Get Voice Session
+  app.get("/api/voice/session/:driverId", async (req, res) => {
+    try {
+      const session = {
+        id: 'session-demo',
+        driverId: parseInt(req.params.driverId),
+        startTime: new Date(),
+        commands: [],
+        context: { driving: false, emergencyMode: false },
+        conversationHistory: []
+      };
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch voice session" });
+    }
+  });
+
+  // Get Voice Commands History
+  app.get("/api/voice/commands/:driverId", async (req, res) => {
+    try {
+      const commands = [
+        {
+          id: 'cmd-001',
+          driverId: parseInt(req.params.driverId),
+          transcript: 'Accept load 1001',
+          intent: 'load_acceptance',
+          confidence: 0.95,
+          response: 'Load 1001 accepted successfully.',
+          actionTaken: 'load_accepted',
+          timestamp: new Date(Date.now() - 3600000)
+        },
+        {
+          id: 'cmd-002', 
+          driverId: parseInt(req.params.driverId),
+          transcript: 'Navigate to Phoenix',
+          intent: 'navigation',
+          confidence: 0.92,
+          response: 'Route calculated. 7 hours 20 minutes.',
+          actionTaken: 'route_calculated',
+          timestamp: new Date(Date.now() - 1800000)
+        }
+      ];
+      res.json(commands);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch voice commands" });
+    }
+  });
+
+  // Get Emergency Responses
+  app.get("/api/voice/emergencies/:driverId", async (req, res) => {
+    try {
+      const emergencies = [];
+      res.json(emergencies);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch emergency responses" });
+    }
+  });
+
+  // Voice Analytics Dashboard
+  app.get("/api/voice/analytics", async (req, res) => {
+    try {
+      const analytics = {
+        totalCommands: 156,
+        averageConfidence: 0.93,
+        intentDistribution: {
+          load_acceptance: 45,
+          navigation: 32,
+          emergency: 8,
+          rate_negotiation: 25,
+          break_request: 46
+        },
+        emergencyResponse: {
+          totalEmergencies: 8,
+          averageResponseTime: 18,
+          resolvedCount: 8
+        },
+        driverAdoption: {
+          activeUsers: 24,
+          commandsPerDriver: 6.5,
+          satisfactionScore: 4.8
+        }
+      };
+      res.json(analytics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch voice analytics" });
+    }
+  });
+
+  // Update Voice Session Context
+  app.patch("/api/voice/session/:driverId/context", async (req, res) => {
+    try {
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update session context" });
+    }
+  });
+
+  // Blockchain Smart Contracts API Routes - Transparent Automated Payments
+  
+  // Create Smart Contract
+  app.post("/api/blockchain/contract", async (req, res) => {
+    try {
+      const { loadId, carrierId, shipperId, terms } = req.body;
+      const contract = await blockchainService.createSmartContract(loadId, carrierId, shipperId, terms);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create smart contract" });
+    }
+  });
+
+  // Sign Contract
+  app.post("/api/blockchain/contract/:contractId/sign", async (req, res) => {
+    try {
+      const contractId = req.params.contractId;
+      const { party, signature } = req.body;
+      const contract = await blockchainService.signContract(contractId, party, signature);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to sign contract" });
+    }
+  });
+
+  // Complete Milestone
+  app.post("/api/blockchain/contract/:contractId/milestone/:milestoneId", async (req, res) => {
+    try {
+      const { contractId, milestoneId } = req.params;
+      const verificationData = req.body;
+      await blockchainService.completeMilestone(contractId, milestoneId, verificationData);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to complete milestone" });
+    }
+  });
+
+  // Get Contract
+  app.get("/api/blockchain/contract/:contractId", async (req, res) => {
+    try {
+      const contractId = req.params.contractId;
+      const contract = blockchainService.getContract(contractId);
+      res.json(contract);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contract" });
+    }
+  });
+
+  // Get All Contracts
+  app.get("/api/blockchain/contracts", async (req, res) => {
+    try {
+      const contracts = blockchainService.getAllContracts();
+      res.json(contracts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contracts" });
+    }
+  });
+
+  // Get Contract Transactions
+  app.get("/api/blockchain/contract/:contractId/transactions", async (req, res) => {
+    try {
+      const contractId = req.params.contractId;
+      const transactions = blockchainService.getContractTransactions(contractId);
+      res.json(transactions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contract transactions" });
+    }
+  });
+
+  // Dispute Contract
+  app.post("/api/blockchain/contract/:contractId/dispute", async (req, res) => {
+    try {
+      const contractId = req.params.contractId;
+      const { disputeReason } = req.body;
+      await blockchainService.handleDispute(contractId, disputeReason);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to handle dispute" });
+    }
+  });
+
+  // Process Automatic Payment
+  app.post("/api/blockchain/contract/:contractId/payment", async (req, res) => {
+    try {
+      const contractId = req.params.contractId;
+      await blockchainService.processAutomaticPayment(contractId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process payment" });
     }
   });
 
