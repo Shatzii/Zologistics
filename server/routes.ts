@@ -26,6 +26,7 @@ import { personalizedWellnessSystem } from "./personalized-wellness-system";
 import { selfHostedAI } from "./self-hosted-ai-engine";
 import { complianceEngine } from "./international-compliance";
 import { localizationEngine } from "./localization-engine";
+import { advancedComplianceSuite } from "./advanced-compliance-suite";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2218,6 +2219,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Formatting error:", error);
       res.status(500).json({ message: "Failed to format value" });
+    }
+  });
+
+  // Advanced Compliance Suite Routes
+  app.get("/api/compliance/optimizations", async (req, res) => {
+    try {
+      const { category, priority } = req.query;
+      let optimizations;
+      
+      if (category && typeof category === 'string') {
+        optimizations = advancedComplianceSuite.getOptimizationsByCategory(category);
+      } else if (priority && typeof priority === 'string') {
+        optimizations = advancedComplianceSuite.getOptimizationsByPriority(priority);
+      } else {
+        optimizations = advancedComplianceSuite.getAllOptimizations();
+      }
+      
+      res.json(optimizations);
+    } catch (error) {
+      console.error("Failed to get compliance optimizations:", error);
+      res.status(500).json({ message: "Failed to get compliance optimizations" });
+    }
+  });
+
+  app.get("/api/compliance/audits", async (req, res) => {
+    try {
+      const { upcoming } = req.query;
+      let audits;
+      
+      if (upcoming === 'true') {
+        audits = advancedComplianceSuite.getUpcomingAudits();
+      } else {
+        audits = advancedComplianceSuite.getAllAudits();
+      }
+      
+      res.json(audits);
+    } catch (error) {
+      console.error("Failed to get audits:", error);
+      res.status(500).json({ message: "Failed to get audits" });
+    }
+  });
+
+  app.get("/api/compliance/technologies", async (req, res) => {
+    try {
+      const { category } = req.query;
+      let technologies;
+      
+      if (category && typeof category === 'string') {
+        technologies = advancedComplianceSuite.getTechnologyByCategory(category);
+      } else {
+        technologies = advancedComplianceSuite.getAllStandaloneTechnologies();
+      }
+      
+      res.json(technologies);
+    } catch (error) {
+      console.error("Failed to get technologies:", error);
+      res.status(500).json({ message: "Failed to get technologies" });
+    }
+  });
+
+  app.get("/api/compliance/report", async (req, res) => {
+    try {
+      const report = advancedComplianceSuite.generateComplianceReport();
+      res.json(report);
+    } catch (error) {
+      console.error("Failed to generate compliance report:", error);
+      res.status(500).json({ message: "Failed to generate compliance report" });
+    }
+  });
+
+  app.post("/api/compliance/conduct-audit/:auditId", async (req, res) => {
+    try {
+      const { auditId } = req.params;
+      const completedAudit = await advancedComplianceSuite.conductComplianceAudit(auditId);
+      res.json(completedAudit);
+    } catch (error) {
+      console.error("Failed to conduct audit:", error);
+      res.status(500).json({ message: error.message || "Failed to conduct audit" });
+    }
+  });
+
+  app.post("/api/compliance/export-technology/:technologyId", async (req, res) => {
+    try {
+      const { technologyId } = req.params;
+      const exportPackage = await advancedComplianceSuite.exportTechnologyPackage(technologyId);
+      res.json(exportPackage);
+    } catch (error) {
+      console.error("Failed to export technology:", error);
+      res.status(500).json({ message: error.message || "Failed to export technology" });
+    }
+  });
+
+  app.get("/api/compliance/technology/:technologyId", async (req, res) => {
+    try {
+      const { technologyId } = req.params;
+      const technology = advancedComplianceSuite.getStandaloneTechnology(technologyId);
+      
+      if (!technology) {
+        return res.status(404).json({ message: "Technology not found" });
+      }
+      
+      res.json(technology);
+    } catch (error) {
+      console.error("Failed to get technology:", error);
+      res.status(500).json({ message: "Failed to get technology" });
     }
   });
 
