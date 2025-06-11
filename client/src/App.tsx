@@ -22,6 +22,7 @@ import { DriverPainPointSolutions } from "@/components/driver-pain-point-solutio
 import EnhancedDriversPage from "@/pages/enhanced-drivers";
 import WellnessPage from "@/pages/wellness";
 import RevolutionaryFeaturesPage from "@/pages/revolutionary-features";
+import SelfHostedAIPage from "@/pages/self-hosted-ai";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -85,6 +86,7 @@ function Router() {
         <Route path="/wellness" component={DriverWellnessDashboard} />
         <Route path="/personalized-wellness" component={WellnessPage} />
         <Route path="/revolutionary-features" component={RevolutionaryFeaturesPage} />
+        <Route path="/self-hosted-ai" component={SelfHostedAIPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>
