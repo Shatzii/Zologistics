@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Users, DollarSign, Truck, Route, Handshake, TrendingUp,
   MapPin, Clock, Fuel, Leaf, Star, MessageCircle,
-  CheckCircle, AlertTriangle, Eye, Link2, Share
+  CheckCircle, AlertTriangle, Eye, Link2, Share, Settings
 } from "lucide-react";
 
 interface CollaborationParticipant {
