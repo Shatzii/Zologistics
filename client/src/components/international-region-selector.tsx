@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { RegionQuickSwitcher } from "@/components/region-quick-switcher";
 import { 
   Globe, MapPin, Flag, Truck, Scale, Languages,
   CheckCircle, AlertTriangle, Clock, Building2,
@@ -341,6 +342,12 @@ export function InternationalRegionSelector() {
       </div>
 
       {/* Quick Region Navigation Bar */}
+      <RegionQuickSwitcher 
+        currentRegion={selectedRegion} 
+        onRegionChange={handleRegionSwitch}
+      />
+
+      {/* Additional Quick Access Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
         {regions.map((region) => (
           <Button

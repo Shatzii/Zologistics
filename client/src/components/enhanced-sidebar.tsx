@@ -81,6 +81,18 @@ const navigation = [
     href: "/driver-solutions",
     icon: Shield,
     badge: "5"
+  },
+  {
+    name: "International Regions",
+    href: "/international-regions",
+    icon: Globe,
+    badge: "8 Regions"
+  },
+  {
+    name: "Collaborative Network",
+    href: "/collaborative-network",
+    icon: Handshake,
+    badge: "Active"
   }
 ];
 

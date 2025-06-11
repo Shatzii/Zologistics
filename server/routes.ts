@@ -2432,7 +2432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/international-compliance/status/:regionId', async (req, res) => {
     try {
       const { regionId } = req.params;
-      const status = complianceEngine.getRegionComplianceStatus(regionId);
+      const status = complianceEngine.getRegionStatus(regionId);
       res.json(status);
     } catch (error) {
       console.error("Error fetching region compliance status:", error);
@@ -2443,7 +2443,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/international-compliance/switch-region/:regionId', async (req, res) => {
     try {
       const { regionId } = req.params;
-      const result = await complianceEngine.switchActiveRegion(regionId);
+      const result = await complianceEngine.activateRegion(regionId);
       res.json({ success: true, region: regionId, timestamp: new Date().toISOString(), ...result });
     } catch (error) {
       console.error("Error switching region:", error);
@@ -2453,7 +2453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/international-compliance/regions', async (req, res) => {
     try {
-      const regions = complianceEngine.getAvailableRegions();
+      const regions = complianceEngine.getAllRegions();
       res.json(regions);
     } catch (error) {
       console.error("Error fetching available regions:", error);
