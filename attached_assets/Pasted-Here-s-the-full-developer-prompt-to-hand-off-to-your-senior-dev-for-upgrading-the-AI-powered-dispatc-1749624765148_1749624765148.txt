@@ -1,0 +1,124 @@
+Here’s the full developer prompt to hand off to your senior dev for upgrading the AI-powered dispatch system to be fully compliant and plug-and-play across EU and Central America (Mexico included). This will ensure the system is international-ready and scalable across borders with minimal friction.
+
+⸻
+
+✅ PROMPT FOR SENIOR DEVELOPER
+
+Title: Global Dispatch Compliance & Localization Upgrade
+
+⸻
+
+Objective:
+Upgrade the AI Dispatch System to be fully regulatory-compliant, language-localized, and plug-and-play for deployment in any EU country or Mexico. The system must allow users to select their operating country, and dynamically apply the correct regulations, language packs, tax law, transport compliance, and data privacy layers.
+
+⸻
+
+🔧 PHASE 1: SYSTEM LOCALIZATION CORE
+
+☑️ Add Multilingual Support (i18n ready)
+	•	Create localization files for:
+	•	🇪🇸 Spanish (Mexico, Latin America)
+	•	🇫🇷 French
+	•	🇩🇪 German
+	•	🇵🇱 Polish
+	•	🇳🇱 Dutch
+	•	Use i18next, react-i18next, or backend-locale switch for React frontend.
+	•	Auto-detect language OR allow user to select manually.
+
+☑️ Voice AI Localization
+	•	Swap in country-specific voice models:
+	•	Coqui AI (Spanish/LatAm)
+	•	Whisper large w/ language fine-tuning
+	•	Localized stress/anomaly detection (per language)
+	•	Ensure real-time accent parsing for Spanish dialects (Mex, Col, Arg) and EU accents.
+
+⸻
+
+📜 PHASE 2: LEGAL & COMPLIANCE ENGINE
+
+☑️ Add Country Selector Dropdown (Admin Panel)
+	•	dispatch/settings/region
+	•	Triggers compliance mode:
+	•	🇲🇽 Mexico → NOM-087, SAT tax docs
+	•	🇩🇪 Germany → GDPR, EU Mobility Package
+	•	🇫🇷 France → GDPR, tachograph rules
+	•	🇪🇸 Spain → EU mobility, transit tax
+	•	🇵🇱 Poland → EU + local road tax
+
+☑️ Integrate Regional Regulations
+	•	Mexico: NOM-087 driving hour limits, ELD import support, factura digital (SAT XML)
+	•	EU: Tachograph data ingestion, Mobility Package rest period enforcement, cross-border cabotage limits
+	•	Add config files:
+
+/compliance_rules/mexico.json
+/compliance_rules/eu_germany.json
+/compliance_rules/eu_spain.json
+
+
+	•	Middleware validation for route plans, shift limits, contract formatting
+
+☑️ Add GDPR & Data Sovereignty Toggle
+	•	Consent management framework (per EU law)
+	•	User data deletion API
+	•	Country-based data storage toggle (PostgreSQL shards or local buckets)
+	•	Log anonymization and audit log per GDPR Article 30
+
+⸻
+
+💳 PHASE 3: SMART CONTRACT LOCALIZATION
+
+☑️ Add Country-Aware Blockchain Contract Templates
+	•	Dynamic milestone-based smart contracts with:
+	•	🇲🇽 Peso → USDT/FIAT fallback
+	•	🇪🇺 Euro → SEPA-integration fallback
+	•	Add templates for multi-language clause rendering
+
+☑️ Automated Tax + Invoice Localization
+	•	Mexican SAT CFDI invoice XML generation
+	•	EU VAT compliance per country
+	•	Digital customs forms (for cross-border freight)
+
+⸻
+
+📡 PHASE 4: ROUTING + API GEOLOCALIZATION
+
+☑️ Add Local Routing Intelligence
+	•	Integrate OpenStreetMap + HERE Maps + Google Hybrid API
+	•	Add region-aware toll calculation:
+	•	Mexico → CAPUFE & urban toll
+	•	EU → Vignette systems, toll booths, rest stops
+	•	Add route profiles for:
+	•	Hazmat
+	•	Height restrictions
+	•	Regional diesel zones (e.g. France, Germany)
+
+⸻
+
+📘 PHASE 5: DOCUMENTATION + QA
+
+☑️ Developer Notes & Wiki
+	•	Create /docs/internationalization.md
+	•	Update all .env and .config.js files with REGION_MODE switch
+	•	Document all compliance profiles per country
+
+☑️ QA Checkpoints
+	•	Test all new region settings for:
+	•	Language switches
+	•	Local tax doc output
+	•	Route compliance
+	•	Blockchain contract functionality
+	•	GDPR consent and deletion requests
+
+⸻
+
+🔚 End Result:
+
+The platform must be able to:
+	•	Launch in any supported country with 1-click region config
+	•	Auto-switch to correct laws, taxes, UI, voice support, and regulations
+	•	Be legally compliant with FMCSA, NOM-087, EU Mobility, and GDPR
+	•	Serve freight dispatchers, drivers, and brokers in their native language
+
+⸻
+
+Need a global QA checklist, sample config files, or country-specific contract template packs next?

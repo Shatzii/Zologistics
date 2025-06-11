@@ -24,6 +24,8 @@ import { paperworkAutomation } from "./paperwork-automation";
 import { driverWellnessSystem } from "./driver-wellness-system";
 import { personalizedWellnessSystem } from "./personalized-wellness-system";
 import { selfHostedAI } from "./self-hosted-ai-engine";
+import { complianceEngine } from "./international-compliance";
+import { localizationEngine } from "./localization-engine";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -1992,6 +1994,230 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(response);
     } catch (error) {
       res.status(500).json({ error: "Failed to process AI request" });
+    }
+  });
+
+  // International Compliance Routes
+  app.get("/api/compliance/regions", async (req, res) => {
+    try {
+      const regions = complianceEngine.getAllRegions();
+      res.json(regions);
+    } catch (error) {
+      console.error("Failed to get compliance regions:", error);
+      res.status(500).json({ message: "Failed to get compliance regions" });
+    }
+  });
+
+  app.get("/api/compliance/current-region", async (req, res) => {
+    try {
+      const currentRegion = complianceEngine.getCurrentRegion();
+      if (!currentRegion) {
+        return res.status(404).json({ message: "No region configured" });
+      }
+      res.json(currentRegion);
+    } catch (error) {
+      console.error("Failed to get current region:", error);
+      res.status(500).json({ message: "Failed to get current region" });
+    }
+  });
+
+  app.post("/api/compliance/set-region", async (req, res) => {
+    try {
+      const { regionCode } = req.body;
+      if (!regionCode) {
+        return res.status(400).json({ message: "Region code is required" });
+      }
+
+      const success = complianceEngine.setRegion(regionCode);
+      if (!success) {
+        return res.status(400).json({ message: "Invalid region code" });
+      }
+
+      // Update localization to match region
+      const region = complianceEngine.getCurrentRegion();
+      if (region) {
+        localizationEngine.setLanguage(region.language);
+      }
+
+      res.json({ message: "Region updated successfully", regionCode });
+    } catch (error) {
+      console.error("Failed to set region:", error);
+      res.status(500).json({ message: "Failed to set region" });
+    }
+  });
+
+  app.get("/api/compliance/status", async (req, res) => {
+    try {
+      // Mock driver hours for compliance check
+      const mockDriverHours = 8;
+      const mockRoute = { 
+        crossBorder: false, 
+        origin: "Denver, CO", 
+        destination: "Phoenix, AZ" 
+      };
+
+      const complianceStatus = complianceEngine.validateComplianceForRoute(mockRoute, mockDriverHours);
+      res.json(complianceStatus);
+    } catch (error) {
+      console.error("Failed to check compliance status:", error);
+      res.status(500).json({ message: "Failed to check compliance status" });
+    }
+  });
+
+  app.post("/api/compliance/validate-route", async (req, res) => {
+    try {
+      const { route, driverHours } = req.body;
+      if (!route || driverHours === undefined) {
+        return res.status(400).json({ message: "Route and driver hours are required" });
+      }
+
+      const validation = complianceEngine.validateComplianceForRoute(route, driverHours);
+      res.json(validation);
+    } catch (error) {
+      console.error("Route validation error:", error);
+      res.status(500).json({ message: "Failed to validate route" });
+    }
+  });
+
+  app.post("/api/compliance/generate-invoice", async (req, res) => {
+    try {
+      const { loadData, amount } = req.body;
+      if (!loadData || !amount) {
+        return res.status(400).json({ message: "Load data and amount are required" });
+      }
+
+      const invoice = complianceEngine.generateInvoice(loadData, amount);
+      res.json(invoice);
+    } catch (error) {
+      console.error("Invoice generation error:", error);
+      res.status(500).json({ message: "Failed to generate invoice" });
+    }
+  });
+
+  app.get("/api/compliance/privacy-requirements", async (req, res) => {
+    try {
+      const requirements = complianceEngine.getDataPrivacyRequirements();
+      res.json(requirements);
+    } catch (error) {
+      console.error("Failed to get privacy requirements:", error);
+      res.status(500).json({ message: "Failed to get privacy requirements" });
+    }
+  });
+
+  // Localization Routes
+  app.get("/api/localization/languages", async (req, res) => {
+    try {
+      const languages = localizationEngine.getAllLanguages();
+      res.json(languages);
+    } catch (error) {
+      console.error("Failed to get languages:", error);
+      res.status(500).json({ message: "Failed to get languages" });
+    }
+  });
+
+  app.post("/api/localization/set-language", async (req, res) => {
+    try {
+      const { language } = req.body;
+      if (!language) {
+        return res.status(400).json({ message: "Language code is required" });
+      }
+
+      const success = localizationEngine.setLanguage(language);
+      if (!success) {
+        return res.status(400).json({ message: "Invalid language code" });
+      }
+
+      res.json({ message: "Language updated successfully", language });
+    } catch (error) {
+      console.error("Failed to set language:", error);
+      res.status(500).json({ message: "Failed to set language" });
+    }
+  });
+
+  app.get("/api/localization/current", async (req, res) => {
+    try {
+      const currentLanguage = localizationEngine.getCurrentLanguage();
+      const voiceModel = localizationEngine.getVoiceModel();
+      const units = localizationEngine.getLocalizedUnits();
+
+      res.json({
+        language: currentLanguage,
+        voiceModel,
+        units
+      });
+    } catch (error) {
+      console.error("Failed to get localization info:", error);
+      res.status(500).json({ message: "Failed to get localization info" });
+    }
+  });
+
+  app.post("/api/localization/translate", async (req, res) => {
+    try {
+      const { key, params } = req.body;
+      if (!key) {
+        return res.status(400).json({ message: "Translation key is required" });
+      }
+
+      const translation = localizationEngine.translate(key, params);
+      res.json({ key, translation, language: localizationEngine.getCurrentLanguage() });
+    } catch (error) {
+      console.error("Translation error:", error);
+      res.status(500).json({ message: "Failed to translate" });
+    }
+  });
+
+  app.get("/api/localization/voice-commands/:category", async (req, res) => {
+    try {
+      const { category } = req.params;
+      const commands = localizationEngine.getVoiceCommands(category);
+      res.json({ category, commands, language: localizationEngine.getCurrentLanguage() });
+    } catch (error) {
+      console.error("Failed to get voice commands:", error);
+      res.status(500).json({ message: "Failed to get voice commands" });
+    }
+  });
+
+  app.post("/api/localization/process-voice", async (req, res) => {
+    try {
+      const { audioInput, context } = req.body;
+      if (!audioInput) {
+        return res.status(400).json({ message: "Audio input is required" });
+      }
+
+      const result = localizationEngine.processVoiceCommand(audioInput, context);
+      res.json(result);
+    } catch (error) {
+      console.error("Voice processing error:", error);
+      res.status(500).json({ message: "Failed to process voice command" });
+    }
+  });
+
+  app.post("/api/localization/format", async (req, res) => {
+    try {
+      const { type, value, format } = req.body;
+      if (!type || value === undefined) {
+        return res.status(400).json({ message: "Type and value are required" });
+      }
+
+      let formatted;
+      switch (type) {
+        case 'date':
+          formatted = localizationEngine.formatDate(new Date(value), format || 'short');
+          break;
+        case 'currency':
+          formatted = localizationEngine.formatCurrency(value);
+          break;
+        case 'number':
+          formatted = localizationEngine.formatNumber(value);
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid format type" });
+      }
+
+      res.json({ type, value, formatted, language: localizationEngine.getCurrentLanguage() });
+    } catch (error) {
+      console.error("Formatting error:", error);
+      res.status(500).json({ message: "Failed to format value" });
     }
   });
 
