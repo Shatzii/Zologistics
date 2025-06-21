@@ -80,11 +80,16 @@ export const loads = pgTable("loads", {
   status: text("status").notNull(), // 'available', 'assigned', 'in_transit', 'delivered', 'cancelled'
   source: text("source").notNull(), // 'DAT', 'Truckstop', '123LoadBoard'
   sourceUrl: text("source_url"), // Original listing URL
-  equipmentType: text("equipment_type"), // 'Van', 'Flatbed', 'Reefer', 'Tanker'
+  equipmentType: text("equipment_type"), // 'Van', 'Flatbed', 'Reefer', 'Tanker', 'Box_Truck', 'Pickup', 'Cargo_Van', 'Hotshot'
   weight: integer("weight"), // Load weight in pounds
   commodity: text("commodity"), // Type of goods
   specialRequirements: text("special_requirements"),
   matchScore: integer("match_score"), // AI match percentage
+  vehicleClass: text("vehicle_class"), // 'Class_8', 'Class_7', 'Class_6', 'Class_5', 'Class_4', 'Class_3', 'Pickup'
+  loadSize: text("load_size").default("full"), // 'full', 'partial', 'ltl', 'expedite', 'hotshot', 'small_package'
+  dimensions: jsonb("dimensions"), // { length, width, height, pieces }
+  urgency: text("urgency").default("standard"), // 'standard', 'expedite', 'emergency', 'hotshot', 'same_day'
+  brokerageType: text("brokerage_type").default("direct"), // 'direct', 'brokered', 'partner', 'spot_market', 'expedite_network'
   negotiatedRate: decimal("negotiated_rate", { precision: 10, scale: 2 }),
   assignedDriverId: integer("assigned_driver_id"),
   dispatcherId: integer("dispatcher_id"),

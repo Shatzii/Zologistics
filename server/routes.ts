@@ -28,6 +28,7 @@ import { complianceEngine } from "./international-compliance";
 import { localizationEngine } from "./localization-engine";
 import { advancedComplianceSuite } from "./advanced-compliance-suite";
 import { collaborativeDriverNetwork } from "./collaborative-driver-network";
+import { multiVehicleBrokerage } from "./multi-vehicle-brokerage";
 import { globalLogisticsOptimizer } from "./global-logistics-optimization";
 
 // Self-hosted AI engine replaces external dependencies
@@ -2474,6 +2475,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Failed to get technology:", error);
       res.status(500).json({ message: "Failed to get technology" });
+    }
+  });
+
+  // Multi-Vehicle Brokerage API Routes
+  app.get('/api/brokerage/opportunities', async (req, res) => {
+    try {
+      const { vehicleClass, equipmentType, urgency } = req.query;
+      
+      let opportunities;
+      if (vehicleClass && equipmentType) {
+        opportunities = await multiVehicleBrokerage.findOptimalOpportunities(
+          vehicleClass as string, 
+          equipmentType as string
+        );
+      } else if (urgency) {
+        opportunities = multiVehicleBrokerage.getOpportunitiesByUrgency(urgency as string);
+      } else {
+        opportunities = multiVehicleBrokerage.getAllOpportunities();
+      }
+      
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching brokerage opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch opportunities" });
+    }
+  });
+
+  app.get('/api/brokerage/hotshot', async (req, res) => {
+    try {
+      const opportunities = multiVehicleBrokerage.getOpportunitiesByUrgency('hotshot');
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching hotshot opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch hotshot opportunities" });
+    }
+  });
+
+  app.get('/api/brokerage/box-trucks', async (req, res) => {
+    try {
+      const class6Opportunities = multiVehicleBrokerage.getOpportunitiesByVehicleClass('Class_6');
+      const class7Opportunities = multiVehicleBrokerage.getOpportunitiesByVehicleClass('Class_7');
+      const opportunities = [...class6Opportunities, ...class7Opportunities];
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching box truck opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch box truck opportunities" });
+    }
+  });
+
+  app.get('/api/brokerage/small-vehicles', async (req, res) => {
+    try {
+      const pickupOpportunities = multiVehicleBrokerage.getOpportunitiesByVehicleClass('Pickup');
+      const class3Opportunities = multiVehicleBrokerage.getOpportunitiesByVehicleClass('Class_3');
+      const opportunities = [...pickupOpportunities, ...class3Opportunities];
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching small vehicle opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch small vehicle opportunities" });
+    }
+  });
+
+  app.get('/api/brokerage/market-report', async (req, res) => {
+    try {
+      const report = await multiVehicleBrokerage.generateMarketReport();
+      res.json(report);
+    } catch (error) {
+      console.error("Error generating market report:", error);
+      res.status(500).json({ message: "Failed to generate market report" });
+    }
+  });
+
+  app.get('/api/brokerage/opportunity/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const opportunity = multiVehicleBrokerage.getOpportunityById(id);
+      
+      if (!opportunity) {
+        return res.status(404).json({ message: "Opportunity not found" });
+      }
+      
+      res.json(opportunity);
+    } catch (error) {
+      console.error("Error fetching opportunity:", error);
+      res.status(500).json({ message: "Failed to fetch opportunity" });
+    }
+  });
+
+  app.get('/api/brokerage/same-day', async (req, res) => {
+    try {
+      const opportunities = multiVehicleBrokerage.getOpportunitiesByUrgency('same_day');
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching same-day opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch same-day opportunities" });
+    }
+  });
+
+  app.get('/api/brokerage/expedite', async (req, res) => {
+    try {
+      const opportunities = multiVehicleBrokerage.getOpportunitiesByUrgency('expedite');
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching expedite opportunities:", error);
+      res.status(500).json({ message: "Failed to fetch expedite opportunities" });
     }
   });
 
