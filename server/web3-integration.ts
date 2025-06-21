@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+// Simplified Web3 integration for demonstration without external blockchain dependencies
 
 export interface TruckFlowToken {
   symbol: string;
@@ -74,8 +74,6 @@ export interface StakingPosition {
 }
 
 export class Web3IntegrationService {
-  private provider!: ethers.Provider;
-  private wallet!: ethers.Wallet;
   private truckToken!: TruckFlowToken;
   private loadContracts: Map<string, SmartLoadContract> = new Map();
   private driverNFTs: Map<number, DriverNFT> = new Map();
@@ -90,16 +88,9 @@ export class Web3IntegrationService {
   }
 
   private initializeWeb3Infrastructure() {
-    // Initialize with Polygon network for low fees and fast transactions
-    const rpcUrl = process.env.POLYGON_RPC_URL || 'https://polygon-rpc.com';
-    this.provider = new ethers.JsonRpcProvider(rpcUrl);
-    
-    // Generate a valid private key for demonstration (in production, use secure key management)
-    const privateKey = process.env.WEB3_PRIVATE_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
-    this.wallet = new ethers.Wallet(privateKey, this.provider);
-
-    console.log('🌐 Web3 infrastructure initialized on Polygon network');
-    console.log('📍 Wallet address:', this.wallet.address);
+    // Simulate Web3 infrastructure for demonstration
+    console.log('🌐 Web3 infrastructure initialized in demo mode');
+    console.log('📍 Simulated wallet address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266');
   }
 
   private initializeTruckToken() {
@@ -107,7 +98,7 @@ export class Web3IntegrationService {
       symbol: 'TRUCK',
       name: 'TruckFlow AI Token',
       decimals: 18,
-      totalSupply: ethers.parseEther('100000000').toString(), // 100 million tokens
+      totalSupply: '100000000000000000000000000', // 100 million tokens (18 decimals)
       contractAddress: '0x742d35Cc6634C0532925a3b8D4431C8A6A2b4e8f' // Example address
     };
   }
