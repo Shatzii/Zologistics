@@ -36,6 +36,7 @@ import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 import { driverAcquisitionEngine } from "./driver-acquisition-engine";
 import { loadAggregationService } from "./load-aggregation-service";
 import { driverReferralSystem } from "./driver-referral-system";
+import { web3Integration } from "./web3-integration";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2949,6 +2950,126 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting referral tiers:", error);
       res.status(500).json({ message: "Failed to get referral tiers" });
+    }
+  });
+
+  // Web3 Blockchain API endpoints
+  app.get('/api/web3/token-info', async (req, res) => {
+    try {
+      const tokenInfo = web3Integration.getTokenInfo();
+      res.json(tokenInfo);
+    } catch (error) {
+      console.error("Error getting token info:", error);
+      res.status(500).json({ message: "Failed to get token info" });
+    }
+  });
+
+  app.get('/api/web3/smart-contracts', async (req, res) => {
+    try {
+      const contracts = web3Integration.getLoadContracts();
+      res.json(contracts);
+    } catch (error) {
+      console.error("Error getting smart contracts:", error);
+      res.status(500).json({ message: "Failed to get smart contracts" });
+    }
+  });
+
+  app.get('/api/web3/driver-nfts', async (req, res) => {
+    try {
+      const nfts = web3Integration.getAllDriverNFTs();
+      res.json(nfts);
+    } catch (error) {
+      console.error("Error getting driver NFTs:", error);
+      res.status(500).json({ message: "Failed to get driver NFTs" });
+    }
+  });
+
+  app.get('/api/web3/driver-nft/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const nft = web3Integration.getDriverNFT(parseInt(driverId));
+      res.json(nft || null);
+    } catch (error) {
+      console.error("Error getting driver NFT:", error);
+      res.status(500).json({ message: "Failed to get driver NFT" });
+    }
+  });
+
+  app.get('/api/web3/staking-pools', async (req, res) => {
+    try {
+      const pools = web3Integration.getStakingPools();
+      res.json(pools);
+    } catch (error) {
+      console.error("Error getting staking pools:", error);
+      res.status(500).json({ message: "Failed to get staking pools" });
+    }
+  });
+
+  app.get('/api/web3/transactions', async (req, res) => {
+    try {
+      const transactions = web3Integration.getTransactionHistory();
+      res.json(transactions);
+    } catch (error) {
+      console.error("Error getting transaction history:", error);
+      res.status(500).json({ message: "Failed to get transaction history" });
+    }
+  });
+
+  app.get('/api/web3/stats', async (req, res) => {
+    try {
+      const stats = web3Integration.getWeb3Stats();
+      const tokenValue = web3Integration.calculateTokenValue();
+      res.json({ ...stats, currentTokenValue: tokenValue });
+    } catch (error) {
+      console.error("Error getting Web3 stats:", error);
+      res.status(500).json({ message: "Failed to get Web3 stats" });
+    }
+  });
+
+  app.post('/api/web3/stake-tokens', async (req, res) => {
+    try {
+      const { userAddress, amount, poolId } = req.body;
+      const success = await web3Integration.stakeTokens(userAddress, amount, poolId);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error staking tokens:", error);
+      res.status(500).json({ message: "Failed to stake tokens" });
+    }
+  });
+
+  app.post('/api/web3/create-load-contract', async (req, res) => {
+    try {
+      const { loadId, shipper, driver, rate, pickupDeadline, deliveryDeadline } = req.body;
+      const contract = await web3Integration.createLoadContract(
+        loadId, shipper, driver, rate, 
+        new Date(pickupDeadline), new Date(deliveryDeadline)
+      );
+      res.json(contract);
+    } catch (error) {
+      console.error("Error creating load contract:", error);
+      res.status(500).json({ message: "Failed to create load contract" });
+    }
+  });
+
+  app.post('/api/web3/process-payment/:contractId', async (req, res) => {
+    try {
+      const { contractId } = req.params;
+      const success = await web3Integration.processInstantPayment(contractId);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error processing instant payment:", error);
+      res.status(500).json({ message: "Failed to process instant payment" });
+    }
+  });
+
+  app.post('/api/web3/mint-driver-nft', async (req, res) => {
+    try {
+      const { driverId, metadata } = req.body;
+      const nft = await web3Integration.mintDriverNFT(driverId, metadata);
+      res.json(nft);
+    } catch (error) {
+      console.error("Error minting driver NFT:", error);
+      res.status(500).json({ message: "Failed to mint driver NFT" });
     }
   });
 
