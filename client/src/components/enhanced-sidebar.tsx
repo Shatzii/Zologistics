@@ -93,6 +93,12 @@ const navigation = [
     href: "/collaborative-network",
     icon: Handshake,
     badge: "Active"
+  },
+  {
+    name: "Multi-Vehicle Brokerage",
+    href: "/multi-vehicle-brokerage",
+    icon: Truck,
+    badge: "AI"
   }
 ];
 
