@@ -32,6 +32,7 @@ import { multiVehicleBrokerage } from "./multi-vehicle-brokerage";
 import { globalLogisticsOptimizer } from "./global-logistics-optimization";
 import { productionAI } from "./production-ai-engine";
 import { authenticLoadIntegration } from "./authentic-load-integration";
+import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 
 // Self-hosted AI engine replaces external dependencies
 
