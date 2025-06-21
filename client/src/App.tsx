@@ -32,6 +32,7 @@ import ProductionDashboardPage from "@/pages/production-dashboard";
 import LoadSourcesIntegrationPage from "@/pages/load-sources-integration";
 import DriverMarketingPage from "@/pages/driver-marketing";
 import DriverLoadsDashboardPage from "@/pages/driver-loads-dashboard";
+import Web3BlockchainDashboard from "@/pages/web3-blockchain-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -105,6 +106,7 @@ function Router() {
         <Route path="/load-sources" component={LoadSourcesIntegrationPage} />
         <Route path="/driver-marketing" component={DriverMarketingPage} />
         <Route path="/driver-loads" component={DriverLoadsDashboardPage} />
+        <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>
