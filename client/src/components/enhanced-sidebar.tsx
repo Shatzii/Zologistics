@@ -18,7 +18,8 @@ import {
   Heart,
   Shield,
   Globe,
-  Handshake
+  Handshake,
+  Database
 } from "lucide-react";
 
 const navigation = [
