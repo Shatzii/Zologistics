@@ -118,6 +118,12 @@ const navigation = [
     href: "/driver-marketing",
     icon: Users,
     badge: "AI"
+  },
+  {
+    name: "Driver Loads",
+    href: "/driver-loads",
+    icon: Truck,
+    badge: "$498 Saved"
   }
 ];
 

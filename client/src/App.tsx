@@ -31,6 +31,7 @@ import MultiVehicleBrokeragePage from "@/pages/multi-vehicle-brokerage";
 import ProductionDashboardPage from "@/pages/production-dashboard";
 import LoadSourcesIntegrationPage from "@/pages/load-sources-integration";
 import DriverMarketingPage from "@/pages/driver-marketing";
+import DriverLoadsDashboardPage from "@/pages/driver-loads-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -103,6 +104,7 @@ function Router() {
         <Route path="/production-dashboard" component={ProductionDashboardPage} />
         <Route path="/load-sources" component={LoadSourcesIntegrationPage} />
         <Route path="/driver-marketing" component={DriverMarketingPage} />
+        <Route path="/driver-loads" component={DriverLoadsDashboardPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>

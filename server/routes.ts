@@ -34,6 +34,8 @@ import { productionAI } from "./production-ai-engine";
 import { authenticLoadIntegration } from "./authentic-load-integration";
 import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 import { driverAcquisitionEngine } from "./driver-acquisition-engine";
+import { loadAggregationService } from "./load-aggregation-service";
+import { driverReferralSystem } from "./driver-referral-system";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2836,6 +2838,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error simulating lead response:", error);
       res.status(500).json({ message: "Failed to simulate lead response" });
+    }
+  });
+
+  // Load Aggregation API endpoints
+  app.get('/api/aggregated-loads/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const loads = loadAggregationService.getLoadsForDriver(parseInt(driverId));
+      res.json(loads);
+    } catch (error) {
+      console.error("Error getting aggregated loads:", error);
+      res.status(500).json({ message: "Failed to get aggregated loads" });
+    }
+  });
+
+  app.get('/api/aggregation/metrics', async (req, res) => {
+    try {
+      const metrics = loadAggregationService.getAggregationMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting aggregation metrics:", error);
+      res.status(500).json({ message: "Failed to get aggregation metrics" });
+    }
+  });
+
+  app.get('/api/subscription/plans', async (req, res) => {
+    try {
+      const plans = loadAggregationService.getSubscriptionPlans();
+      res.json(plans);
+    } catch (error) {
+      console.error("Error getting subscription plans:", error);
+      res.status(500).json({ message: "Failed to get subscription plans" });
+    }
+  });
+
+  app.post('/api/subscription/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const { plan } = req.body;
+      const success = loadAggregationService.subscribeDriver(parseInt(driverId), plan);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error subscribing driver:", error);
+      res.status(500).json({ message: "Failed to subscribe driver" });
+    }
+  });
+
+  app.get('/api/subscription/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const subscription = loadAggregationService.getDriverSubscription(parseInt(driverId));
+      res.json(subscription || null);
+    } catch (error) {
+      console.error("Error getting driver subscription:", error);
+      res.status(500).json({ message: "Failed to get driver subscription" });
+    }
+  });
+
+  // Driver Referral System API endpoints
+  app.get('/api/referrals/driver/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const stats = driverReferralSystem.getDriverStats(parseInt(driverId));
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting driver referral stats:", error);
+      res.status(500).json({ message: "Failed to get driver referral stats" });
+    }
+  });
+
+  app.post('/api/referrals/create', async (req, res) => {
+    try {
+      const { referrerId, referrerName, refereeEmail, refereeName, shareMethod } = req.body;
+      const referral = driverReferralSystem.createReferral(
+        referrerId, referrerName, refereeEmail, refereeName, shareMethod
+      );
+      res.json(referral);
+    } catch (error) {
+      console.error("Error creating referral:", error);
+      res.status(500).json({ message: "Failed to create referral" });
+    }
+  });
+
+  app.get('/api/referrals/share/:referralCode/:type', async (req, res) => {
+    try {
+      const { referralCode, type } = req.params;
+      const content = driverReferralSystem.generateShareableContent(referralCode, type as any);
+      res.json(content);
+    } catch (error) {
+      console.error("Error generating shareable content:", error);
+      res.status(500).json({ message: "Failed to generate shareable content" });
+    }
+  });
+
+  app.get('/api/referrals/metrics', async (req, res) => {
+    try {
+      const metrics = driverReferralSystem.getReferralMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting referral metrics:", error);
+      res.status(500).json({ message: "Failed to get referral metrics" });
+    }
+  });
+
+  app.get('/api/referrals/tiers', async (req, res) => {
+    try {
+      const tiers = driverReferralSystem.getReferralTiers();
+      res.json(tiers);
+    } catch (error) {
+      console.error("Error getting referral tiers:", error);
+      res.status(500).json({ message: "Failed to get referral tiers" });
     }
   });
 
