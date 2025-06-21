@@ -105,6 +105,12 @@ const navigation = [
     href: "/production-dashboard",
     icon: Settings,
     badge: "Live"
+  },
+  {
+    name: "Load Sources",
+    href: "/load-sources",
+    icon: Database,
+    badge: "17+"
   }
 ];
 

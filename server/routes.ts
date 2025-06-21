@@ -2685,6 +2685,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Comprehensive Load Sources API endpoints
+  app.get('/api/load-sources/comprehensive', async (req, res) => {
+    try {
+      const allSources = comprehensiveLoadSourcesManager.getAllSources();
+      res.json({
+        totalSources: allSources.length,
+        activeSources: comprehensiveLoadSourcesManager.getActiveSourcesCount(),
+        totalLoadVolume: comprehensiveLoadSourcesManager.getTotalLoadVolume(),
+        sources: allSources
+      });
+    } catch (error) {
+      console.error("Error getting comprehensive load sources:", error);
+      res.status(500).json({ message: "Failed to get comprehensive load sources" });
+    }
+  });
+
+  app.get('/api/load-sources/roadmap', async (req, res) => {
+    try {
+      const roadmap = comprehensiveLoadSourcesManager.getImplementationRoadmap();
+      res.json(roadmap);
+    } catch (error) {
+      console.error("Error getting implementation roadmap:", error);
+      res.status(500).json({ message: "Failed to get implementation roadmap" });
+    }
+  });
+
+  app.get('/api/load-sources/analysis', async (req, res) => {
+    try {
+      const costAnalysis = comprehensiveLoadSourcesManager.getCostAnalysis();
+      const criticalSources = comprehensiveLoadSourcesManager.getSourcesByPriority('critical');
+      const highPrioritySources = comprehensiveLoadSourcesManager.getSourcesByPriority('high');
+      const specializedSources = comprehensiveLoadSourcesManager.getSourcesBySpecialization('auto transport');
+      
+      res.json({
+        costAnalysis,
+        breakdown: {
+          critical: criticalSources.length,
+          high: highPrioritySources.length,
+          specialized: specializedSources.length,
+          total: comprehensiveLoadSourcesManager.getAllSources().length
+        },
+        recommendations: {
+          immediate: criticalSources.slice(0, 3).map(s => s.name),
+          shortTerm: highPrioritySources.slice(0, 2).map(s => s.name),
+          specialized: specializedSources.slice(0, 2).map(s => s.name)
+        }
+      });
+    } catch (error) {
+      console.error("Error getting load sources analysis:", error);
+      res.status(500).json({ message: "Failed to get load sources analysis" });
+    }
+  });
+
+  app.get('/api/load-sources/by-priority/:priority', async (req, res) => {
+    try {
+      const { priority } = req.params;
+      if (!['critical', 'high', 'medium', 'low'].includes(priority)) {
+        return res.status(400).json({ message: 'Invalid priority level' });
+      }
+      
+      const sources = comprehensiveLoadSourcesManager.getSourcesByPriority(priority as any);
+      res.json(sources);
+    } catch (error) {
+      console.error("Error getting sources by priority:", error);
+      res.status(500).json({ message: "Failed to get sources by priority" });
+    }
+  });
+
+  app.get('/api/load-sources/by-specialization/:specialization', async (req, res) => {
+    try {
+      const { specialization } = req.params;
+      const sources = comprehensiveLoadSourcesManager.getSourcesBySpecialization(specialization);
+      res.json(sources);
+    } catch (error) {
+      console.error("Error getting sources by specialization:", error);
+      res.status(500).json({ message: "Failed to get sources by specialization" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
