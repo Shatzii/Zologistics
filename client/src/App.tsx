@@ -28,6 +28,7 @@ import AdvancedCompliancePage from "@/pages/advanced-compliance";
 import InternationalRegionsPage from "@/pages/international-regions";
 import CollaborativeNetworkPage from "@/pages/collaborative-network";
 import MultiVehicleBrokeragePage from "@/pages/multi-vehicle-brokerage";
+import ProductionDashboardPage from "@/pages/production-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -97,6 +98,7 @@ function Router() {
         <Route path="/international-regions" component={InternationalRegionsPage} />
         <Route path="/collaborative-network" component={CollaborativeNetworkPage} />
         <Route path="/multi-vehicle-brokerage" component={MultiVehicleBrokeragePage} />
+        <Route path="/production-dashboard" component={ProductionDashboardPage} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>

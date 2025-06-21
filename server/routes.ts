@@ -30,6 +30,8 @@ import { advancedComplianceSuite } from "./advanced-compliance-suite";
 import { collaborativeDriverNetwork } from "./collaborative-driver-network";
 import { multiVehicleBrokerage } from "./multi-vehicle-brokerage";
 import { globalLogisticsOptimizer } from "./global-logistics-optimization";
+import { productionAI } from "./production-ai-engine";
+import { authenticLoadIntegration } from "./authentic-load-integration";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2579,6 +2581,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching expedite opportunities:", error);
       res.status(500).json({ message: "Failed to fetch expedite opportunities" });
+    }
+  });
+
+  // Production AI Engine Routes
+  app.get('/api/production-ai/models', async (req, res) => {
+    try {
+      const modelStatus = productionAI.getModelStatus();
+      res.json(modelStatus);
+    } catch (error) {
+      console.error("Error fetching AI model status:", error);
+      res.status(500).json({ message: "Failed to fetch AI model status" });
+    }
+  });
+
+  app.post('/api/production-ai/optimize-rate', async (req, res) => {
+    try {
+      const loadDetails = req.body;
+      const analysis = await productionAI.optimizeLoadRate(loadDetails);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error optimizing load rate:", error);
+      res.status(500).json({ message: "Failed to optimize load rate" });
+    }
+  });
+
+  app.get('/api/production-ai/market-analysis', async (req, res) => {
+    try {
+      const filters = req.query;
+      const analysis = await productionAI.performMarketAnalysis(filters);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error performing market analysis:", error);
+      res.status(500).json({ message: "Failed to perform market analysis" });
+    }
+  });
+
+  app.get('/api/production-ai/market-intelligence/:route/:equipment', async (req, res) => {
+    try {
+      const { route, equipment } = req.params;
+      const intelligence = productionAI.getMarketIntelligence(route, equipment);
+      res.json(intelligence);
+    } catch (error) {
+      console.error("Error fetching market intelligence:", error);
+      res.status(500).json({ message: "Failed to fetch market intelligence" });
+    }
+  });
+
+  // Authentic Load Integration Routes
+  app.get('/api/authentic-loads', async (req, res) => {
+    try {
+      const filters = req.query;
+      const loads = await authenticLoadIntegration.getAuthenticLoads(filters);
+      res.json(loads);
+    } catch (error) {
+      console.error("Error fetching authentic loads:", error);
+      res.status(500).json({ message: "Failed to fetch authentic loads" });
+    }
+  });
+
+  app.get('/api/authentic-loads/:loadId/analysis', async (req, res) => {
+    try {
+      const { loadId } = req.params;
+      const analysis = await authenticLoadIntegration.getLoadAnalysis(loadId);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing load:", error);
+      res.status(500).json({ message: "Failed to analyze load" });
+    }
+  });
+
+  app.get('/api/load-integration/status', async (req, res) => {
+    try {
+      const status = authenticLoadIntegration.getIntegrationStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Error fetching integration status:", error);
+      res.status(500).json({ message: "Failed to fetch integration status" });
+    }
+  });
+
+  app.post('/api/load-integration/test-connection/:sourceId', async (req, res) => {
+    try {
+      const { sourceId } = req.params;
+      const result = await authenticLoadIntegration.testConnection(sourceId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error testing connection:", error);
+      res.status(500).json({ message: "Failed to test connection" });
+    }
+  });
+
+  app.put('/api/load-integration/configure/:sourceId', async (req, res) => {
+    try {
+      const { sourceId } = req.params;
+      const config = req.body;
+      await authenticLoadIntegration.configureSource(sourceId, config);
+      res.json({ success: true, message: "Source configured successfully" });
+    } catch (error) {
+      console.error("Error configuring source:", error);
+      res.status(500).json({ message: "Failed to configure source" });
     }
   });
 

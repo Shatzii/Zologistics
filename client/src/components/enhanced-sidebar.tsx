@@ -99,6 +99,12 @@ const navigation = [
     href: "/multi-vehicle-brokerage",
     icon: Truck,
     badge: "AI"
+  },
+  {
+    name: "Production Dashboard",
+    href: "/production-dashboard",
+    icon: Settings,
+    badge: "Live"
   }
 ];
 
