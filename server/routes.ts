@@ -33,6 +33,7 @@ import { globalLogisticsOptimizer } from "./global-logistics-optimization";
 import { productionAI } from "./production-ai-engine";
 import { authenticLoadIntegration } from "./authentic-load-integration";
 import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
+import { driverAcquisitionEngine } from "./driver-acquisition-engine";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2761,6 +2762,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting sources by specialization:", error);
       res.status(500).json({ message: "Failed to get sources by specialization" });
+    }
+  });
+
+  // Driver Acquisition API endpoints
+  app.get('/api/driver-acquisition/leads', async (req, res) => {
+    try {
+      const leads = driverAcquisitionEngine.getLeads();
+      res.json(leads);
+    } catch (error) {
+      console.error("Error getting driver leads:", error);
+      res.status(500).json({ message: "Failed to get driver leads" });
+    }
+  });
+
+  app.get('/api/driver-acquisition/campaigns', async (req, res) => {
+    try {
+      const campaigns = driverAcquisitionEngine.getCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error getting marketing campaigns:", error);
+      res.status(500).json({ message: "Failed to get marketing campaigns" });
+    }
+  });
+
+  app.get('/api/driver-acquisition/revenue-opportunities', async (req, res) => {
+    try {
+      const opportunities = driverAcquisitionEngine.getRevenueOpportunities();
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error getting revenue opportunities:", error);
+      res.status(500).json({ message: "Failed to get revenue opportunities" });
+    }
+  });
+
+  app.get('/api/driver-acquisition/immediate-revenue', async (req, res) => {
+    try {
+      const immediateOpportunities = driverAcquisitionEngine.getImmediateRevenueOpportunities();
+      res.json(immediateOpportunities);
+    } catch (error) {
+      console.error("Error getting immediate revenue opportunities:", error);
+      res.status(500).json({ message: "Failed to get immediate revenue opportunities" });
+    }
+  });
+
+  app.get('/api/driver-acquisition/metrics', async (req, res) => {
+    try {
+      const metrics = driverAcquisitionEngine.getAcquisitionMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting acquisition metrics:", error);
+      res.status(500).json({ message: "Failed to get acquisition metrics" });
+    }
+  });
+
+  app.post('/api/driver-acquisition/campaigns', async (req, res) => {
+    try {
+      const campaignData = req.body;
+      const campaignId = driverAcquisitionEngine.createCustomCampaign(campaignData);
+      res.json({ success: true, campaignId });
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+      res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+
+  app.post('/api/driver-acquisition/leads/:leadId/response', async (req, res) => {
+    try {
+      const { leadId } = req.params;
+      const { response } = req.body;
+      driverAcquisitionEngine.simulateLeadResponse(leadId, response);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error simulating lead response:", error);
+      res.status(500).json({ message: "Failed to simulate lead response" });
     }
   });
 

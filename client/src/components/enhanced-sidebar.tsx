@@ -112,6 +112,12 @@ const navigation = [
     href: "/load-sources",
     icon: Database,
     badge: "17+"
+  },
+  {
+    name: "Driver Marketing",
+    href: "/driver-marketing",
+    icon: Users,
+    badge: "AI"
   }
 ];
 
