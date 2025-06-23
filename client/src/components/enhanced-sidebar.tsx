@@ -142,6 +142,7 @@ interface EnhancedSidebarProps {
 
 export function EnhancedSidebar({ collapsed = false, onToggle }: EnhancedSidebarProps) {
   const [location] = useLocation();
+  const { t } = useLanguage();
 
   return (
     <div className={cn(
