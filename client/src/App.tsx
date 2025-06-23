@@ -116,6 +116,10 @@ function Router() {
         <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
         <Route path="/ghost-loads" component={GhostLoads} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
+        <Route path="/global-expansion" component={() => {
+          const GlobalExpansion = lazy(() => import("./pages/global-expansion"));
+          return <GlobalExpansion />;
+        }} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
