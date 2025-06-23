@@ -491,7 +491,11 @@ export class FuelCardManagementSystem {
         const standardPrice = 3.85; // Average market price
         const savings = (standardPrice - station.dieselPrice) * fuelToBuy;
         
-        if (card.acceptedCards.includes(station.brand) || card.acceptedCards.includes('Universal')) {
+        // Check if station accepts the card provider
+        const stationAcceptsCard = station.acceptedCards.includes(card.provider) || 
+                                 station.acceptedCards.includes('Universal');
+        
+        if (stationAcceptsCard) {
           stops.push({
             station,
             distanceFromRoute: Math.random() * 5, // 0-5 miles
