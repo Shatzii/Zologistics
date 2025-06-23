@@ -1396,7 +1396,7 @@ Manufacturing Solutions
             <li>Dairy processor: Perfect FDA audit compliance record</li>
           </ul>
           
-          <p>For {{company}}'s cold chain operation, this means <strong>guaranteed product integrity</strong> and potential <strong>${{savings}} annual savings</strong> from reduced spoilage.</p>
+          <p>For {{company}}'s cold chain operation, this means <strong>guaranteed product integrity</strong> and potential <strong>$350,000 annual savings</strong> from reduced spoilage.</p>
           
           <p><strong>Want to see the cold chain monitoring in action?</strong> Quick demo shows real-time temperature data and alerts.</p>
           
@@ -1422,7 +1422,7 @@ Food & beverage companies using our platform:
 - Frozen food manufacturer: 50% reduction in insurance claims
 - Dairy processor: Perfect FDA audit compliance record
 
-For {{company}}'s cold chain operation, this means guaranteed product integrity and potential ${{savings}} annual savings from reduced spoilage.
+For {{company}}'s cold chain operation, this means guaranteed product integrity and potential $350,000 annual savings from reduced spoilage.
 
 Want to see the cold chain monitoring in action? Quick demo shows real-time temperature data and alerts.
 
