@@ -3355,6 +3355,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Autonomous Operations routes
+  app.get('/api/autonomous/status', async (req, res) => {
+    try {
+      const { autonomousDispatchEngine } = await import('./autonomous-dispatch-engine');
+      const { autonomousCustomerAcquisition } = await import('./autonomous-customer-acquisition');
+      
+      const dispatchStatus = autonomousDispatchEngine.getAutonomousStatus();
+      const acquisitionStatus = autonomousCustomerAcquisition.getAutonomousStatus();
+      
+      res.json({
+        dispatch: dispatchStatus,
+        customerAcquisition: acquisitionStatus,
+        overallAutomation: {
+          fullyAutonomous: true,
+          systemsActive: 8,
+          monthlyRevenue: dispatchStatus.profitProgress.current + acquisitionStatus.totalRevenue,
+          growthRate: 15
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch autonomous status' });
+    }
+  });
+
+  app.get('/api/autonomous/decisions', async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 20;
+      const { autonomousDispatchEngine } = await import('./autonomous-dispatch-engine');
+      const decisions = autonomousDispatchEngine.getRecentDecisions(limit);
+      res.json(decisions);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch autonomous decisions' });
+    }
+  });
+
+  app.get('/api/autonomous/loads', async (req, res) => {
+    try {
+      const { autonomousDispatchEngine } = await import('./autonomous-dispatch-engine');
+      const loads = autonomousDispatchEngine.getAcquiredLoads();
+      res.json(loads);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch acquired loads' });
+    }
+  });
+
+  app.get('/api/autonomous/drivers', async (req, res) => {
+    try {
+      const { autonomousDispatchEngine } = await import('./autonomous-dispatch-engine');
+      const drivers = autonomousDispatchEngine.getManagedDrivers();
+      res.json(drivers);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch managed drivers' });
+    }
+  });
+
+  app.post('/api/autonomous/toggle/:mode', async (req, res) => {
+    try {
+      const mode = req.params.mode === 'true';
+      const { autonomousDispatchEngine } = await import('./autonomous-dispatch-engine');
+      autonomousDispatchEngine.toggleAutonomousMode(mode);
+      res.json({ success: true, autonomousMode: mode });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to toggle autonomous mode' });
+    }
+  });
+
+  // Customer Acquisition routes
+  app.get('/api/customers/prospects', async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const { autonomousCustomerAcquisition } = await import('./autonomous-customer-acquisition');
+      const prospects = autonomousCustomerAcquisition.getTopProspects(limit);
+      res.json(prospects);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch prospects' });
+    }
+  });
+
+  app.get('/api/customers/revenue-streams', async (req, res) => {
+    try {
+      const { autonomousCustomerAcquisition } = await import('./autonomous-customer-acquisition');
+      const streams = autonomousCustomerAcquisition.getRevenueStreams();
+      res.json(streams);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch revenue streams' });
+    }
+  });
+
+  app.get('/api/customers/campaigns', async (req, res) => {
+    try {
+      const { autonomousCustomerAcquisition } = await import('./autonomous-customer-acquisition');
+      const campaigns = autonomousCustomerAcquisition.getCampaignPerformance();
+      res.json(campaigns);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch campaign performance' });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Initialize WebSocket server for notifications
