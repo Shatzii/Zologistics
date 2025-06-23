@@ -38,6 +38,7 @@ import { loadAggregationService } from "./load-aggregation-service";
 import { driverReferralSystem } from "./driver-referral-system";
 import { web3Integration } from "./web3-integration";
 import { ghostLoadEngine } from "./ghost-load-optimization-engine";
+import { multilingualOnboarding } from "./multilingual-onboarding";
 
 // Self-hosted AI engine replaces external dependencies
 

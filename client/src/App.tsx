@@ -7,6 +7,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { EnhancedSidebar } from "@/components/enhanced-sidebar";
 import { QuickCommandPalette } from "@/components/quick-command-palette";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 // Import available page components
 import Dashboard from "@/pages/dashboard";
@@ -70,6 +72,10 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className="flex-1 flex flex-col bg-background">
+        {/* Language Toggle Header */}
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-3 flex justify-end">
+          <LanguageToggle />
+        </div>
         <main className="flex-1 overflow-auto bg-background">
           {children}
         </main>
@@ -120,12 +126,14 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark">
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <div className="driver-theme min-h-screen">
-            <Toaster />
-            <Router />
-          </div>
-        </TooltipProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <div className="driver-theme min-h-screen">
+              <Toaster />
+              <Router />
+            </div>
+          </TooltipProvider>
+        </LanguageProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
