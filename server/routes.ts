@@ -45,6 +45,11 @@ import { backhaulRouteOptimizer } from "./backhaul-route-optimizer";
 import { internationalLoadBoardManager } from "./international-load-boards";
 import { globalGhostLoadEngine } from "./global-ghost-load-engine";
 import { liveRouteTracker } from "./live-route-tracker";
+import { eldIntegrationService } from "./eld-integration";
+import { fuelCardManagementSystem } from "./fuel-card-management";
+import { seaFreightPlatform } from "./sea-freight-platform";
+import { airFreightPlatform } from "./air-freight-platform";
+import { multiModalLogisticsEngine } from "./multi-modal-logistics-engine";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3623,6 +3628,300 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting tracking stats:", error);
       res.status(500).json({ message: "Failed to get tracking stats" });
+    }
+  });
+
+  // ELD Integration endpoints
+  app.get('/api/eld/devices', async (req, res) => {
+    try {
+      const devices = eldIntegrationService.getAllDevices();
+      res.json(devices);
+    } catch (error) {
+      console.error("Error getting ELD devices:", error);
+      res.status(500).json({ message: "Failed to get ELD devices" });
+    }
+  });
+
+  app.get('/api/eld/hos-status/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const status = eldIntegrationService.getCurrentHOSStatus(driverId);
+      res.json(status);
+    } catch (error) {
+      console.error("Error getting HOS status:", error);
+      res.status(500).json({ message: "Failed to get HOS status" });
+    }
+  });
+
+  app.get('/api/eld/violations/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const violations = eldIntegrationService.getViolations(driverId);
+      res.json(violations);
+    } catch (error) {
+      console.error("Error getting violations:", error);
+      res.status(500).json({ message: "Failed to get violations" });
+    }
+  });
+
+  app.get('/api/eld/fuel-purchases/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const days = parseInt(req.query.days as string) || 30;
+      const purchases = eldIntegrationService.getFuelPurchases(driverId, days);
+      res.json(purchases);
+    } catch (error) {
+      console.error("Error getting fuel purchases:", error);
+      res.status(500).json({ message: "Failed to get fuel purchases" });
+    }
+  });
+
+  app.get('/api/eld/compliance-stats', async (req, res) => {
+    try {
+      const stats = eldIntegrationService.getComplianceStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting compliance stats:", error);
+      res.status(500).json({ message: "Failed to get compliance stats" });
+    }
+  });
+
+  // Fuel Card Management endpoints
+  app.get('/api/fuel/cards', async (req, res) => {
+    try {
+      const cards = fuelCardManagementSystem.getAllFuelCards();
+      res.json(cards);
+    } catch (error) {
+      console.error("Error getting fuel cards:", error);
+      res.status(500).json({ message: "Failed to get fuel cards" });
+    }
+  });
+
+  app.get('/api/fuel/stations', async (req, res) => {
+    try {
+      const filters = {
+        brand: req.query.brand as string,
+        maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined
+      };
+      const stations = fuelCardManagementSystem.getFuelStations(filters);
+      res.json(stations);
+    } catch (error) {
+      console.error("Error getting fuel stations:", error);
+      res.status(500).json({ message: "Failed to get fuel stations" });
+    }
+  });
+
+  app.post('/api/fuel/optimize-route', async (req, res) => {
+    try {
+      const { driverId, currentLocation, destination, currentFuelLevel, tankCapacity, fuelEfficiency } = req.body;
+      
+      const optimization = await fuelCardManagementSystem.optimizeFuelRoute(
+        driverId,
+        currentLocation,
+        destination,
+        currentFuelLevel,
+        tankCapacity,
+        fuelEfficiency
+      );
+      
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error optimizing fuel route:", error);
+      res.status(500).json({ message: "Failed to optimize fuel route" });
+    }
+  });
+
+  app.get('/api/fuel/savings-report/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const period = req.query.period as 'month' | 'quarter' | 'year' || 'month';
+      const report = fuelCardManagementSystem.getFuelSavingsReport(driverId, period);
+      res.json(report);
+    } catch (error) {
+      console.error("Error getting fuel savings report:", error);
+      res.status(500).json({ message: "Failed to get fuel savings report" });
+    }
+  });
+
+  app.get('/api/fuel/fleet-stats', async (req, res) => {
+    try {
+      const stats = fuelCardManagementSystem.getFleetFuelStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting fleet fuel stats:", error);
+      res.status(500).json({ message: "Failed to get fleet fuel stats" });
+    }
+  });
+
+  // Sea Freight Platform endpoints
+  app.post('/api/sea-freight/shipments', async (req, res) => {
+    try {
+      const shipment = await seaFreightPlatform.createOceanShipment(req.body);
+      res.json(shipment);
+    } catch (error) {
+      console.error("Error creating sea freight shipment:", error);
+      res.status(500).json({ message: "Failed to create sea freight shipment" });
+    }
+  });
+
+  app.get('/api/sea-freight/shipments', async (req, res) => {
+    try {
+      const shipments = seaFreightPlatform.getAllShipments();
+      res.json(shipments);
+    } catch (error) {
+      console.error("Error getting sea freight shipments:", error);
+      res.status(500).json({ message: "Failed to get sea freight shipments" });
+    }
+  });
+
+  app.get('/api/sea-freight/shipments/:id', async (req, res) => {
+    try {
+      const shipment = seaFreightPlatform.getShipment(req.params.id);
+      if (!shipment) {
+        return res.status(404).json({ message: "Shipment not found" });
+      }
+      res.json(shipment);
+    } catch (error) {
+      console.error("Error getting sea freight shipment:", error);
+      res.status(500).json({ message: "Failed to get sea freight shipment" });
+    }
+  });
+
+  app.get('/api/sea-freight/ports', async (req, res) => {
+    try {
+      const ports = seaFreightPlatform.getAllPorts();
+      res.json(ports);
+    } catch (error) {
+      console.error("Error getting ports:", error);
+      res.status(500).json({ message: "Failed to get ports" });
+    }
+  });
+
+  app.get('/api/sea-freight/carriers', async (req, res) => {
+    try {
+      const carriers = seaFreightPlatform.getAllCarriers();
+      res.json(carriers);
+    } catch (error) {
+      console.error("Error getting sea freight carriers:", error);
+      res.status(500).json({ message: "Failed to get sea freight carriers" });
+    }
+  });
+
+  app.get('/api/sea-freight/analytics', async (req, res) => {
+    try {
+      const analytics = seaFreightPlatform.getSeaFreightRevenueAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error getting sea freight analytics:", error);
+      res.status(500).json({ message: "Failed to get sea freight analytics" });
+    }
+  });
+
+  // Air Freight Platform endpoints
+  app.post('/api/air-freight/shipments', async (req, res) => {
+    try {
+      const shipment = await airFreightPlatform.createAirShipment(req.body);
+      res.json(shipment);
+    } catch (error) {
+      console.error("Error creating air freight shipment:", error);
+      res.status(500).json({ message: "Failed to create air freight shipment" });
+    }
+  });
+
+  app.get('/api/air-freight/shipments', async (req, res) => {
+    try {
+      const shipments = airFreightPlatform.getAllShipments();
+      res.json(shipments);
+    } catch (error) {
+      console.error("Error getting air freight shipments:", error);
+      res.status(500).json({ message: "Failed to get air freight shipments" });
+    }
+  });
+
+  app.get('/api/air-freight/shipments/:id', async (req, res) => {
+    try {
+      const shipment = airFreightPlatform.getShipment(req.params.id);
+      if (!shipment) {
+        return res.status(404).json({ message: "Shipment not found" });
+      }
+      res.json(shipment);
+    } catch (error) {
+      console.error("Error getting air freight shipment:", error);
+      res.status(500).json({ message: "Failed to get air freight shipment" });
+    }
+  });
+
+  app.get('/api/air-freight/airports', async (req, res) => {
+    try {
+      const airports = airFreightPlatform.getAllAirports();
+      res.json(airports);
+    } catch (error) {
+      console.error("Error getting airports:", error);
+      res.status(500).json({ message: "Failed to get airports" });
+    }
+  });
+
+  app.get('/api/air-freight/carriers', async (req, res) => {
+    try {
+      const carriers = airFreightPlatform.getAllCarriers();
+      res.json(carriers);
+    } catch (error) {
+      console.error("Error getting air freight carriers:", error);
+      res.status(500).json({ message: "Failed to get air freight carriers" });
+    }
+  });
+
+  app.get('/api/air-freight/analytics', async (req, res) => {
+    try {
+      const analytics = airFreightPlatform.getAirFreightRevenueAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error getting air freight analytics:", error);
+      res.status(500).json({ message: "Failed to get air freight analytics" });
+    }
+  });
+
+  // Multi-Modal Logistics endpoints
+  app.post('/api/multi-modal/shipments', async (req, res) => {
+    try {
+      const shipment = await multiModalLogisticsEngine.createMultiModalShipment(req.body);
+      res.json(shipment);
+    } catch (error) {
+      console.error("Error creating multi-modal shipment:", error);
+      res.status(500).json({ message: "Failed to create multi-modal shipment" });
+    }
+  });
+
+  app.get('/api/multi-modal/shipments', async (req, res) => {
+    try {
+      const shipments = multiModalLogisticsEngine.getAllShipments();
+      res.json(shipments);
+    } catch (error) {
+      console.error("Error getting multi-modal shipments:", error);
+      res.status(500).json({ message: "Failed to get multi-modal shipments" });
+    }
+  });
+
+  app.get('/api/multi-modal/analytics', async (req, res) => {
+    try {
+      const analytics = multiModalLogisticsEngine.getMarketAnalysis();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error getting multi-modal analytics:", error);
+      res.status(500).json({ message: "Failed to get multi-modal analytics" });
+    }
+  });
+
+  app.post('/api/multi-modal/book/:shipmentId', async (req, res) => {
+    try {
+      const success = await multiModalLogisticsEngine.bookShipment(req.params.shipmentId);
+      if (!success) {
+        return res.status(404).json({ message: "Shipment not found" });
+      }
+      res.json({ success: true, message: "Shipment booked successfully" });
+    } catch (error) {
+      console.error("Error booking multi-modal shipment:", error);
+      res.status(500).json({ message: "Failed to book shipment" });
     }
   });
 
