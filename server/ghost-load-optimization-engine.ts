@@ -325,18 +325,56 @@ export class GhostLoadOptimizationEngine {
    * Simulates discovering new ghost loads in the market
    */
   private simulateGhostLoadDiscovery(): GhostLoad[] {
+    // Enhanced with Central America and EU markets
     const cities = [
-      { name: 'Los Angeles, CA', lat: 34.0522, lng: -118.2437 },
-      { name: 'Dallas, TX', lat: 32.7767, lng: -96.7970 },
-      { name: 'Miami, FL', lat: 25.7617, lng: -80.1918 },
-      { name: 'Seattle, WA', lat: 47.6062, lng: -122.3321 },
-      { name: 'New York, NY', lat: 40.7128, lng: -74.0060 },
-      { name: 'Kansas City, MO', lat: 39.0997, lng: -94.5786 }
+      // North America
+      { name: 'Los Angeles, CA', lat: 34.0522, lng: -118.2437, region: 'north_america' },
+      { name: 'Dallas, TX', lat: 32.7767, lng: -96.7970, region: 'north_america' },
+      { name: 'Miami, FL', lat: 25.7617, lng: -80.1918, region: 'north_america' },
+      { name: 'Seattle, WA', lat: 47.6062, lng: -122.3321, region: 'north_america' },
+      { name: 'New York, NY', lat: 40.7128, lng: -74.0060, region: 'north_america' },
+      { name: 'Kansas City, MO', lat: 39.0997, lng: -94.5786, region: 'north_america' },
+      
+      // Central America
+      { name: 'Panama City, PA', lat: 8.9824, lng: -79.5199, region: 'central_america' },
+      { name: 'San José, CR', lat: 9.9281, lng: -84.0907, region: 'central_america' },
+      { name: 'Guatemala City, GT', lat: 14.6349, lng: -90.5069, region: 'central_america' },
+      { name: 'Tegucigalpa, HN', lat: 14.0723, lng: -87.1921, region: 'central_america' },
+      { name: 'San Salvador, SV', lat: 13.6929, lng: -89.2182, region: 'central_america' },
+      { name: 'Managua, NI', lat: 12.1364, lng: -86.2514, region: 'central_america' },
+      
+      // European Union
+      { name: 'Hamburg, DE', lat: 53.5511, lng: 9.9937, region: 'european_union' },
+      { name: 'Rotterdam, NL', lat: 51.9225, lng: 4.4792, region: 'european_union' },
+      { name: 'Antwerp, BE', lat: 51.2194, lng: 4.4025, region: 'european_union' },
+      { name: 'Milan, IT', lat: 45.4642, lng: 9.1900, region: 'european_union' },
+      { name: 'Barcelona, ES', lat: 41.3851, lng: 2.1734, region: 'european_union' },
+      { name: 'Lyon, FR', lat: 45.7640, lng: 4.8357, region: 'european_union' },
+      { name: 'Warsaw, PL', lat: 52.2297, lng: 21.0122, region: 'european_union' },
+      { name: 'Prague, CZ', lat: 50.0755, lng: 14.4378, region: 'european_union' }
     ];
     
     const sources: GhostLoad['source'][] = ['expired_posting', 'cancelled_booking', 'broker_oversight', 'timing_mismatch', 'rate_dispute'];
     const equipment = ['Dry Van', 'Refrigerated', 'Flatbed', 'Step Deck', 'Box Truck'];
-    const commodities = ['Consumer Electronics', 'Food Products', 'Auto Parts', 'Construction Materials', 'Retail Goods'];
+    
+    // Region-specific commodities and pricing
+    const regionalData = {
+      north_america: {
+        commodities: ['Consumer Electronics', 'Food Products', 'Auto Parts', 'Construction Materials', 'Retail Goods'],
+        baseRateMultiplier: 1.0,
+        ghostLoadPremium: 1.15
+      },
+      central_america: {
+        commodities: ['Coffee', 'Bananas', 'Medical Devices', 'Textiles', 'Electronics Assembly'],
+        baseRateMultiplier: 1.25,
+        ghostLoadPremium: 1.35
+      },
+      european_union: {
+        commodities: ['Automotive Parts', 'Luxury Goods', 'Pharmaceuticals', 'Fresh Flowers', 'Machinery'],
+        baseRateMultiplier: 1.40,
+        ghostLoadPremium: 1.25
+      }
+    };
     
     const newLoads: GhostLoad[] = [];
     const loadCount = Math.floor(Math.random() * 8) + 3; // 3-10 new ghost loads per scan
@@ -347,10 +385,18 @@ export class GhostLoadOptimizationEngine {
       
       if (origin.name === destination.name) continue; // Skip same city loads
       
-      const distance = Math.floor(Math.random() * 1500) + 200; // 200-1700 miles
-      const baseRate = distance * (1.8 + Math.random() * 0.8); // $1.80-2.60 per mile base
-      const marketRate = baseRate * (1.1 + Math.random() * 0.3); // 10-40% above base
-      const optimizedRate = marketRate * (1.15 + Math.random() * 0.25); // 15-40% above market due to optimization
+      // Get regional data for pricing calculations
+      const regionData = regionalData[origin.region as keyof typeof regionalData];
+      const commodity = regionData.commodities[Math.floor(Math.random() * regionData.commodities.length)];
+      
+      // Calculate distance based on region (EU has shorter average distances)
+      const baseDistance = origin.region === 'european_union' ? 800 : 1500;
+      const distance = Math.floor(Math.random() * baseDistance) + 200;
+      
+      // Regional pricing with appropriate multipliers
+      const baseRate = distance * (1.8 + Math.random() * 0.8) * regionData.baseRateMultiplier;
+      const marketRate = baseRate * (1.1 + Math.random() * 0.3);
+      const optimizedRate = marketRate * regionData.ghostLoadPremium;
       
       const ghostLoad: GhostLoad = {
         id: `ghost-${Date.now()}-${i}`,
@@ -376,14 +422,14 @@ export class GhostLoadOptimizationEngine {
         },
         equipment: equipment[Math.floor(Math.random() * equipment.length)],
         weight: Math.floor(Math.random() * 35000) + 15000, // 15k-50k lbs
-        commodity: commodities[Math.floor(Math.random() * commodities.length)],
+        commodity: commodity,
         distance,
         originalRate: Math.floor(baseRate),
         marketRate: Math.floor(marketRate),
         optimizedRate: Math.floor(optimizedRate),
         urgencyLevel: ['low', 'medium', 'high', 'critical'][Math.floor(Math.random() * 4)] as any,
         demurrageRisk: Math.floor(Math.random() * 80) + 10, // 10-90%
-        reasonForAvailability: this.generateGhostLoadReason(),
+        reasonForAvailability: this.generateGhostLoadReason(origin.region),
         timeOnMarket: Math.floor(Math.random() * 24) + 1, // 1-24 hours
         competitorMisses: Math.floor(Math.random() * 20) + 3, // 3-23 misses
         routeOptimizationScore: Math.floor(Math.random() * 40) + 60, // 60-100 score
@@ -400,20 +446,36 @@ export class GhostLoadOptimizationEngine {
     return newLoads;
   }
   
-  private generateGhostLoadReason(): string {
-    const reasons = [
-      'Broker overbooked and had to drop lowest margin load',
-      'Shipper changed pickup time, original driver couldn\'t accommodate',
-      'Rate dispute between shipper and original broker fell through',
-      'Load posted in wrong equipment category, went unnoticed',
-      'Small broker lacks carrier network for this lane',
-      'Timing conflict with driver\'s hours of service regulations',
-      'Original carrier had equipment breakdown last minute',
-      'Shipper freight class was miscategorized, repriced higher',
-      'Load requires special handling that wasn\'t initially specified',
-      'Cross-dock timing issue caused original plan to fail'
-    ];
+  private generateGhostLoadReason(region: string): string {
+    const reasonsByRegion = {
+      north_america: [
+        'Broker overbooked and had to drop lowest margin load',
+        'Rate dispute between shipper and original broker fell through',
+        'Timing conflict with driver\'s hours of service regulations',
+        'Original carrier had equipment breakdown last minute',
+        'Cross-dock timing issue caused original plan to fail'
+      ],
+      central_america: [
+        'Infrastructure delays due to road conditions in rainy season',
+        'Cross-border documentation issues with CAFTA-DR requirements',
+        'Currency fluctuation exceeded broker\'s risk tolerance',
+        'Security escort requirements not initially factored in',
+        'Customs clearance timing mismatch at border crossing',
+        'Small local broker lacks carrier network for this route',
+        'Fuel availability concerns in remote pickup location'
+      ],
+      european_union: [
+        'EU Mobility Package compliance violation by original carrier',
+        'Low Emission Zone restriction discovered after booking',
+        'Driver weekly rest period conflict with delivery schedule',
+        'Brexit documentation requirements caused booking failure',
+        'Cabotage restrictions prevented original carrier assignment',
+        'Digital tachograph data compliance issue',
+        'Multi-language documentation error in customs paperwork'
+      ]
+    };
     
+    const reasons = reasonsByRegion[region as keyof typeof reasonsByRegion] || reasonsByRegion.north_america;
     return reasons[Math.floor(Math.random() * reasons.length)];
   }
   
@@ -723,6 +785,7 @@ export class GhostLoadOptimizationEngine {
     totalNetworkValue: number;
     conversionRate: number;
     topCategories: Array<{ category: string; count: number; value: number }>;
+    regionalBreakdown: Array<{ region: string; loads: number; revenue: number; avgMargin: number }>;
   } {
     const allLoads = Array.from(this.ghostLoads.values());
     const totalPotentialRevenue = allLoads.reduce((sum, load) => sum + load.optimizedRate, 0);
@@ -749,13 +812,48 @@ export class GhostLoadOptimizationEngine {
       .map(([category, data]) => ({ category, ...data }))
       .sort((a, b) => b.value - a.value);
     
+    // Calculate regional breakdown
+    const regionalMap = new Map<string, { loads: number; revenue: number; totalMargin: number }>();
+    allLoads.forEach(load => {
+      // Extract region from load origin (simplified approach)
+      let region = 'North America'; // default
+      if (load.origin.location.includes('PA') || load.origin.location.includes('CR') || 
+          load.origin.location.includes('GT') || load.origin.location.includes('HN') ||
+          load.origin.location.includes('SV') || load.origin.location.includes('NI')) {
+        region = 'Central America';
+      } else if (load.origin.location.includes('DE') || load.origin.location.includes('NL') ||
+                load.origin.location.includes('BE') || load.origin.location.includes('IT') ||
+                load.origin.location.includes('ES') || load.origin.location.includes('FR') ||
+                load.origin.location.includes('PL') || load.origin.location.includes('CZ')) {
+        region = 'European Union';
+      }
+      
+      if (!regionalMap.has(region)) {
+        regionalMap.set(region, { loads: 0, revenue: 0, totalMargin: 0 });
+      }
+      const regionData = regionalMap.get(region)!;
+      regionData.loads++;
+      regionData.revenue += load.optimizedRate;
+      regionData.totalMargin += load.marginPotential;
+    });
+    
+    const regionalBreakdown = Array.from(regionalMap.entries())
+      .map(([region, data]) => ({
+        region,
+        loads: data.loads,
+        revenue: data.revenue,
+        avgMargin: data.loads > 0 ? (data.totalMargin / data.loads) * 100 : 0
+      }))
+      .sort((a, b) => b.revenue - a.revenue);
+    
     return {
       totalGhostLoads: allLoads.length,
       totalPotentialRevenue,
       averageMarginPotential: isNaN(averageMarginPotential) ? 0 : averageMarginPotential,
       totalNetworkValue,
       conversionRate: isNaN(conversionRate) ? 0 : conversionRate,
-      topCategories
+      topCategories,
+      regionalBreakdown
     };
   }
   
