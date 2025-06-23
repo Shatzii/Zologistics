@@ -40,6 +40,7 @@ import { web3Integration } from "./web3-integration";
 import { ghostLoadEngine } from "./ghost-load-optimization-engine";
 import { multilingualOnboarding } from "./multilingual-onboarding";
 import { oneClickReferralSystem } from "./one-click-referral-system";
+import { regionalLoadBoardOptimizer } from "./regional-load-board-optimizer";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3038,6 +3039,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error tracking referral signup:", error);
       res.status(500).json({ message: "Failed to track referral signup" });
+    }
+  });
+
+  // Regional Load Board Optimizer endpoints
+  app.post('/api/load-boards/switch-region', async (req, res) => {
+    try {
+      const { region } = req.body;
+      const result = regionalLoadBoardOptimizer.switchToRegion(region);
+      res.json(result);
+    } catch (error) {
+      console.error("Error switching load board region:", error);
+      res.status(500).json({ message: "Failed to switch load board region" });
+    }
+  });
+
+  app.get('/api/load-boards/optimizations', async (req, res) => {
+    try {
+      const optimizations = regionalLoadBoardOptimizer.getAllRegionalOptimizations();
+      const result = Object.fromEntries(optimizations);
+      res.json(result);
+    } catch (error) {
+      console.error("Error getting load board optimizations:", error);
+      res.status(500).json({ message: "Failed to get load board optimizations" });
+    }
+  });
+
+  app.get('/api/load-boards/region/:region', async (req, res) => {
+    try {
+      const { region } = req.params;
+      const loadBoards = regionalLoadBoardOptimizer.getLoadBoardsForRegion(region);
+      res.json(loadBoards);
+    } catch (error) {
+      console.error("Error getting load boards for region:", error);
+      res.status(500).json({ message: "Failed to get load boards for region" });
+    }
+  });
+
+  app.get('/api/load-boards/optimize/:region', async (req, res) => {
+    try {
+      const { region } = req.params;
+      const optimizations = regionalLoadBoardOptimizer.optimizeForRegion(region);
+      res.json(optimizations);
+    } catch (error) {
+      console.error("Error optimizing load boards for region:", error);
+      res.status(500).json({ message: "Failed to optimize load boards for region" });
+    }
+  });
+
+  app.get('/api/load-boards/metrics', async (req, res) => {
+    try {
+      const metrics = regionalLoadBoardOptimizer.getOptimizationMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting load board metrics:", error);
+      res.status(500).json({ message: "Failed to get load board metrics" });
     }
   });
 
