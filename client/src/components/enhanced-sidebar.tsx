@@ -144,6 +144,12 @@ const navigation = [
     href: "/global-valuation",
     icon: Globe,
     badge: "$246B"
+  },
+  {
+    name: "Driver Route Optimizer",
+    href: "/driver-earnings",
+    icon: Truck,
+    badge: "AI"
   }
 ];
 

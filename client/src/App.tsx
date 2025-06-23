@@ -42,6 +42,7 @@ import BackhaulOptimizer from "@/pages/backhaul-optimizer";
 import InternationalLoadBoards from "@/pages/international-load-boards";
 import GlobalValuationDashboard from "@/pages/global-valuation-dashboard";
 import EarningsSimulator from "@/pages/earnings-simulator";
+import DriverEarningsSimulator from "@/pages/driver-earnings-simulator";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -128,6 +129,7 @@ function Router() {
         <Route path="/international-load-boards" component={InternationalLoadBoards} />
         <Route path="/global-valuation" component={GlobalValuationDashboard} />
         <Route path="/earnings-simulator" component={EarningsSimulator} />
+        <Route path="/driver-earnings" component={DriverEarningsSimulator} />
         <Route path="/global-expansion" component={() => {
           const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;

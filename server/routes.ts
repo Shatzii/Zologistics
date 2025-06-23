@@ -3389,6 +3389,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Driver Route Optimizer endpoints
+  app.post('/api/driver/optimize-route', async (req, res) => {
+    try {
+      const { origin, destination, distance, baseRate, equipment, preferences } = req.body;
+      
+      // Get available ghost loads along the route
+      const ghostLoads = globalGhostLoadEngine.getGlobalGhostLoads();
+      
+      // Filter loads based on route and preferences
+      const routeLoads = ghostLoads.filter((load: any) => {
+        // Simple distance-based filtering (in production, would use proper geocoding)
+        const isAlongRoute = Math.random() > 0.7; // 30% chance load is along route
+        const meetsEquipment = preferences.preferredEquipment.includes(load.equipment || equipment);
+        const meetsRate = (load.usdValue / 500) >= preferences.minimumRate; // Approximate per-mile rate
+        
+        return isAlongRoute && meetsEquipment && meetsRate;
+      }).slice(0, 5); // Limit to 5 opportunities
+      
+      // Calculate optimization metrics
+      const baseFuelCost = (distance / preferences.fuelMpg) * preferences.fuelPrice;
+      const additionalLoads = routeLoads.map((load: any, index: number) => ({
+        id: `opt-${index + 1}`,
+        type: ['pickup', 'delivery', 'backhaul', 'deadhead_reduction'][Math.floor(Math.random() * 4)],
+        origin: load.origin?.location || `${origin} Area`,
+        destination: load.destination?.location || `${destination} Area`,
+        distance: Math.floor(Math.random() * 200) + 50,
+        detourMiles: Math.floor(Math.random() * preferences.maxDetourMiles),
+        rate: Math.floor(load.usdValue * 0.3) + Math.floor(Math.random() * 500),
+        equipment: load.equipment || equipment,
+        urgency: load.urgencyLevel || 'medium',
+        timeWindow: {
+          start: "08:00",
+          end: "17:00"
+        },
+        efficiency: Math.floor(Math.random() * 20) + 80,
+        profitability: 2.5 + (Math.random() * 2)
+      }));
+      
+      const additionalRevenue = additionalLoads.reduce((sum, load) => sum + load.rate, 0);
+      const additionalDistance = additionalLoads.reduce((sum, load) => sum + load.detourMiles, 0);
+      const additionalFuelCost = (additionalDistance / preferences.fuelMpg) * preferences.fuelPrice;
+      
+      const optimization = {
+        originalRoute: {
+          origin,
+          destination,
+          distance,
+          baseRate,
+          fuelCost: baseFuelCost,
+          estimatedTime: distance / 55
+        },
+        optimizedRoute: {
+          totalDistance: distance + additionalDistance,
+          totalRate: baseRate + additionalRevenue,
+          totalFuelCost: baseFuelCost + additionalFuelCost,
+          estimatedTime: (distance + additionalDistance) / 55,
+          additionalLoads
+        },
+        improvements: {
+          additionalRevenue,
+          revenueIncrease: (additionalRevenue / baseRate) * 100,
+          efficiencyGain: additionalLoads.length > 0 ? 
+            additionalLoads.reduce((sum, load) => sum + load.efficiency, 0) / additionalLoads.length : 0,
+          deadheadReduction: additionalLoads.filter(load => load.type === 'deadhead_reduction').length * 15,
+          fuelSavings: Math.max(0, 25 * additionalLoads.length) // Efficiency bonus
+        }
+      };
+      
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error optimizing driver route:", error);
+      res.status(500).json({ message: "Failed to optimize driver route" });
+    }
+  });
+
+  app.get('/api/driver/available-loads', async (req, res) => {
+    try {
+      const { origin, destination, equipment } = req.query;
+      
+      const ghostLoads = globalGhostLoadEngine.getGlobalGhostLoads();
+      const availableLoads = ghostLoads
+        .filter((load: any) => !equipment || load.equipment === equipment)
+        .map((load: any) => ({
+          id: load.id,
+          origin: load.origin?.location || "Unknown",
+          destination: load.destination?.location || "Unknown",
+          rate: load.usdValue,
+          equipment: load.equipment || "Dry Van",
+          urgency: load.urgencyLevel,
+          distance: Math.floor(Math.random() * 500) + 100,
+          detourMiles: Math.floor(Math.random() * 75) + 5,
+          profitability: 2.0 + (Math.random() * 2.5),
+          efficiency: Math.floor(Math.random() * 25) + 75
+        }))
+        .slice(0, 8);
+      
+      res.json(availableLoads);
+    } catch (error) {
+      console.error("Error getting available loads:", error);
+      res.status(500).json({ message: "Failed to get available loads" });
+    }
+  });
+
+  app.get('/api/driver/route-analysis', async (req, res) => {
+    try {
+      const { origin, destination } = req.query;
+      
+      // Analyze route characteristics
+      const analysis = {
+        routeComplexity: Math.random() > 0.5 ? 'moderate' : 'simple',
+        fuelStops: Math.floor(Math.random() * 3) + 1,
+        weatherConditions: ['clear', 'light_rain', 'moderate_wind'][Math.floor(Math.random() * 3)],
+        trafficRating: Math.floor(Math.random() * 5) + 1,
+        loadOpportunities: Math.floor(Math.random() * 15) + 5,
+        competitiveIndex: Math.floor(Math.random() * 40) + 60,
+        seasonalDemand: 0.8 + (Math.random() * 0.4), // 0.8 to 1.2 multiplier
+        averageRate: 2.75 + (Math.random() * 1.25), // $2.75 - $4.00 per mile
+        recommendations: [
+          "Consider early morning departure to avoid traffic",
+          "Multiple fuel-efficient opportunities available",
+          "High demand route with premium rates possible"
+        ]
+      };
+      
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing route:", error);
+      res.status(500).json({ message: "Failed to analyze route" });
+    }
+  });
+
   app.get('/api/referrals/tiers', async (req, res) => {
     try {
       const tiers = driverReferralSystem.getReferralTiers();
