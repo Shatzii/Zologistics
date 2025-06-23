@@ -3231,6 +3231,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Licensing Management routes
+  app.post('/api/licensing/create', async (req, res) => {
+    try {
+      const { companyId, licenseType } = req.body;
+      const { licensingManagement } = await import('./licensing-management');
+      const application = licensingManagement.createLicenseApplication(companyId, licenseType);
+      res.json(application);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create license application' });
+    }
+  });
+
+  app.get('/api/licensing/applications/:companyId', async (req, res) => {
+    try {
+      const companyId = parseInt(req.params.companyId);
+      const { licensingManagement } = await import('./licensing-management');
+      const applications = licensingManagement.getCompanyApplications(companyId);
+      res.json(applications);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch applications' });
+    }
+  });
+
+  app.get('/api/licensing/application/:applicationId', async (req, res) => {
+    try {
+      const applicationId = req.params.applicationId;
+      const { licensingManagement } = await import('./licensing-management');
+      const application = licensingManagement.getLicenseApplication(applicationId);
+      if (!application) {
+        return res.status(404).json({ error: 'Application not found' });
+      }
+      res.json(application);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch application' });
+    }
+  });
+
+  app.put('/api/licensing/update/:applicationId', async (req, res) => {
+    try {
+      const applicationId = req.params.applicationId;
+      const updates = req.body;
+      const { licensingManagement } = await import('./licensing-management');
+      const application = licensingManagement.updateApplication(applicationId, updates);
+      if (!application) {
+        return res.status(404).json({ error: 'Application not found' });
+      }
+      res.json(application);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update application' });
+    }
+  });
+
+  app.post('/api/licensing/submit/:applicationId', async (req, res) => {
+    try {
+      const applicationId = req.params.applicationId;
+      const { licensingManagement } = await import('./licensing-management');
+      const result = licensingManagement.submitApplication(applicationId);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to submit application' });
+    }
+  });
+
+  // Advanced Dispatch AI routes
+  app.post('/api/dispatch/optimize-multi-load', async (req, res) => {
+    try {
+      const { loads, driverId } = req.body;
+      const { advancedDispatchAI } = await import('./advanced-dispatch-ai');
+      const optimization = await advancedDispatchAI.optimizeMultiLoadRoute(loads, driverId);
+      res.json(optimization);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to optimize multi-load route' });
+    }
+  });
+
+  app.post('/api/dispatch/optimize-fleet', async (req, res) => {
+    try {
+      const { driverIds } = req.body;
+      const { advancedDispatchAI } = await import('./advanced-dispatch-ai');
+      const optimization = await advancedDispatchAI.optimizeFleetWide(driverIds);
+      res.json(optimization);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to optimize fleet' });
+    }
+  });
+
+  app.get('/api/dispatch/backhaul/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const { advancedDispatchAI } = await import('./advanced-dispatch-ai');
+      
+      const route = {
+        origin: 'Denver, CO',
+        destination: 'Phoenix, AZ',
+        waypoints: [],
+        totalMiles: 1200,
+        estimatedTime: 18,
+        fuelCost: 480,
+        tolls: 60,
+        constraints: {
+          hoursOfService: true,
+          truckRestrictions: false,
+          hazmatRequired: false,
+          temperatureControlled: false
+        }
+      };
+      
+      const opportunities = await advancedDispatchAI.generateBackhaulOpportunities(route, driverId);
+      res.json(opportunities);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to generate backhaul opportunities' });
+    }
+  });
+
+  app.get('/api/dispatch/stats', async (req, res) => {
+    try {
+      const { advancedDispatchAI } = await import('./advanced-dispatch-ai');
+      const stats = advancedDispatchAI.getOptimizationStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch dispatch stats' });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Initialize WebSocket server for notifications
