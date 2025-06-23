@@ -39,6 +39,7 @@ import { driverReferralSystem } from "./driver-referral-system";
 import { web3Integration } from "./web3-integration";
 import { ghostLoadEngine } from "./ghost-load-optimization-engine";
 import { multilingualOnboarding } from "./multilingual-onboarding";
+import { oneClickReferralSystem } from "./one-click-referral-system";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2942,6 +2943,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting referral metrics:", error);
       res.status(500).json({ message: "Failed to get referral metrics" });
+    }
+  });
+
+  // One-Click Referral System endpoints
+  app.get('/api/referrals/stats/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const stats = oneClickReferralSystem.getReferralStats(parseInt(driverId));
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting driver referral stats:", error);
+      res.status(500).json({ message: "Failed to get driver referral stats" });
+    }
+  });
+
+  app.get('/api/referrals/generate-link/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const referralLink = oneClickReferralSystem.generateReferralLink(parseInt(driverId));
+      res.json(referralLink);
+    } catch (error) {
+      console.error("Error generating referral link:", error);
+      res.status(500).json({ message: "Failed to generate referral link" });
+    }
+  });
+
+  app.post('/api/referrals/share', async (req, res) => {
+    try {
+      const { driverId, method, contact, customMessage } = req.body;
+      const referrals = oneClickReferralSystem.getDriverReferrals(driverId);
+      
+      if (referrals.length === 0) {
+        // Generate new referral if none exists
+        const newReferral = oneClickReferralSystem.generateReferralLink(driverId);
+        const result = oneClickReferralSystem.shareReferral(newReferral.id, method, contact);
+        return res.json(result);
+      }
+
+      const result = oneClickReferralSystem.shareReferral(referrals[0].id, method, contact);
+      res.json(result);
+    } catch (error) {
+      console.error("Error sharing referral:", error);
+      res.status(500).json({ message: "Failed to share referral" });
+    }
+  });
+
+  app.get('/api/referrals/one-click/tiers', async (req, res) => {
+    try {
+      const tiers = oneClickReferralSystem.getTierSystem();
+      res.json(tiers);
+    } catch (error) {
+      console.error("Error getting tier system:", error);
+      res.status(500).json({ message: "Failed to get tier system" });
+    }
+  });
+
+  app.get('/api/referrals/campaigns', async (req, res) => {
+    try {
+      const campaigns = oneClickReferralSystem.getAllCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error getting referral campaigns:", error);
+      res.status(500).json({ message: "Failed to get referral campaigns" });
+    }
+  });
+
+  app.get('/api/referrals/system-metrics', async (req, res) => {
+    try {
+      const metrics = oneClickReferralSystem.getSystemMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting system metrics:", error);
+      res.status(500).json({ message: "Failed to get system metrics" });
+    }
+  });
+
+  app.post('/api/referrals/track-click/:code', async (req, res) => {
+    try {
+      const { code } = req.params;
+      oneClickReferralSystem.trackClick(code);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error tracking referral click:", error);
+      res.status(500).json({ message: "Failed to track referral click" });
+    }
+  });
+
+  app.post('/api/referrals/track-signup', async (req, res) => {
+    try {
+      const { referralCode, newDriverId } = req.body;
+      const rewards = oneClickReferralSystem.trackSignup(referralCode, newDriverId);
+      res.json({ rewards });
+    } catch (error) {
+      console.error("Error tracking referral signup:", error);
+      res.status(500).json({ message: "Failed to track referral signup" });
     }
   });
 
