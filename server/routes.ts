@@ -51,6 +51,7 @@ import { seaFreightPlatform } from "./sea-freight-platform";
 import { airFreightPlatform } from "./air-freight-platform";
 import { multiModalLogisticsEngine } from "./multi-modal-logistics-engine";
 import { autonomousSalesAgent } from "./autonomous-sales-agent";
+import { programmableSalesTargeting } from "./programmable-sales-targeting";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3982,6 +3983,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting sales activity:", error);
       res.status(500).json({ message: "Failed to get sales activity" });
+    }
+  });
+
+  // Programmable Sales Targeting endpoints
+  app.get('/api/targeting/profiles', async (req, res) => {
+    try {
+      const profiles = programmableSalesTargeting.getAllProfiles();
+      res.json(profiles);
+    } catch (error) {
+      console.error("Error getting targeting profiles:", error);
+      res.status(500).json({ message: "Failed to get targeting profiles" });
+    }
+  });
+
+  app.post('/api/targeting/profiles', async (req, res) => {
+    try {
+      const profile = programmableSalesTargeting.createTargetingProfile(req.body);
+      res.json(profile);
+    } catch (error) {
+      console.error("Error creating targeting profile:", error);
+      res.status(500).json({ message: "Failed to create targeting profile" });
+    }
+  });
+
+  app.put('/api/targeting/profiles/:id', async (req, res) => {
+    try {
+      const success = programmableSalesTargeting.updateTargetingProfile(req.params.id, req.body);
+      if (!success) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating targeting profile:", error);
+      res.status(500).json({ message: "Failed to update targeting profile" });
+    }
+  });
+
+  app.post('/api/targeting/profiles/:id/activate', async (req, res) => {
+    try {
+      const success = programmableSalesTargeting.activateProfile(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      res.json({ success: true, message: "Profile activated" });
+    } catch (error) {
+      console.error("Error activating profile:", error);
+      res.status(500).json({ message: "Failed to activate profile" });
+    }
+  });
+
+  app.post('/api/targeting/profiles/:id/deactivate', async (req, res) => {
+    try {
+      const success = programmableSalesTargeting.deactivateProfile(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      res.json({ success: true, message: "Profile deactivated" });
+    } catch (error) {
+      console.error("Error deactivating profile:", error);
+      res.status(500).json({ message: "Failed to deactivate profile" });
+    }
+  });
+
+  app.get('/api/targeting/templates', async (req, res) => {
+    try {
+      const profileId = req.query.profileId as string;
+      const templates = profileId ? 
+        programmableSalesTargeting.getTemplatesByProfile(profileId) : 
+        programmableSalesTargeting.getAllTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error("Error getting email templates:", error);
+      res.status(500).json({ message: "Failed to get email templates" });
+    }
+  });
+
+  app.post('/api/targeting/templates', async (req, res) => {
+    try {
+      const template = programmableSalesTargeting.createEmailTemplate(req.body);
+      res.json(template);
+    } catch (error) {
+      console.error("Error creating email template:", error);
+      res.status(500).json({ message: "Failed to create email template" });
+    }
+  });
+
+  app.get('/api/targeting/metrics', async (req, res) => {
+    try {
+      const metrics = programmableSalesTargeting.getTargetingMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting targeting metrics:", error);
+      res.status(500).json({ message: "Failed to get targeting metrics" });
     }
   });
 
