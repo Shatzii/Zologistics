@@ -133,7 +133,7 @@ export class AggressiveCustomerAcquisition {
   private hotProspects: Map<string, HotProspect> = new Map();
   private ownerAlerts: Map<string, OwnerAlert> = new Map();
   private autoSignRules: Map<string, AutoSignRule> = new Map();
-  private salesKPIs: SalesKPI;
+  private salesKPIs!: SalesKPI;
   private isHunting: boolean = false;
   private ownerNotificationCallback?: (alert: OwnerAlert) => void;
 
@@ -343,7 +343,7 @@ export class AggressiveCustomerAcquisition {
     setInterval(() => this.processHotProspects(), 2 * 60 * 1000);
 
     // Generate new prospects continuously
-    setInterval(() => this.generateProspects(), 1 * 60 * 1000);
+    setInterval(() => this.scanAllSources(), 1 * 60 * 1000);
 
     // Check for auto-sign opportunities every 30 seconds
     setInterval(() => this.checkAutoSignOpportunities(), 30 * 1000);
@@ -532,6 +532,20 @@ Best regards,
 Marcus Thompson
 TruckFlow AI`,
 
+      broker: `Hi ${prospect.contactPerson},
+
+I noticed ${prospect.companyName} in the ${prospect.address.state} brokerage market. Our AI platform is helping brokers increase margins by 15-25% through intelligent rate optimization and automated operations.
+
+Quick question: Are you looking to scale your brokerage without proportionally increasing overhead?
+
+Based on your operation, our platform could add approximately $${Math.floor(prospect.potentialValue / 12).toLocaleString()}/month through automated load matching and dynamic pricing.
+
+Would you be open to a brief conversation about scaling your brokerage operations?
+
+Best regards,
+Marcus Thompson
+TruckFlow AI`,
+
       default: `Hi ${prospect.contactPerson},
 
 I came across ${prospect.companyName} and was impressed by your ${prospect.address.state} operations. Our AI-powered logistics platform is transforming how companies optimize their freight operations.
@@ -551,7 +565,7 @@ Marcus Thompson
 TruckFlow AI`
     };
 
-    return messages[prospect.businessType] || messages.default;
+    return messages[prospect.businessType as keyof typeof messages] || messages.default;
   }
 
   private simulateProspectResponse(prospect: HotProspect, contactAttempt: ContactAttempt) {

@@ -226,7 +226,7 @@ export class AutonomousTruckFleet {
       owner: {
         ownerId: 'owner-001',
         ownerName: 'Green Fleet Investments LLC',
-        ownerType: 'investment',
+        ownerType: 'fleet',
         contactInfo: {
           email: 'invest@greenfleet.com',
           phone: '555-0123',

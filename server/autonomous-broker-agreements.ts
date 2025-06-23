@@ -95,7 +95,7 @@ export interface BrokerLicense {
 
 export class AutonomousBrokerAgreements {
   private agreements: Map<string, BrokerAgreement> = new Map();
-  private brokerLicense: BrokerLicense;
+  private brokerLicense!: BrokerLicense;
   private standardTerms: Map<string, AgreementTerms> = new Map();
   private agreementTemplates: Map<string, string> = new Map();
   private complianceMonitoring: boolean = true;
@@ -109,6 +109,7 @@ export class AutonomousBrokerAgreements {
   }
 
   private initializeBrokerLicense() {
+    // Initialize broker license first
     // Production license information - customize for your operation
     this.brokerLicense = {
       mcNumber: 'MC-1234567',
@@ -649,13 +650,16 @@ Title: President                         Title: {{title}}
     const byStatus = {
       draft: 0,
       sent: 0,
+      under_review: 0,
       signed: 0,
       executed: 0,
       expired: 0
     };
 
     for (const agreement of this.agreements.values()) {
-      byStatus[agreement.status]++;
+      if (agreement.status in byStatus) {
+        byStatus[agreement.status as keyof typeof byStatus]++;
+      }
     }
 
     return {
