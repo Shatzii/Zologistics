@@ -108,6 +108,7 @@ function Router() {
         <Route path="/driver-marketing" component={DriverMarketingPage} />
         <Route path="/driver-loads" component={DriverLoadsDashboardPage} />
         <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
+        <Route path="/ghost-loads" component={GhostLoads} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
         <Route component={NotFound} />
       </Switch>

@@ -19,7 +19,8 @@ import {
   Shield,
   Globe,
   Handshake,
-  Database
+  Database,
+  Ghost
 } from "lucide-react";
 
 const navigation = [
@@ -124,6 +125,12 @@ const navigation = [
     href: "/driver-loads",
     icon: Truck,
     badge: "$498 Saved"
+  },
+  {
+    name: "Ghost Loads",
+    href: "/ghost-loads",
+    icon: Ghost,
+    badge: "$1B Market"
   }
 ];
 
