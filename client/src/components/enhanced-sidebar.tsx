@@ -132,6 +132,18 @@ const navigation = [
     href: "/ghost-loads",
     icon: Ghost,
     badge: "$1B Market"
+  },
+  {
+    name: "Earnings Simulator",
+    href: "/earnings-simulator",
+    icon: BarChart3,
+    badge: "LIVE"
+  },
+  {
+    name: "Global Valuation",
+    href: "/global-valuation",
+    icon: Globe,
+    badge: "$246B"
   }
 ];
 

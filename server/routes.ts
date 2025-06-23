@@ -3291,6 +3291,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Earnings Simulator endpoints
+  app.get('/api/simulator/regional-data', async (req, res) => {
+    try {
+      const globalValuation = globalGhostLoadEngine.calculateGlobalValuation();
+      const regionalData = globalValuation.regionalBreakdown.map((region: any) => ({
+        region: region.region,
+        loadCount: region.totalLoads,
+        avgValue: Math.round(region.totalValue / region.totalLoads),
+        marginPercent: Math.round(region.averageMargin * 100),
+        competitiveAdvantage: Math.round(region.competitiveAdvantage * 100),
+        conversionRate: Math.round(region.conversionRate * 100),
+        seasonalMultiplier: region.seasonalMultiplier || 1.2
+      }));
+      
+      res.json(regionalData);
+    } catch (error) {
+      console.error("Error getting regional simulation data:", error);
+      res.status(500).json({ message: "Failed to get regional simulation data" });
+    }
+  });
+
+  app.get('/api/simulator/live-metrics', async (req, res) => {
+    try {
+      const ghostLoads = globalGhostLoadEngine.getGlobalGhostLoads();
+      const priorityLoads = globalGhostLoadEngine.getHighPriorityLoads();
+      
+      // Calculate real-time metrics
+      const totalValue = ghostLoads.reduce((sum: number, load: any) => sum + load.usdValue, 0);
+      const avgProcessingTime = 22; // minutes
+      const currentCaptures = Math.floor(Math.random() * 8) + 3; // 3-10 captures per hour
+      const hourlyRevenue = (totalValue / ghostLoads.length) * currentCaptures;
+      
+      const metrics = {
+        totalGhostLoads: ghostLoads.length,
+        priorityLoads: priorityLoads.length,
+        totalValue,
+        avgProcessingTime,
+        currentCaptures,
+        hourlyRevenue,
+        lastUpdate: new Date().toISOString(),
+        regionBreakdown: {}
+      };
+
+      // Regional breakdown
+      const regions = ['north_america', 'central_america', 'europe', 'asia_pacific'];
+      regions.forEach(region => {
+        const regionLoads = ghostLoads.filter((load: any) => load.region === region);
+        metrics.regionBreakdown[region] = {
+          loads: regionLoads.length,
+          value: regionLoads.reduce((sum: number, load: any) => sum + load.usdValue, 0),
+          captures: Math.floor(Math.random() * 3) + 1
+        };
+      });
+      
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting live simulation metrics:", error);
+      res.status(500).json({ message: "Failed to get live simulation metrics" });
+    }
+  });
+
+  app.post('/api/simulator/calculate-projections', async (req, res) => {
+    try {
+      const { captureRate, operatingHours, teamSize, marketPenetration, enabledRegions } = req.body;
+      
+      const globalValuation = globalGhostLoadEngine.calculateGlobalValuation();
+      const allRegions = globalValuation.regionalBreakdown;
+      
+      const projections = allRegions
+        .filter((region: any) => enabledRegions.includes(region.region))
+        .map((region: any) => {
+          const loadsPerHour = (region.totalLoads * (captureRate / 100) * (marketPenetration / 100)) / (24 * 30);
+          const avgValue = region.totalValue / region.totalLoads;
+          const hourlyRevenue = loadsPerHour * avgValue * (region.averageMargin);
+          
+          return {
+            region: region.region,
+            hourlyRevenue,
+            dailyRevenue: hourlyRevenue * operatingHours,
+            monthlyRevenue: hourlyRevenue * operatingHours * 30,
+            annualRevenue: hourlyRevenue * operatingHours * 30 * 12
+          };
+        });
+
+      const totals = {
+        hourly: projections.reduce((sum, p) => sum + p.hourlyRevenue, 0),
+        daily: projections.reduce((sum, p) => sum + p.dailyRevenue, 0),
+        monthly: projections.reduce((sum, p) => sum + p.monthlyRevenue, 0),
+        annual: projections.reduce((sum, p) => sum + p.annualRevenue, 0)
+      };
+      
+      res.json({ projections, totals });
+    } catch (error) {
+      console.error("Error calculating projections:", error);
+      res.status(500).json({ message: "Failed to calculate projections" });
+    }
+  });
+
   app.get('/api/referrals/tiers', async (req, res) => {
     try {
       const tiers = driverReferralSystem.getReferralTiers();
