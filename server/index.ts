@@ -3,6 +3,12 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { envValidator } from "./env-validator";
 
+// Initialize all autonomous systems
+import "./dynamic-pricing-engine";
+import "./autonomous-broker-agreements";
+import "./autonomous-truck-fleet";
+import "./aggressive-customer-acquisition";
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
