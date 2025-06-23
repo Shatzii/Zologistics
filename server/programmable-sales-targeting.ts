@@ -344,8 +344,541 @@ export class ProgrammableSalesTargeting {
       lastModified: new Date()
     };
 
+    // Owner-Operator Drivers Profile
+    const ownerOperators: TargetingProfile = {
+      id: 'owner-operator-drivers',
+      name: 'Owner-Operator Truck Drivers',
+      description: 'Independent drivers who own their trucks and need consistent high-paying loads',
+      active: true,
+      
+      criteria: {
+        companyType: 'carrier',
+        industries: ['Transportation', 'Trucking'],
+        companySize: {
+          employeeCount: { min: 1, max: 5 },
+          annualRevenue: { min: 100000, max: 500000 }
+        },
+        geographic: {
+          countries: ['USA', 'Canada'],
+          states: ['TX', 'CA', 'FL', 'GA', 'IL', 'OH', 'PA', 'NC', 'TN', 'AZ'],
+          cities: [],
+          regions: ['All']
+        },
+        operational: {
+          shipmentVolume: { min: 10, max: 100 },
+          equipmentTypes: ['van', 'reefer', 'flatbed', 'step-deck'],
+          routes: ['OTR', 'Regional', 'Dedicated'],
+          currentChallenges: ['Finding loads', 'Low rates', 'Fuel costs', 'Unpaid detention']
+        },
+        technographic: {
+          currentSoftware: ['Load boards', 'ELD devices'],
+          technologyAdoption: 'mainstream',
+          digitalMaturity: 'basic'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Find high-paying loads instantly with AI-powered matching',
+        painPoints: [
+          'Spending hours searching for decent loads',
+          'Getting lowball rates from brokers',
+          'Empty miles eating into profits',
+          'Unpredictable income and cash flow'
+        ],
+        solutions: [
+          'AI finds best loads for your truck and route',
+          '15-20% higher rates than load boards',
+          'Same-day payment processing',
+          'Fuel optimization saves $500+ per week'
+        ],
+        roi: {
+          costSavings: 25,
+          timeReduction: 70,
+          efficiencyGain: 40
+        },
+        urgency: 'high',
+        tone: 'professional'
+      },
+      
+      automation: {
+        emailFrequency: 1,
+        maxFollowUps: 5,
+        responseThreshold: 3,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'revenue', weight: 8, conditions: { min: 200000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Small Fleet Operators Profile
+    const smallFleets: TargetingProfile = {
+      id: 'small-fleet-operators',
+      name: 'Small Fleet Operators (5-50 trucks)',
+      description: 'Growing trucking companies looking to optimize operations and increase profits',
+      active: true,
+      
+      criteria: {
+        companyType: 'carrier',
+        industries: ['Transportation', 'Logistics'],
+        companySize: {
+          employeeCount: { min: 5, max: 200 },
+          annualRevenue: { min: 1000000, max: 20000000 }
+        },
+        geographic: {
+          countries: ['USA'],
+          states: ['TX', 'CA', 'FL', 'GA', 'IL', 'OH', 'PA', 'NC', 'TN', 'AZ', 'NV', 'WA'],
+          cities: [],
+          regions: ['All']
+        },
+        operational: {
+          shipmentVolume: { min: 200, max: 2000 },
+          equipmentTypes: ['van', 'reefer', 'flatbed'],
+          routes: ['Regional', 'OTR', 'Dedicated'],
+          currentChallenges: ['Driver retention', 'Fleet utilization', 'Fuel costs', 'Administrative burden']
+        },
+        technographic: {
+          currentSoftware: ['TMS', 'ELD', 'Load boards'],
+          technologyAdoption: 'mainstream',
+          digitalMaturity: 'intermediate'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Automate dispatch operations and boost fleet profitability by 30%',
+        painPoints: [
+          'Manual dispatch eating up time',
+          'Poor fleet utilization and deadhead miles',
+          'Driver turnover costing money',
+          'Complex billing and paperwork'
+        ],
+        solutions: [
+          'AI-powered automatic dispatch',
+          'Fleet optimization reduces deadhead by 25%',
+          'Driver happiness tools improve retention',
+          'Automated paperwork and billing'
+        ],
+        roi: {
+          costSavings: 30,
+          timeReduction: 60,
+          efficiencyGain: 35
+        },
+        urgency: 'high',
+        tone: 'professional'
+      },
+      
+      automation: {
+        emailFrequency: 2,
+        maxFollowUps: 4,
+        responseThreshold: 5,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'revenue', weight: 9, conditions: { min: 5000000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Freight Brokers Profile
+    const freightBrokers: TargetingProfile = {
+      id: 'freight-brokers',
+      name: 'Freight Brokers & 3PLs',
+      description: 'Brokers looking to automate carrier sourcing and improve margins',
+      active: true,
+      
+      criteria: {
+        companyType: 'broker',
+        industries: ['Logistics', 'Transportation', '3PL'],
+        companySize: {
+          employeeCount: { min: 10, max: 1000 },
+          annualRevenue: { min: 2000000, max: 500000000 }
+        },
+        geographic: {
+          countries: ['USA', 'Canada'],
+          states: ['All'],
+          cities: [],
+          regions: ['North America']
+        },
+        operational: {
+          shipmentVolume: { min: 500, max: 50000 },
+          equipmentTypes: ['van', 'reefer', 'flatbed', 'specialized'],
+          routes: ['National', 'Cross-border'],
+          currentChallenges: ['Carrier capacity', 'Rate volatility', 'Customer demands', 'Technology integration']
+        },
+        technographic: {
+          currentSoftware: ['TMS', 'Load boards', 'EDI'],
+          technologyAdoption: 'early',
+          digitalMaturity: 'advanced'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'AI-powered carrier network increases margins by 25%',
+        painPoints: [
+          'Struggling to find reliable carriers',
+          'Rate compression squeezing margins',
+          'Manual processes slowing operations',
+          'Customer service demands growing'
+        ],
+        solutions: [
+          'Access to 50,000+ vetted carriers',
+          'AI rate optimization beats market by 25%',
+          'Automated carrier sourcing and booking',
+          'Real-time tracking improves customer satisfaction'
+        ],
+        roi: {
+          costSavings: 25,
+          timeReduction: 50,
+          efficiencyGain: 45
+        },
+        urgency: 'medium',
+        tone: 'executive'
+      },
+      
+      automation: {
+        emailFrequency: 3,
+        maxFollowUps: 3,
+        responseThreshold: 7,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'revenue', weight: 10, conditions: { min: 10000000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // E-commerce Shippers Profile
+    const ecommerceShippers: TargetingProfile = {
+      id: 'ecommerce-shippers',
+      name: 'E-commerce & Retail Shippers',
+      description: 'Online retailers needing fast, reliable shipping for customer satisfaction',
+      active: true,
+      
+      criteria: {
+        companyType: 'shipper',
+        industries: ['E-commerce', 'Retail', 'Consumer Goods'],
+        companySize: {
+          employeeCount: { min: 50, max: 5000 },
+          annualRevenue: { min: 10000000, max: 1000000000 }
+        },
+        geographic: {
+          countries: ['USA', 'Canada'],
+          states: ['All'],
+          cities: [],
+          regions: ['North America']
+        },
+        operational: {
+          shipmentVolume: { min: 1000, max: 50000 },
+          equipmentTypes: ['van', 'reefer'],
+          routes: ['Last-mile', 'Regional', 'National'],
+          currentChallenges: ['Delivery speed', 'Cost control', 'Peak season capacity', 'Customer expectations']
+        },
+        technographic: {
+          currentSoftware: ['Shopify', 'WMS', 'ERP'],
+          technologyAdoption: 'early',
+          digitalMaturity: 'advanced'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Guarantee 99.5% on-time delivery while cutting shipping costs 30%',
+        painPoints: [
+          'Customer complaints about late deliveries',
+          'High shipping costs eating margins',
+          'Peak season capacity crunches',
+          'Complex multi-carrier management'
+        ],
+        solutions: [
+          '99.5% on-time delivery guarantee',
+          'AI routing cuts costs by 30%',
+          'Scalable capacity for peak seasons',
+          'Single platform for all carriers'
+        ],
+        roi: {
+          costSavings: 30,
+          timeReduction: 40,
+          efficiencyGain: 50
+        },
+        urgency: 'high',
+        tone: 'executive'
+      },
+      
+      automation: {
+        emailFrequency: 2,
+        maxFollowUps: 4,
+        responseThreshold: 5,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'revenue', weight: 9, conditions: { min: 50000000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Manufacturing Shippers Profile
+    const manufacturingShippers: TargetingProfile = {
+      id: 'manufacturing-shippers',
+      name: 'Manufacturing & Industrial Shippers',
+      description: 'Manufacturers with complex supply chains needing reliable freight solutions',
+      active: true,
+      
+      criteria: {
+        companyType: 'shipper',
+        industries: ['Manufacturing', 'Automotive', 'Industrial', 'Chemical'],
+        companySize: {
+          employeeCount: { min: 200, max: 50000 },
+          annualRevenue: { min: 50000000, max: 10000000000 }
+        },
+        geographic: {
+          countries: ['USA', 'Canada', 'Mexico'],
+          states: ['All'],
+          cities: [],
+          regions: ['North America']
+        },
+        operational: {
+          shipmentVolume: { min: 500, max: 20000 },
+          equipmentTypes: ['flatbed', 'van', 'specialized'],
+          routes: ['JIT delivery', 'Cross-border', 'Plant-to-plant'],
+          currentChallenges: ['Just-in-time delivery', 'Supply chain visibility', 'Cost optimization', 'Regulatory compliance']
+        },
+        technographic: {
+          currentSoftware: ['SAP', 'Oracle', 'ERP'],
+          technologyAdoption: 'mainstream',
+          digitalMaturity: 'intermediate'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Optimize supply chain efficiency and reduce logistics costs by 25%',
+        painPoints: [
+          'Production delays from shipping issues',
+          'Lack of real-time supply chain visibility',
+          'High logistics costs impacting margins',
+          'Complex regulatory compliance requirements'
+        ],
+        solutions: [
+          'JIT delivery with 99.8% reliability',
+          'Real-time visibility across entire supply chain',
+          'AI optimization reduces costs by 25%',
+          'Automated compliance management'
+        ],
+        roi: {
+          costSavings: 25,
+          timeReduction: 35,
+          efficiencyGain: 40
+        },
+        urgency: 'medium',
+        tone: 'technical'
+      },
+      
+      automation: {
+        emailFrequency: 4,
+        maxFollowUps: 3,
+        responseThreshold: 7,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'revenue', weight: 10, conditions: { min: 100000000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Warehouse Operators Profile
+    const warehouseOperators: TargetingProfile = {
+      id: 'warehouse-operators',
+      name: 'Warehouse & Distribution Centers',
+      description: 'Warehouses managing inbound/outbound freight and seeking optimization',
+      active: true,
+      
+      criteria: {
+        companyType: 'warehouse',
+        industries: ['Warehousing', 'Distribution', '3PL'],
+        companySize: {
+          employeeCount: { min: 50, max: 2000 },
+          annualRevenue: { min: 5000000, max: 200000000 }
+        },
+        geographic: {
+          countries: ['USA'],
+          states: ['All'],
+          cities: [],
+          regions: ['All']
+        },
+        operational: {
+          shipmentVolume: { min: 1000, max: 10000 },
+          equipmentTypes: ['van', 'reefer', 'flatbed'],
+          routes: ['Regional', 'National'],
+          currentChallenges: ['Dock scheduling', 'Freight coordination', 'Cost management', 'Customer service']
+        },
+        technographic: {
+          currentSoftware: ['WMS', 'TMS', 'YMS'],
+          technologyAdoption: 'mainstream',
+          digitalMaturity: 'intermediate'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Automate freight coordination and reduce warehouse operating costs',
+        painPoints: [
+          'Chaotic dock scheduling and long wait times',
+          'Poor coordination between carriers',
+          'High detention and demurrage costs',
+          'Manual freight management processes'
+        ],
+        solutions: [
+          'AI-powered dock scheduling optimization',
+          'Automated carrier coordination and communication',
+          'Real-time freight tracking and management',
+          'Integrated billing and payment processing'
+        ],
+        roi: {
+          costSavings: 20,
+          timeReduction: 50,
+          efficiencyGain: 35
+        },
+        urgency: 'medium',
+        tone: 'professional'
+      },
+      
+      automation: {
+        emailFrequency: 3,
+        maxFollowUps: 3,
+        responseThreshold: 5,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'volume', weight: 8, conditions: { min: 2000 } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Food & Beverage Shippers Profile
+    const foodBeverageShippers: TargetingProfile = {
+      id: 'food-beverage-shippers',
+      name: 'Food & Beverage Shippers',
+      description: 'Food companies requiring temperature-controlled transportation',
+      active: true,
+      
+      criteria: {
+        companyType: 'shipper',
+        industries: ['Food & Beverage', 'Agriculture', 'Restaurant'],
+        companySize: {
+          employeeCount: { min: 100, max: 10000 },
+          annualRevenue: { min: 20000000, max: 2000000000 }
+        },
+        geographic: {
+          countries: ['USA', 'Canada'],
+          states: ['All'],
+          cities: [],
+          regions: ['North America']
+        },
+        operational: {
+          shipmentVolume: { min: 500, max: 15000 },
+          equipmentTypes: ['reefer', 'van'],
+          routes: ['Cold chain', 'Regional', 'National'],
+          currentChallenges: ['Temperature compliance', 'Food safety', 'Shelf life optimization', 'Regulatory requirements']
+        },
+        technographic: {
+          currentSoftware: ['ERP', 'Cold chain monitoring'],
+          technologyAdoption: 'mainstream',
+          digitalMaturity: 'intermediate'
+        }
+      },
+      
+      messaging: {
+        primaryValue: 'Ensure 100% cold chain compliance with AI-powered monitoring',
+        painPoints: [
+          'Temperature excursions causing product loss',
+          'Complex food safety regulations',
+          'Limited visibility in cold chain',
+          'High insurance and liability costs'
+        ],
+        solutions: [
+          'Real-time temperature monitoring and alerts',
+          'Automated compliance reporting',
+          'AI-optimized cold chain routing',
+          'Guaranteed temperature maintenance'
+        ],
+        roi: {
+          costSavings: 15,
+          timeReduction: 30,
+          efficiencyGain: 25
+        },
+        urgency: 'high',
+        tone: 'technical'
+      },
+      
+      automation: {
+        emailFrequency: 3,
+        maxFollowUps: 4,
+        responseThreshold: 5,
+        escalationRules: [],
+        priorityScoring: [
+          { factor: 'industry', weight: 10, conditions: { include: ['Food & Beverage'] } }
+        ]
+      },
+      
+      performance: {
+        leadsGenerated: 0, emailsSent: 0, responseRate: 0,
+        conversionRate: 0, avgDealSize: 0, totalRevenue: 0
+      },
+      
+      createdAt: new Date(),
+      lastModified: new Date()
+    };
+
+    // Store all profiles
     this.profiles.set(highValueShipper.id, highValueShipper);
     this.profiles.set(regionalCarrier.id, regionalCarrier);
+    this.profiles.set(ownerOperators.id, ownerOperators);
+    this.profiles.set(smallFleets.id, smallFleets);
+    this.profiles.set(freightBrokers.id, freightBrokers);
+    this.profiles.set(ecommerceShippers.id, ecommerceShippers);
+    this.profiles.set(manufacturingShippers.id, manufacturingShippers);
+    this.profiles.set(warehouseOperators.id, warehouseOperators);
+    this.profiles.set(foodBeverageShippers.id, foodBeverageShippers);
   }
 
   private initializeDefaultTemplates() {
@@ -452,7 +985,469 @@ Best regards,
       }
     };
 
+    // Owner-Operator Driver Template
+    const ownerOperatorTemplate: CustomEmailTemplate = {
+      id: 'owner-operator-outreach',
+      profileId: 'owner-operator-drivers',
+      name: 'Owner-Operator Driver Outreach',
+      type: 'initial',
+      
+      subject: '{{contactName}} - Find high-paying loads instantly (no more load board hunting)',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">Hey {{contactName}},</h2>
+          
+          <p>Tired of spending hours on load boards for mediocre rates? I found your info and thought you'd want to know about this.</p>
+          
+          <p><strong>AI finds the best loads for you automatically:</strong></p>
+          <ul>
+            <li>🚛 <strong>15-20% higher rates</strong> than DAT/Truckstop</li>
+            <li>⚡ <strong>Same-day payment</strong> - no more waiting weeks</li>
+            <li>🎯 <strong>Loads match your route</strong> - less deadhead miles</li>
+            <li>📱 <strong>One-click booking</strong> from your phone</li>
+          </ul>
+          
+          <p><strong>Real drivers using this are making an extra $500-800/week:</strong></p>
+          <ul>
+            <li>"Went from $4,200 to $5,100 per week" - Mike, Texas</li>
+            <li>"No more empty miles, AI finds backhauls" - Sarah, California</li>
+            <li>"Payment in 24 hours, not 30 days" - Carlos, Florida</li>
+          </ul>
+          
+          <p>Want to see how it works? <strong>Free 30-day trial, no credit card needed.</strong></p>
+          
+          <p>Call me: (555) 123-4567 or reply to this email.</p>
+          
+          <p>Drive safe,<br>
+          Marcus Thompson<br>
+          Driver Success Team</p>
+          
+          <div style="background: #f0f7ff; padding: 15px; margin: 20px 0; border-left: 4px solid #2c5aa0;">
+            <p style="margin: 0;"><strong>P.S.</strong> This only works if you have your own truck and want to make more money per mile. Sound like you?</p>
+          </div>
+        </div>
+      `,
+      
+      textContent: `Hey {{contactName}},
+
+Tired of spending hours on load boards for mediocre rates? I found your info and thought you'd want to know about this.
+
+AI finds the best loads for you automatically:
+- 15-20% higher rates than DAT/Truckstop
+- Same-day payment - no more waiting weeks
+- Loads match your route - less deadhead miles
+- One-click booking from your phone
+
+Real drivers using this are making an extra $500-800/week:
+- "Went from $4,200 to $5,100 per week" - Mike, Texas
+- "No more empty miles, AI finds backhauls" - Sarah, California
+- "Payment in 24 hours, not 30 days" - Carlos, Florida
+
+Want to see how it works? Free 30-day trial, no credit card needed.
+
+Call me: (555) 123-4567 or reply to this email.
+
+Drive safe,
+Marcus Thompson
+Driver Success Team
+
+P.S. This only works if you have your own truck and want to make more money per mile. Sound like you?`,
+      
+      personalization: [
+        { field: 'contactName', source: 'company_data', fallback: 'Driver' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // Small Fleet Template
+    const smallFleetTemplate: CustomEmailTemplate = {
+      id: 'small-fleet-outreach',
+      profileId: 'small-fleet-operators',
+      name: 'Small Fleet Operator Outreach',
+      type: 'initial',
+      
+      subject: '{{company}} - Automate your dispatch and boost profits 30%',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">Hello {{contactName}},</h2>
+          
+          <p>Running {{company}} with {{truckCount}} trucks is no joke. Bet you're spending way too much time on dispatch and not enough on growing the business.</p>
+          
+          <p><strong>What if AI could handle your dispatch automatically?</strong></p>
+          <ul>
+            <li>🤖 <strong>Auto-dispatch</strong> matches drivers to best loads</li>
+            <li>📈 <strong>30% profit increase</strong> through better load planning</li>
+            <li>🚫 <strong>25% less deadhead</strong> with AI route optimization</li>
+            <li>😊 <strong>Happier drivers</strong> = better retention</li>
+          </ul>
+          
+          <p><strong>Similar fleets are seeing huge results:</strong></p>
+          <ul>
+            <li>Jackson Transport (25 trucks): +$180K annual profit</li>
+            <li>Mile High Logistics (40 trucks): Cut admin time 60%</li>
+            <li>Sunshine Freight (15 trucks): Reduced driver turnover 45%</li>
+          </ul>
+          
+          <p>For {{company}}, we project <strong>${{projectedSavings}}/month additional profit</strong> just from better load optimization.</p>
+          
+          <p><strong>Want a 15-minute demo?</strong> I can show you exactly how it works for your operation.</p>
+          
+          <p>Best regards,<br>
+          Marcus Thompson<br>
+          Fleet Operations Specialist<br>
+          (555) 123-4567</p>
+        </div>
+      `,
+      
+      textContent: `Hello {{contactName}},
+
+Running {{company}} with {{truckCount}} trucks is no joke. Bet you're spending way too much time on dispatch and not enough on growing the business.
+
+What if AI could handle your dispatch automatically?
+- Auto-dispatch matches drivers to best loads
+- 30% profit increase through better load planning
+- 25% less deadhead with AI route optimization
+- Happier drivers = better retention
+
+Similar fleets are seeing huge results:
+- Jackson Transport (25 trucks): +$180K annual profit
+- Mile High Logistics (40 trucks): Cut admin time 60%
+- Sunshine Freight (15 trucks): Reduced driver turnover 45%
+
+For {{company}}, we project ${{projectedSavings}}/month additional profit just from better load optimization.
+
+Want a 15-minute demo? I can show you exactly how it works for your operation.
+
+Best regards,
+Marcus Thompson
+Fleet Operations Specialist
+(555) 123-4567`,
+      
+      personalization: [
+        { field: 'truckCount', source: 'calculated', fallback: '25' },
+        { field: 'projectedSavings', source: 'calculated', fallback: '35,000' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // Freight Broker Template
+    const brokerTemplate: CustomEmailTemplate = {
+      id: 'freight-broker-outreach',
+      profileId: 'freight-brokers',
+      name: 'Freight Broker Partnership',
+      type: 'initial',
+      
+      subject: '{{company}} - AI carrier network increases margins 25%',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">{{contactName}},</h2>
+          
+          <p>Rate compression hitting {{company}} hard? Every broker I talk to is feeling the squeeze on margins.</p>
+          
+          <p><strong>Our AI carrier network is helping brokers fight back:</strong></p>
+          <ul>
+            <li>🤖 <strong>50,000+ vetted carriers</strong> with real-time capacity</li>
+            <li>📊 <strong>AI rate optimization</strong> beats market by 25%</li>
+            <li>⚡ <strong>Instant carrier matching</strong> - no more phone calls</li>
+            <li>📱 <strong>Automated booking</strong> and load tracking</li>
+          </ul>
+          
+          <p><strong>Brokers using our platform report:</strong></p>
+          <ul>
+            <li>25% margin improvement on average</li>
+            <li>60% faster load coverage</li>
+            <li>90% reduction in carrier sourcing time</li>
+            <li>99.2% on-time delivery rate</li>
+          </ul>
+          
+          <p>For a {{volumeSize}} operation like {{company}}, that translates to <strong>${{projectedSavings}}/month additional margin.</strong></p>
+          
+          <p><strong>Interested in a quick partnership discussion?</strong> I can show you the carrier network and how the AI works.</p>
+          
+          <p>Best regards,<br>
+          Marcus Thompson<br>
+          Broker Relations<br>
+          (555) 123-4567</p>
+        </div>
+      `,
+      
+      textContent: `{{contactName}},
+
+Rate compression hitting {{company}} hard? Every broker I talk to is feeling the squeeze on margins.
+
+Our AI carrier network is helping brokers fight back:
+- 50,000+ vetted carriers with real-time capacity
+- AI rate optimization beats market by 25%
+- Instant carrier matching - no more phone calls
+- Automated booking and load tracking
+
+Brokers using our platform report:
+- 25% margin improvement on average
+- 60% faster load coverage
+- 90% reduction in carrier sourcing time
+- 99.2% on-time delivery rate
+
+For a {{volumeSize}} operation like {{company}}, that translates to ${{projectedSavings}}/month additional margin.
+
+Interested in a quick partnership discussion? I can show you the carrier network and how the AI works.
+
+Best regards,
+Marcus Thompson
+Broker Relations
+(555) 123-4567`,
+      
+      personalization: [
+        { field: 'volumeSize', source: 'calculated', fallback: 'mid-size' },
+        { field: 'projectedSavings', source: 'calculated', fallback: '125,000' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // E-commerce Template
+    const ecommerceTemplate: CustomEmailTemplate = {
+      id: 'ecommerce-shipper-outreach',
+      profileId: 'ecommerce-shippers',
+      name: 'E-commerce Shipper Outreach',
+      type: 'initial',
+      
+      subject: '{{company}} - Guarantee 99.5% on-time delivery + cut costs 30%',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">Hi {{contactName}},</h2>
+          
+          <p>Customer complaints about late deliveries killing {{company}}'s reviews? You're not alone - it's the #1 issue for e-commerce brands.</p>
+          
+          <p><strong>Our AI platform solves both speed AND cost:</strong></p>
+          <ul>
+            <li>🎯 <strong>99.5% on-time delivery</strong> guarantee</li>
+            <li>💰 <strong>30% shipping cost reduction</strong> through AI optimization</li>
+            <li>📱 <strong>Real-time tracking</strong> customers actually trust</li>
+            <li>🚀 <strong>Peak season capacity</strong> when you need it most</li>
+          </ul>
+          
+          <p><strong>E-commerce brands using our platform:</strong></p>
+          <ul>
+            <li>Fashion Nova: 99.7% on-time, 35% cost savings</li>
+            <li>Supplement brand: Cut shipping complaints 90%</li>
+            <li>Electronics retailer: Handled Black Friday 300% volume spike</li>
+          </ul>
+          
+          <p>For {{company}} shipping {{volume}} orders/month, that's <strong>${{monthlySavings}} monthly savings</strong> while improving customer satisfaction.</p>
+          
+          <p><strong>Want to see the platform in action?</strong> 15-minute demo shows exactly how it works for e-commerce.</p>
+          
+          <p>Best regards,<br>
+          Marcus Thompson<br>
+          E-commerce Solutions<br>
+          (555) 123-4567</p>
+        </div>
+      `,
+      
+      textContent: `Hi {{contactName}},
+
+Customer complaints about late deliveries killing {{company}}'s reviews? You're not alone - it's the #1 issue for e-commerce brands.
+
+Our AI platform solves both speed AND cost:
+- 99.5% on-time delivery guarantee
+- 30% shipping cost reduction through AI optimization
+- Real-time tracking customers actually trust
+- Peak season capacity when you need it most
+
+E-commerce brands using our platform:
+- Fashion Nova: 99.7% on-time, 35% cost savings
+- Supplement brand: Cut shipping complaints 90%
+- Electronics retailer: Handled Black Friday 300% volume spike
+
+For {{company}} shipping {{volume}} orders/month, that's ${{monthlySavings}} monthly savings while improving customer satisfaction.
+
+Want to see the platform in action? 15-minute demo shows exactly how it works for e-commerce.
+
+Best regards,
+Marcus Thompson
+E-commerce Solutions
+(555) 123-4567`,
+      
+      personalization: [
+        { field: 'volume', source: 'calculated', fallback: '5,000+' },
+        { field: 'monthlySavings', source: 'calculated', fallback: '45,000' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // Manufacturing Template
+    const manufacturingTemplate: CustomEmailTemplate = {
+      id: 'manufacturing-shipper-outreach',
+      profileId: 'manufacturing-shippers',
+      name: 'Manufacturing Shipper Outreach',
+      type: 'initial',
+      
+      subject: '{{company}} - Ensure JIT delivery reliability + 25% cost savings',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">{{contactName}},</h2>
+          
+          <p>Production line shutdowns from shipping delays? For manufacturers like {{company}}, every late delivery impacts the bottom line.</p>
+          
+          <p><strong>Our supply chain optimization platform ensures reliability:</strong></p>
+          <ul>
+            <li>🎯 <strong>99.8% JIT delivery</strong> reliability</li>
+            <li>📊 <strong>Real-time supply chain visibility</strong> across all shipments</li>
+            <li>💰 <strong>25% logistics cost reduction</strong> through AI optimization</li>
+            <li>📋 <strong>Automated compliance</strong> for cross-border shipments</li>
+          </ul>
+          
+          <p><strong>Manufacturing clients report:</strong></p>
+          <ul>
+            <li>Boeing supplier: Zero production delays in 18 months</li>
+            <li>Automotive OEM: $2.8M annual logistics savings</li>
+            <li>Chemical manufacturer: 40% faster cross-border clearance</li>
+          </ul>
+          
+          <p>For {{company}}'s {{shipmentVolume}} monthly shipments, we project <strong>${{annualSavings}} annual savings</strong> while improving delivery reliability.</p>
+          
+          <p><strong>Interested in a supply chain analysis?</strong> I can show you optimization opportunities specific to {{industry}} manufacturing.</p>
+          
+          <p>Best regards,<br>
+          Marcus Thompson<br>
+          Manufacturing Solutions<br>
+          (555) 123-4567</p>
+        </div>
+      `,
+      
+      textContent: `{{contactName}},
+
+Production line shutdowns from shipping delays? For manufacturers like {{company}}, every late delivery impacts the bottom line.
+
+Our supply chain optimization platform ensures reliability:
+- 99.8% JIT delivery reliability
+- Real-time supply chain visibility across all shipments
+- 25% logistics cost reduction through AI optimization
+- Automated compliance for cross-border shipments
+
+Manufacturing clients report:
+- Boeing supplier: Zero production delays in 18 months
+- Automotive OEM: $2.8M annual logistics savings
+- Chemical manufacturer: 40% faster cross-border clearance
+
+For {{company}}'s {{shipmentVolume}} monthly shipments, we project ${{annualSavings}} annual savings while improving delivery reliability.
+
+Interested in a supply chain analysis? I can show you optimization opportunities specific to {{industry}} manufacturing.
+
+Best regards,
+Marcus Thompson
+Manufacturing Solutions
+(555) 123-4567`,
+      
+      personalization: [
+        { field: 'shipmentVolume', source: 'calculated', fallback: '2,500' },
+        { field: 'annualSavings', source: 'calculated', fallback: '1.2M' },
+        { field: 'industry', source: 'company_data', fallback: 'industrial' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // Food & Beverage Template
+    const foodBevTemplate: CustomEmailTemplate = {
+      id: 'food-beverage-outreach',
+      profileId: 'food-beverage-shippers',
+      name: 'Food & Beverage Cold Chain',
+      type: 'initial',
+      
+      subject: '{{company}} - 100% cold chain compliance + real-time monitoring',
+      
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2c5aa0;">{{contactName}},</h2>
+          
+          <p>Temperature excursions costing {{company}} money? One spoiled load can wipe out weeks of profit in the food business.</p>
+          
+          <p><strong>Our cold chain platform ensures product integrity:</strong></p>
+          <ul>
+            <li>🌡️ <strong>Real-time temperature monitoring</strong> with instant alerts</li>
+            <li>📋 <strong>Automated compliance</strong> reporting for FDA/USDA</li>
+            <li>🚛 <strong>Vetted reefer carriers</strong> with perfect track records</li>
+            <li>📊 <strong>End-to-end visibility</strong> from dock to dock</li>
+          </ul>
+          
+          <p><strong>Food & beverage companies using our platform:</strong></p>
+          <ul>
+            <li>Organic produce distributor: Zero spoilage in 24 months</li>
+            <li>Frozen food manufacturer: 50% reduction in insurance claims</li>
+            <li>Dairy processor: Perfect FDA audit compliance record</li>
+          </ul>
+          
+          <p>For {{company}}'s cold chain operation, this means <strong>guaranteed product integrity</strong> and potential <strong>${{savings}} annual savings</strong> from reduced spoilage.</p>
+          
+          <p><strong>Want to see the cold chain monitoring in action?</strong> Quick demo shows real-time temperature data and alerts.</p>
+          
+          <p>Best regards,<br>
+          Marcus Thompson<br>
+          Cold Chain Specialist<br>
+          (555) 123-4567</p>
+        </div>
+      `,
+      
+      textContent: `{{contactName}},
+
+Temperature excursions costing {{company}} money? One spoiled load can wipe out weeks of profit in the food business.
+
+Our cold chain platform ensures product integrity:
+- Real-time temperature monitoring with instant alerts
+- Automated compliance reporting for FDA/USDA
+- Vetted reefer carriers with perfect track records
+- End-to-end visibility from dock to dock
+
+Food & beverage companies using our platform:
+- Organic produce distributor: Zero spoilage in 24 months
+- Frozen food manufacturer: 50% reduction in insurance claims
+- Dairy processor: Perfect FDA audit compliance record
+
+For {{company}}'s cold chain operation, this means guaranteed product integrity and potential ${{savings}} annual savings from reduced spoilage.
+
+Want to see the cold chain monitoring in action? Quick demo shows real-time temperature data and alerts.
+
+Best regards,
+Marcus Thompson
+Cold Chain Specialist
+(555) 123-4567`,
+      
+      personalization: [
+        { field: 'savings', source: 'calculated', fallback: '275,000' }
+      ],
+      conditionalContent: [],
+      variants: [],
+      activeVariant: '',
+      performance: { sent: 0, opened: 0, clicked: 0, replied: 0, converted: 0 }
+    };
+
+    // Store all templates
     this.templates.set(shipperTemplate.id, shipperTemplate);
+    this.templates.set(ownerOperatorTemplate.id, ownerOperatorTemplate);
+    this.templates.set(smallFleetTemplate.id, smallFleetTemplate);
+    this.templates.set(brokerTemplate.id, brokerTemplate);
+    this.templates.set(ecommerceTemplate.id, ecommerceTemplate);
+    this.templates.set(manufacturingTemplate.id, manufacturingTemplate);
+    this.templates.set(foodBevTemplate.id, foodBevTemplate);
   }
 
   private startTargetingEngine() {
