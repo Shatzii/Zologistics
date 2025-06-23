@@ -50,6 +50,7 @@ import { fuelCardManagementSystem } from "./fuel-card-management";
 import { seaFreightPlatform } from "./sea-freight-platform";
 import { airFreightPlatform } from "./air-freight-platform";
 import { multiModalLogisticsEngine } from "./multi-modal-logistics-engine";
+import { autonomousSalesAgent } from "./autonomous-sales-agent";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3922,6 +3923,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error booking multi-modal shipment:", error);
       res.status(500).json({ message: "Failed to book shipment" });
+    }
+  });
+
+  // Autonomous Sales Agent endpoints
+  app.get('/api/sales/metrics', async (req, res) => {
+    try {
+      const metrics = autonomousSalesAgent.getSalesMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting sales metrics:", error);
+      res.status(500).json({ message: "Failed to get sales metrics" });
+    }
+  });
+
+  app.get('/api/sales/leads', async (req, res) => {
+    try {
+      const status = req.query.status as string;
+      const leads = status ? 
+        autonomousSalesAgent.getLeadsByStatus(status) : 
+        autonomousSalesAgent.getAllLeads();
+      res.json(leads);
+    } catch (error) {
+      console.error("Error getting sales leads:", error);
+      res.status(500).json({ message: "Failed to get sales leads" });
+    }
+  });
+
+  app.get('/api/sales/contracts', async (req, res) => {
+    try {
+      const contracts = autonomousSalesAgent.getActiveContracts();
+      res.json(contracts);
+    } catch (error) {
+      console.error("Error getting contracts:", error);
+      res.status(500).json({ message: "Failed to get contracts" });
+    }
+  });
+
+  app.get('/api/sales/pipeline', async (req, res) => {
+    try {
+      const pipelineValue = autonomousSalesAgent.getPipelineValue();
+      const monthlyRevenue = autonomousSalesAgent.getMonthlyRecurringRevenue();
+      res.json({
+        pipelineValue,
+        monthlyRecurringRevenue: monthlyRevenue,
+        projectedAnnualRevenue: monthlyRevenue * 12
+      });
+    } catch (error) {
+      console.error("Error getting pipeline data:", error);
+      res.status(500).json({ message: "Failed to get pipeline data" });
+    }
+  });
+
+  app.get('/api/sales/activity', async (req, res) => {
+    try {
+      const activity = autonomousSalesAgent.getDailyActivity();
+      res.json(activity);
+    } catch (error) {
+      console.error("Error getting sales activity:", error);
+      res.status(500).json({ message: "Failed to get sales activity" });
     }
   });
 
