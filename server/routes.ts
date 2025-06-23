@@ -43,6 +43,7 @@ import { oneClickReferralSystem } from "./one-click-referral-system";
 import { regionalLoadBoardOptimizer } from "./regional-load-board-optimizer";
 import { backhaulRouteOptimizer } from "./backhaul-route-optimizer";
 import { internationalLoadBoardManager } from "./international-load-boards";
+import { globalGhostLoadEngine } from "./global-ghost-load-engine";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3226,6 +3227,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error generating integration roadmap:", error);
       res.status(500).json({ message: "Failed to generate integration roadmap" });
+    }
+  });
+
+  // Global Ghost Load endpoints
+  app.get('/api/global/ghost-loads', async (req, res) => {
+    try {
+      const { region, priority } = req.query;
+      let ghostLoads;
+      
+      if (region) {
+        ghostLoads = globalGhostLoadEngine.getRegionalGhostLoads(region as string);
+      } else if (priority === 'high') {
+        ghostLoads = globalGhostLoadEngine.getHighPriorityLoads();
+      } else {
+        ghostLoads = globalGhostLoadEngine.getGlobalGhostLoads();
+      }
+      
+      res.json(ghostLoads);
+    } catch (error) {
+      console.error("Error getting global ghost loads:", error);
+      res.status(500).json({ message: "Failed to get global ghost loads" });
+    }
+  });
+
+  app.get('/api/global/valuation', async (req, res) => {
+    try {
+      const valuation = globalGhostLoadEngine.calculateGlobalValuation();
+      res.json(valuation);
+    } catch (error) {
+      console.error("Error calculating global valuation:", error);
+      res.status(500).json({ message: "Failed to calculate global valuation" });
+    }
+  });
+
+  app.get('/api/global/central-america-readiness', async (req, res) => {
+    try {
+      const readiness = globalGhostLoadEngine.getCentralAmericaReadiness();
+      res.json(readiness);
+    } catch (error) {
+      console.error("Error getting Central America readiness:", error);
+      res.status(500).json({ message: "Failed to get Central America readiness" });
+    }
+  });
+
+  app.get('/api/global/europe-readiness', async (req, res) => {
+    try {
+      const readiness = globalGhostLoadEngine.getEuropeReadiness();
+      res.json(readiness);
+    } catch (error) {
+      console.error("Error getting Europe readiness:", error);
+      res.status(500).json({ message: "Failed to get Europe readiness" });
+    }
+  });
+
+  app.get('/api/global/readiness-report', async (req, res) => {
+    try {
+      const report = globalGhostLoadEngine.getGlobalReadinessReport();
+      res.json(report);
+    } catch (error) {
+      console.error("Error generating readiness report:", error);
+      res.status(500).json({ message: "Failed to generate readiness report" });
     }
   });
 

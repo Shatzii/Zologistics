@@ -40,6 +40,7 @@ import ReferralDashboard from "@/pages/referral-dashboard";
 import LoadBoardOptimizer from "@/pages/load-board-optimizer";
 import BackhaulOptimizer from "@/pages/backhaul-optimizer";
 import InternationalLoadBoards from "@/pages/international-load-boards";
+import GlobalValuationDashboard from "@/pages/global-valuation-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -124,6 +125,7 @@ function Router() {
         <Route path="/load-board-optimizer" component={LoadBoardOptimizer} />
         <Route path="/backhaul-optimizer" component={BackhaulOptimizer} />
         <Route path="/international-load-boards" component={InternationalLoadBoards} />
+        <Route path="/global-valuation" component={GlobalValuationDashboard} />
         <Route path="/global-expansion" component={() => {
           const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;
