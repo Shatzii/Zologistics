@@ -42,6 +42,7 @@ import { multilingualOnboarding } from "./multilingual-onboarding";
 import { oneClickReferralSystem } from "./one-click-referral-system";
 import { regionalLoadBoardOptimizer } from "./regional-load-board-optimizer";
 import { backhaulRouteOptimizer } from "./backhaul-route-optimizer";
+import { internationalLoadBoardManager } from "./international-load-boards";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3150,6 +3151,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting backhaul metrics:", error);
       res.status(500).json({ message: "Failed to get backhaul metrics" });
+    }
+  });
+
+  // International Load Board endpoints
+  app.get('/api/international/load-boards', async (req, res) => {
+    try {
+      const { region } = req.query;
+      const loadBoards = region ? 
+        internationalLoadBoardManager.getLoadBoardsByRegion(region as string) :
+        internationalLoadBoardManager.getAllLoadBoards();
+      res.json(loadBoards);
+    } catch (error) {
+      console.error("Error getting international load boards:", error);
+      res.status(500).json({ message: "Failed to get international load boards" });
+    }
+  });
+
+  app.get('/api/international/active-boards', async (req, res) => {
+    try {
+      const activeBoards = internationalLoadBoardManager.getActiveLoadBoards();
+      res.json(activeBoards);
+    } catch (error) {
+      console.error("Error getting active load boards:", error);
+      res.status(500).json({ message: "Failed to get active load boards" });
+    }
+  });
+
+  app.get('/api/international/planned-integrations', async (req, res) => {
+    try {
+      const plannedIntegrations = internationalLoadBoardManager.getPlannedIntegrations();
+      res.json(plannedIntegrations);
+    } catch (error) {
+      console.error("Error getting planned integrations:", error);
+      res.status(500).json({ message: "Failed to get planned integrations" });
+    }
+  });
+
+  app.get('/api/international/market-data', async (req, res) => {
+    try {
+      const { region } = req.query;
+      const marketData = internationalLoadBoardManager.getRegionalMarketData(region as string);
+      res.json(marketData);
+    } catch (error) {
+      console.error("Error getting market data:", error);
+      res.status(500).json({ message: "Failed to get market data" });
+    }
+  });
+
+  app.get('/api/international/global-opportunity', async (req, res) => {
+    try {
+      const opportunity = internationalLoadBoardManager.calculateGlobalOpportunity();
+      res.json(opportunity);
+    } catch (error) {
+      console.error("Error calculating global opportunity:", error);
+      res.status(500).json({ message: "Failed to calculate global opportunity" });
+    }
+  });
+
+  app.get('/api/international/integration-costs', async (req, res) => {
+    try {
+      const costs = internationalLoadBoardManager.getIntegrationCosts();
+      res.json(costs);
+    } catch (error) {
+      console.error("Error getting integration costs:", error);
+      res.status(500).json({ message: "Failed to get integration costs" });
+    }
+  });
+
+  app.get('/api/international/roadmap', async (req, res) => {
+    try {
+      const roadmap = internationalLoadBoardManager.generateIntegrationRoadmap();
+      res.json(roadmap);
+    } catch (error) {
+      console.error("Error generating integration roadmap:", error);
+      res.status(500).json({ message: "Failed to generate integration roadmap" });
     }
   });
 
