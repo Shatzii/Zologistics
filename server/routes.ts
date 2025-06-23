@@ -41,6 +41,7 @@ import { ghostLoadEngine } from "./ghost-load-optimization-engine";
 import { multilingualOnboarding } from "./multilingual-onboarding";
 import { oneClickReferralSystem } from "./one-click-referral-system";
 import { regionalLoadBoardOptimizer } from "./regional-load-board-optimizer";
+import { backhaulRouteOptimizer } from "./backhaul-route-optimizer";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3094,6 +3095,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting load board metrics:", error);
       res.status(500).json({ message: "Failed to get load board metrics" });
+    }
+  });
+
+  // Backhaul Route Optimizer endpoints
+  app.get('/api/backhaul/opportunities/:driverId', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const opportunities = backhaulRouteOptimizer.findBackhaulOpportunities(parseInt(driverId));
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error finding backhaul opportunities:", error);
+      res.status(500).json({ message: "Failed to find backhaul opportunities" });
+    }
+  });
+
+  app.post('/api/backhaul/update-location', async (req, res) => {
+    try {
+      const { driverId, lat, lng } = req.body;
+      backhaulRouteOptimizer.updateDriverLocation(driverId, lat, lng);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating driver location:", error);
+      res.status(500).json({ message: "Failed to update driver location" });
+    }
+  });
+
+  app.get('/api/backhaul/alerts/:driverId?', async (req, res) => {
+    try {
+      const { driverId } = req.params;
+      const alerts = backhaulRouteOptimizer.getActiveAlerts(driverId ? parseInt(driverId) : undefined);
+      res.json(alerts);
+    } catch (error) {
+      console.error("Error getting backhaul alerts:", error);
+      res.status(500).json({ message: "Failed to get backhaul alerts" });
+    }
+  });
+
+  app.post('/api/backhaul/respond-alert', async (req, res) => {
+    try {
+      const { alertId, response, input } = req.body;
+      const success = backhaulRouteOptimizer.respondToAlert(alertId, response, input);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error responding to alert:", error);
+      res.status(500).json({ message: "Failed to respond to alert" });
+    }
+  });
+
+  app.get('/api/backhaul/metrics', async (req, res) => {
+    try {
+      const metrics = backhaulRouteOptimizer.getBackhaulMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error getting backhaul metrics:", error);
+      res.status(500).json({ message: "Failed to get backhaul metrics" });
     }
   });
 
