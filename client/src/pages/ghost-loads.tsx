@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Ghost, 
   TrendingUp, 
@@ -26,6 +27,7 @@ import {
 export default function GhostLoads() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t, formatCurrency, formatNumber } = useLanguage();
   const [selectedMatch, setSelectedMatch] = useState<any>(null);
 
   // Fetch ghost loads data
@@ -75,7 +77,6 @@ export default function GhostLoads() {
     },
   });
 
-  const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`;
   const formatDistance = (miles: number) => `${miles.toLocaleString()} mi`;
 
   const getStatusColor = (status: string) => {
@@ -110,10 +111,10 @@ export default function GhostLoads() {
             <Ghost className="h-8 w-8 text-purple-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Ghost Load Optimizer
+                {t('ghost_loads.title')}
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Capturing lost loads and optimizing them for maximum profit
+                {t('ghost_loads.subtitle')}
               </p>
             </div>
           </div>
