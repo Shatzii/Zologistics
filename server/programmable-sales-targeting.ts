@@ -1093,7 +1093,7 @@ P.S. This only works if you have your own truck and want to make more money per 
             <li>Sunshine Freight (15 trucks): Reduced driver turnover 45%</li>
           </ul>
           
-          <p>For {{company}}, we project <strong>${{projectedSavings}}/month additional profit</strong> just from better load optimization.</p>
+          <p>For {{company}}, we project <strong>$35,000/month additional profit</strong> just from better load optimization.</p>
           
           <p><strong>Want a 15-minute demo?</strong> I can show you exactly how it works for your operation.</p>
           
@@ -1119,7 +1119,7 @@ Similar fleets are seeing huge results:
 - Mile High Logistics (40 trucks): Cut admin time 60%
 - Sunshine Freight (15 trucks): Reduced driver turnover 45%
 
-For {{company}}, we project ${{projectedSavings}}/month additional profit just from better load optimization.
+For {{company}}, we project $35,000/month additional profit just from better load optimization.
 
 Want a 15-minute demo? I can show you exactly how it works for your operation.
 
@@ -1169,7 +1169,7 @@ Fleet Operations Specialist
             <li>99.2% on-time delivery rate</li>
           </ul>
           
-          <p>For a {{volumeSize}} operation like {{company}}, that translates to <strong>${{projectedSavings}}/month additional margin.</strong></p>
+          <p>For a {{volumeSize}} operation like {{company}}, that translates to <strong>$35,000/month additional margin.</strong></p>
           
           <p><strong>Interested in a quick partnership discussion?</strong> I can show you the carrier network and how the AI works.</p>
           
@@ -1196,7 +1196,7 @@ Brokers using our platform report:
 - 90% reduction in carrier sourcing time
 - 99.2% on-time delivery rate
 
-For a {{volumeSize}} operation like {{company}}, that translates to ${{projectedSavings}}/month additional margin.
+For a {{volumeSize}} operation like {{company}}, that translates to $35,000/month additional margin.
 
 Interested in a quick partnership discussion? I can show you the carrier network and how the AI works.
 
@@ -1245,7 +1245,7 @@ Broker Relations
             <li>Electronics retailer: Handled Black Friday 300% volume spike</li>
           </ul>
           
-          <p>For {{company}} shipping {{volume}} orders/month, that's <strong>${{monthlySavings}} monthly savings</strong> while improving customer satisfaction.</p>
+          <p>For {{company}} shipping {{volume}} orders/month, that's <strong>$45,000 monthly savings</strong> while improving customer satisfaction.</p>
           
           <p><strong>Want to see the platform in action?</strong> 15-minute demo shows exactly how it works for e-commerce.</p>
           
@@ -1271,7 +1271,7 @@ E-commerce brands using our platform:
 - Supplement brand: Cut shipping complaints 90%
 - Electronics retailer: Handled Black Friday 300% volume spike
 
-For {{company}} shipping {{volume}} orders/month, that's ${{monthlySavings}} monthly savings while improving customer satisfaction.
+For {{company}} shipping {{volume}} orders/month, that's $45,000 monthly savings while improving customer satisfaction.
 
 Want to see the platform in action? 15-minute demo shows exactly how it works for e-commerce.
 
@@ -1320,7 +1320,7 @@ E-commerce Solutions
             <li>Chemical manufacturer: 40% faster cross-border clearance</li>
           </ul>
           
-          <p>For {{company}}'s {{shipmentVolume}} monthly shipments, we project <strong>${{annualSavings}} annual savings</strong> while improving delivery reliability.</p>
+          <p>For {{company}}'s {{shipmentVolume}} monthly shipments, we project <strong>$1.2M annual savings</strong> while improving delivery reliability.</p>
           
           <p><strong>Interested in a supply chain analysis?</strong> I can show you optimization opportunities specific to {{industry}} manufacturing.</p>
           
@@ -1346,7 +1346,7 @@ Manufacturing clients report:
 - Automotive OEM: $2.8M annual logistics savings
 - Chemical manufacturer: 40% faster cross-border clearance
 
-For {{company}}'s {{shipmentVolume}} monthly shipments, we project ${{annualSavings}} annual savings while improving delivery reliability.
+For {{company}}'s {{shipmentVolume}} monthly shipments, we project $1.2M annual savings while improving delivery reliability.
 
 Interested in a supply chain analysis? I can show you optimization opportunities specific to {{industry}} manufacturing.
 
