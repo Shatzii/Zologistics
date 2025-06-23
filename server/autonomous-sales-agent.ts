@@ -164,9 +164,9 @@ export class AutonomousSalesAgent {
             
             <p><strong>For {{company}} specifically, we predict:</strong></p>
             <ul>
-              <li>💰 <strong>${{projectedSavings}}/month</strong> in cost savings</li>
-              <li>⚡ <strong>{{timeImprovement}}% faster</strong> deliveries</li>
-              <li>📊 <strong>Real-time visibility</strong> on all {{estimatedVolume}} monthly shipments</li>
+              <li>💰 <strong>$50,000/month</strong> in cost savings</li>
+              <li>⚡ <strong>25% faster</strong> deliveries</li>
+              <li>📊 <strong>Real-time visibility</strong> on all monthly shipments</li>
             </ul>
             
             <p>I'd love to show you a personalized demo of how we'll optimize {{company}}'s shipping operations.</p>
@@ -202,9 +202,9 @@ What makes us different:
 - Automated paperwork and compliance
 
 For {{company}} specifically, we predict:
-- ${{projectedSavings}}/month in cost savings
-- {{timeImprovement}}% faster deliveries
-- Real-time visibility on all {{estimatedVolume}} monthly shipments
+- $50,000/month in cost savings
+- 25% faster deliveries
+- Real-time visibility on all monthly shipments
 
 I'd love to show you a personalized demo of how we'll optimize {{company}}'s shipping operations.
 
@@ -217,7 +217,7 @@ Direct: (555) 123-4567
 Email: marcus@truckflow.ai
 
 P.S. We're offering early adopters a 60-day free trial with guaranteed savings or your money back. This offer expires in 7 days.`,
-      personalizationFields: ['contactName', 'company', 'estimatedVolume', 'projectedSavings', 'timeImprovement'],
+      personalizationFields: ['contactName', 'company'],
       cta: 'Schedule 15-minute demo',
       followUpSequence: [
         {
@@ -267,9 +267,9 @@ P.S. We're offering early adopters a 60-day free trial with guaranteed savings o
             
             <p><strong>For {{company}} specifically:</strong></p>
             <ul>
-              <li>📈 <strong>${{projectedMonthlyRevenue}}/month</strong> additional revenue</li>
-              <li>🚛 <strong>{{loadsPerMonth}} guaranteed loads</strong> on your preferred routes</li>
-              <li>💸 <strong>{{avgRate}}/mile average rate</strong> (above market)</li>
+              <li>📈 <strong>$40,000/month</strong> additional revenue</li>
+              <li>🚛 <strong>120 guaranteed loads</strong> on your preferred routes</li>
+              <li>💸 <strong>$3.25/mile average rate</strong> (above market)</li>
             </ul>
             
             <p>We're looking for reliable carriers like {{company}} to join our exclusive network.</p>
@@ -308,9 +308,9 @@ Current carriers on our platform average:
 - Real-time support 24/7
 
 For {{company}} specifically:
-- ${{projectedMonthlyRevenue}}/month additional revenue
-- {{loadsPerMonth}} guaranteed loads on your preferred routes  
-- {{avgRate}}/mile average rate (above market)
+- $40,000/month additional revenue
+- 120 guaranteed loads on your preferred routes  
+- $3.25/mile average rate (above market)
 
 We're looking for reliable carriers like {{company}} to join our exclusive network.
 

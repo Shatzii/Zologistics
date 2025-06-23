@@ -908,8 +908,8 @@ export class ProgrammableSalesTargeting {
           
           <p><strong>Projected savings for {{company}}:</strong></p>
           <ul>
-            <li>💰 <strong>${{monthlySavings}}/month</strong> in reduced shipping costs</li>
-            <li>⚡ <strong>{{timeImprovement}}% faster</strong> delivery times</li>
+            <li>💰 <strong>$50,000/month</strong> in reduced shipping costs</li>
+            <li>⚡ <strong>25% faster</strong> delivery times</li>
             <li>📊 <strong>Real-time visibility</strong> on all shipments</li>
           </ul>
           
@@ -930,8 +930,8 @@ export class ProgrammableSalesTargeting {
 {{company}} ships approximately {{volume}} loads monthly. Based on our analysis, we can reduce your logistics costs by {{savings}}% while improving delivery performance.
 
 Projected savings for {{company}}:
-- ${{monthlySavings}}/month in reduced shipping costs
-- {{timeImprovement}}% faster delivery times  
+- $50,000/month in reduced shipping costs
+- 25% faster delivery times  
 - Real-time visibility on all shipments
 
 {{cta}}
@@ -944,7 +944,7 @@ Best regards,
         { field: 'greeting', source: 'calculated', fallback: 'Hello' },
         { field: 'volume', source: 'company_data', fallback: '1,000+' },
         { field: 'savings', source: 'calculated', fallback: '35' },
-        { field: 'monthlySavings', source: 'calculated', fallback: '50,000', transformation: 'currency' }
+        { field: 'monthlySavings', source: 'calculated', fallback: '50,000' }
       ],
       
       conditionalContent: [
