@@ -33,6 +33,7 @@ import LoadSourcesIntegrationPage from "@/pages/load-sources-integration";
 import DriverMarketingPage from "@/pages/driver-marketing";
 import DriverLoadsDashboardPage from "@/pages/driver-loads-dashboard";
 import Web3BlockchainDashboard from "@/pages/web3-blockchain-dashboard";
+import GhostLoads from "@/pages/ghost-loads";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

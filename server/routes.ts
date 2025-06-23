@@ -37,6 +37,7 @@ import { driverAcquisitionEngine } from "./driver-acquisition-engine";
 import { loadAggregationService } from "./load-aggregation-service";
 import { driverReferralSystem } from "./driver-referral-system";
 import { web3Integration } from "./web3-integration";
+import { ghostLoadEngine } from "./ghost-load-optimization-engine";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -2992,6 +2993,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error getting driver NFT:", error);
       res.status(500).json({ message: "Failed to get driver NFT" });
+    }
+  });
+
+  // Ghost Load Optimization Engine API endpoints
+  app.get('/api/ghost-loads/all', async (req, res) => {
+    try {
+      const ghostLoads = ghostLoadEngine.getAllGhostLoads();
+      res.json(ghostLoads);
+    } catch (error) {
+      console.error("Error getting ghost loads:", error);
+      res.status(500).json({ message: "Failed to get ghost loads" });
+    }
+  });
+
+  app.get('/api/ghost-loads/status/:status', async (req, res) => {
+    try {
+      const { status } = req.params;
+      const ghostLoads = ghostLoadEngine.getGhostLoadsByStatus(status as any);
+      res.json(ghostLoads);
+    } catch (error) {
+      console.error("Error getting ghost loads by status:", error);
+      res.status(500).json({ message: "Failed to get ghost loads by status" });
+    }
+  });
+
+  app.get('/api/ghost-loads/matches/top/:limit?', async (req, res) => {
+    try {
+      const limit = parseInt(req.params.limit || '10');
+      const matches = ghostLoadEngine.getTopOptimizationMatches(limit);
+      res.json(matches);
+    } catch (error) {
+      console.error("Error getting top optimization matches:", error);
+      res.status(500).json({ message: "Failed to get optimization matches" });
+    }
+  });
+
+  app.get('/api/ghost-loads/scans/recent/:limit?', async (req, res) => {
+    try {
+      const limit = parseInt(req.params.limit || '5');
+      const scans = ghostLoadEngine.getRecentMarketScans(limit);
+      res.json(scans);
+    } catch (error) {
+      console.error("Error getting recent market scans:", error);
+      res.status(500).json({ message: "Failed to get market scans" });
+    }
+  });
+
+  app.get('/api/ghost-loads/analytics', async (req, res) => {
+    try {
+      const analytics = ghostLoadEngine.getGhostLoadAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error getting ghost load analytics:", error);
+      res.status(500).json({ message: "Failed to get ghost load analytics" });
+    }
+  });
+
+  app.post('/api/ghost-loads/assign/:matchId', async (req, res) => {
+    try {
+      const { matchId } = req.params;
+      const result = await ghostLoadEngine.assignGhostLoadToDriver(matchId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error assigning ghost load:", error);
+      res.status(500).json({ message: "Failed to assign ghost load" });
+    }
+  });
+
+  app.post('/api/ghost-loads/optimize', async (req, res) => {
+    try {
+      const matches = await ghostLoadEngine.optimizeGhostLoadMatching();
+      res.json({ 
+        success: true, 
+        matchesFound: matches.length,
+        topMatches: matches.slice(0, 5)
+      });
+    } catch (error) {
+      console.error("Error optimizing ghost load matching:", error);
+      res.status(500).json({ message: "Failed to optimize ghost load matching" });
     }
   });
 
