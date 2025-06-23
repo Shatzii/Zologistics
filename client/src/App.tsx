@@ -36,6 +36,7 @@ import DriverMarketingPage from "@/pages/driver-marketing";
 import DriverLoadsDashboardPage from "@/pages/driver-loads-dashboard";
 import Web3BlockchainDashboard from "@/pages/web3-blockchain-dashboard";
 import GhostLoads from "@/pages/ghost-loads";
+import ReferralDashboard from "@/pages/referral-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -116,8 +117,9 @@ function Router() {
         <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
         <Route path="/ghost-loads" component={GhostLoads} />
         <Route path="/driver-solutions" component={DriverPainPointSolutions} />
+        <Route path="/referral-dashboard" component={ReferralDashboard} />
         <Route path="/global-expansion" component={() => {
-          const GlobalExpansion = lazy(() => import("./pages/global-expansion"));
+          const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;
         }} />
         <Route component={NotFound} />
