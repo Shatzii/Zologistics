@@ -21,7 +21,8 @@ import {
   Globe,
   Handshake,
   Database,
-  Ghost
+  Ghost,
+  MapPin
 } from "lucide-react";
 
 const navigation = [
@@ -150,6 +151,12 @@ const navigation = [
     href: "/driver-earnings",
     icon: Truck,
     badge: "AI"
+  },
+  {
+    name: "Live GPS Tracking",
+    href: "/live-tracking",
+    icon: MapPin,
+    badge: "LIVE"
   }
 ];
 

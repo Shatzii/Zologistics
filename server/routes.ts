@@ -44,6 +44,7 @@ import { regionalLoadBoardOptimizer } from "./regional-load-board-optimizer";
 import { backhaulRouteOptimizer } from "./backhaul-route-optimizer";
 import { internationalLoadBoardManager } from "./international-load-boards";
 import { globalGhostLoadEngine } from "./global-ghost-load-engine";
+import { liveRouteTracker } from "./live-route-tracker";
 
 // Self-hosted AI engine replaces external dependencies
 
@@ -3517,6 +3518,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error analyzing route:", error);
       res.status(500).json({ message: "Failed to analyze route" });
+    }
+  });
+
+  // Live Route Tracking endpoints
+  app.post('/api/tracking/update-location', async (req, res) => {
+    try {
+      const { driverId, latitude, longitude, heading, speed, accuracy, currentLoad } = req.body;
+      
+      const updatedLocation = liveRouteTracker.updateDriverLocation(driverId, {
+        latitude,
+        longitude,
+        heading,
+        speed,
+        accuracy,
+        currentLoad
+      });
+      
+      res.json({ success: true, location: updatedLocation });
+    } catch (error) {
+      console.error("Error updating driver location:", error);
+      res.status(500).json({ message: "Failed to update driver location" });
+    }
+  });
+
+  app.get('/api/tracking/driver-location/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const location = liveRouteTracker.getDriverLocation(driverId);
+      
+      if (!location) {
+        return res.status(404).json({ message: "Driver location not found" });
+      }
+      
+      res.json(location);
+    } catch (error) {
+      console.error("Error getting driver location:", error);
+      res.status(500).json({ message: "Failed to get driver location" });
+    }
+  });
+
+  app.get('/api/tracking/all-drivers', async (req, res) => {
+    try {
+      const locations = liveRouteTracker.getAllDriverLocations();
+      res.json(locations);
+    } catch (error) {
+      console.error("Error getting all driver locations:", error);
+      res.status(500).json({ message: "Failed to get driver locations" });
+    }
+  });
+
+  app.get('/api/tracking/opportunities/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const opportunities = liveRouteTracker.getActiveOpportunities(driverId);
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error getting driver opportunities:", error);
+      res.status(500).json({ message: "Failed to get driver opportunities" });
+    }
+  });
+
+  app.post('/api/tracking/respond-opportunity', async (req, res) => {
+    try {
+      const { opportunityId, response } = req.body;
+      
+      if (!['accepted', 'declined'].includes(response)) {
+        return res.status(400).json({ message: "Invalid response. Must be 'accepted' or 'declined'" });
+      }
+      
+      const success = liveRouteTracker.respondToOpportunity(opportunityId, response);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Opportunity not found or already responded to" });
+      }
+      
+      res.json({ success: true, response });
+    } catch (error) {
+      console.error("Error responding to opportunity:", error);
+      res.status(500).json({ message: "Failed to respond to opportunity" });
+    }
+  });
+
+  app.get('/api/tracking/route-optimization/:driverId', async (req, res) => {
+    try {
+      const driverId = parseInt(req.params.driverId);
+      const optimization = liveRouteTracker.getRouteOptimization(driverId);
+      
+      if (!optimization) {
+        return res.status(404).json({ message: "No route optimization found for driver" });
+      }
+      
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error getting route optimization:", error);
+      res.status(500).json({ message: "Failed to get route optimization" });
+    }
+  });
+
+  app.get('/api/tracking/stats', async (req, res) => {
+    try {
+      const stats = liveRouteTracker.getTrackingStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting tracking stats:", error);
+      res.status(500).json({ message: "Failed to get tracking stats" });
     }
   });
 
