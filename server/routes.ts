@@ -3397,6 +3397,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Autonomous Operations API endpoints
+  app.get('/api/autonomous/customer-acquisition', (req, res) => {
+    const prospects = Array.from(aggressiveCustomerAcquisition.getHotProspects().values());
+    res.json(prospects);
+  });
+
+  app.get('/api/autonomous/agreements', (req, res) => {
+    const agreements = Array.from(autonomousBrokerAgreements.getActiveAgreements().values());
+    res.json(agreements);
+  });
+
+  app.get('/api/autonomous/owner-alerts', (req, res) => {
+    const alerts = Array.from(aggressiveCustomerAcquisition.getOwnerAlerts().values());
+    res.json(alerts);
+  });
+
+  // Owner approval actions for high-value deals
+  app.post('/api/autonomous/approve-agreement', (req, res) => {
+    const { prospectId, agreementId } = req.body;
+    try {
+      aggressiveCustomerAcquisition.approveAgreement(prospectId, agreementId);
+      res.json({ success: true, message: 'Agreement approved and executed' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to approve agreement' });
+    }
+  });
+
+  app.post('/api/autonomous/reject-agreement', (req, res) => {
+    const { prospectId, reason } = req.body;
+    try {
+      aggressiveCustomerAcquisition.rejectAgreement(prospectId, reason);
+      res.json({ success: true, message: 'Agreement rejected' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to reject agreement' });
+    }
+  });
+
+  // Real-time autonomous operations metrics
+  app.get('/api/autonomous/metrics', (req, res) => {
+    const prospects = Array.from(aggressiveCustomerAcquisition.getHotProspects().values());
+    const agreements = Array.from(autonomousBrokerAgreements.getActiveAgreements().values());
+    const alerts = Array.from(aggressiveCustomerAcquisition.getOwnerAlerts().values());
+    
+    const totalPotentialRevenue = prospects.reduce((sum, p) => sum + (p.potentialValue || 0), 0);
+    const activeAgreementRevenue = agreements.reduce((sum, a) => sum + (a.projectedAnnualRevenue || 0), 0);
+    const urgentAlerts = alerts.filter(a => a.priority === 'urgent').length;
+    
+    res.json({
+      prospectsCount: prospects.length,
+      agreementsCount: agreements.length,
+      totalPotentialRevenue,
+      activeAgreementRevenue,
+      urgentAlerts,
+      autoSignPending: prospects.filter(p => p.autoApprovalEligible && p.status === 'agreement_ready').length,
+      lastUpdated: new Date().toISOString()
+    });
+  });
+
   // Driver Route Optimizer endpoints
   app.post('/api/driver/optimize-route', async (req, res) => {
     try {

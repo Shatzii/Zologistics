@@ -66,7 +66,7 @@ interface DashboardData {
 export function ComprehensiveDashboard() {
   const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ['/api/dashboard/comprehensive'],
-    refetchInterval: 30000,
+    refetchInterval: 5000, // More frequent updates for autonomous operations
   });
 
   const { data: iotDevices = [] } = useQuery({
@@ -82,6 +82,22 @@ export function ComprehensiveDashboard() {
   const { data: blockchainContracts = [] } = useQuery({
     queryKey: ['/api/blockchain/contracts'],
     refetchInterval: 20000,
+  });
+
+  // Real-time autonomous operations data
+  const { data: customerAcquisition = [] } = useQuery({
+    queryKey: ['/api/autonomous/customer-acquisition'],
+    refetchInterval: 5000,
+  });
+
+  const { data: activeAgreements = [] } = useQuery({
+    queryKey: ['/api/autonomous/agreements'],
+    refetchInterval: 5000,
+  });
+
+  const { data: ownerAlerts = [] } = useQuery({
+    queryKey: ['/api/autonomous/owner-alerts'],
+    refetchInterval: 3000, // Critical alerts need immediate updates
   });
 
   if (isLoading) {
