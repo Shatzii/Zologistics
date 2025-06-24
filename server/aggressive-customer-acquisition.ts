@@ -4,6 +4,9 @@
  * AI auto-signing capability with owner approval workflow
  */
 
+import { selfHostedAI } from './self-hosted-ai-engine';
+import { selfHostedEmailEngine } from './self-hosted-email-engine';
+
 export interface ProspectSource {
   id: string;
   name: string;
@@ -477,7 +480,7 @@ export class AggressiveCustomerAcquisition {
     };
   }
 
-  private initiateImmediateContact(prospect: HotProspect) {
+  private async initiateImmediateContact(prospect: HotProspect) {
     const contactAttempt: ContactAttempt = {
       id: `contact-${Date.now()}`,
       method: 'email',
@@ -491,9 +494,22 @@ export class AggressiveCustomerAcquisition {
     prospect.status = 'contacted';
     this.salesKPIs.daily.contactsMade++;
 
-    console.log(`📧 Immediate contact sent to ${prospect.companyName} - ${prospect.contactPerson}`);
+    // Send real email using self-hosted email engine
+    const emailSent = await selfHostedEmailEngine.sendProspectEmail(
+      prospect.email,
+      `${prospect.companyName} - Logistics optimization opportunity`,
+      contactAttempt.message
+    );
 
-    // Simulate response after random delay
+    if (emailSent) {
+      console.log(`📧 Email sent to ${prospect.companyName} - ${prospect.contactPerson}`);
+      contactAttempt.outcome = 'sent';
+    } else {
+      console.log(`📧 Email failed to ${prospect.companyName} - ${prospect.contactPerson}`);
+      contactAttempt.outcome = 'failed';
+    }
+
+    // Simulate response after random delay for development
     const responseDelay = Math.random() * 4 * 60 * 60 * 1000; // 0-4 hours
     setTimeout(() => {
       this.simulateProspectResponse(prospect, contactAttempt);
@@ -501,71 +517,19 @@ export class AggressiveCustomerAcquisition {
   }
 
   private generatePersonalizedMessage(prospect: HotProspect): string {
-    const messages = {
-      carrier: `Hi ${prospect.contactPerson},
+    // Use self-hosted AI to analyze prospect and generate personalized message
+    const analysis = selfHostedAI.analyzeProspect({
+      companyName: prospect.companyName,
+      businessType: prospect.businessType,
+      companySize: prospect.companySize,
+      estimatedRevenue: prospect.estimatedRevenue,
+      address: prospect.address,
+      mcNumber: prospect.mcNumber,
+      dotNumber: prospect.dotNumber
+    });
 
-I noticed ${prospect.companyName} operates in the ${prospect.address.state} market. Our AI platform is generating 25% higher rates for carriers like yours through intelligent load matching.
-
-Quick question: Are you looking to increase your revenue per mile while reducing empty miles?
-
-We're currently offering priority access to qualified carriers. Based on your ${prospect.companySize} operation, I estimate we could add $${Math.floor(prospect.potentialValue / 12).toLocaleString()}/month to your revenue.
-
-Would you be open to a 15-minute conversation this week?
-
-Best regards,
-Marcus Thompson
-TruckFlow AI`,
-
-      shipper: `Hi ${prospect.contactPerson},
-
-I've been analyzing shipping patterns in ${prospect.address.city} and noticed ${prospect.companyName} could benefit from our autonomous logistics optimization platform.
-
-We're helping companies like yours reduce shipping costs by 20-35% while improving delivery times.
-
-Quick question: What's your biggest logistics challenge right now?
-
-Based on your operation size, our platform could save you approximately $${Math.floor(prospect.potentialValue / 12).toLocaleString()}/month through intelligent route optimization and carrier matching.
-
-Would you be interested in seeing how this works for your specific shipping needs?
-
-Best regards,
-Marcus Thompson
-TruckFlow AI`,
-
-      broker: `Hi ${prospect.contactPerson},
-
-I noticed ${prospect.companyName} in the ${prospect.address.state} brokerage market. Our AI platform is helping brokers increase margins by 15-25% through intelligent rate optimization and automated operations.
-
-Quick question: Are you looking to scale your brokerage without proportionally increasing overhead?
-
-Based on your operation, our platform could add approximately $${Math.floor(prospect.potentialValue / 12).toLocaleString()}/month through automated load matching and dynamic pricing.
-
-Would you be open to a brief conversation about scaling your brokerage operations?
-
-Best regards,
-Marcus Thompson
-TruckFlow AI`,
-
-      default: `Hi ${prospect.contactPerson},
-
-I came across ${prospect.companyName} and was impressed by your ${prospect.address.state} operations. Our AI-powered logistics platform is transforming how companies optimize their freight operations.
-
-We're currently helping logistics companies:
-• Reduce costs by 20-35%
-• Improve efficiency through automation
-• Access real-time market intelligence
-• Streamline operations with AI
-
-Based on your business profile, I believe we could add significant value to ${prospect.companyName}.
-
-Would you be open to a brief conversation about your logistics optimization goals?
-
-Best regards,
-Marcus Thompson
-TruckFlow AI`
-    };
-
-    return messages[prospect.businessType as keyof typeof messages] || messages.default;
+    const messageTemplate = selfHostedAI.generatePersonalizedMessage(prospect, analysis);
+    return messageTemplate.body;
   }
 
   private simulateProspectResponse(prospect: HotProspect, contactAttempt: ContactAttempt) {
