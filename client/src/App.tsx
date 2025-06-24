@@ -51,6 +51,7 @@ import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import CarrierRegistrationDashboard from "@/pages/carrier-registration-dashboard";
 import OpenSourceELDDashboard from "@/pages/open-source-eld-dashboard";
 import CarrierSolutionsDashboard from "@/pages/carrier-solutions-dashboard";
+import FeatureCompletionDashboard from "@/pages/feature-completion-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
