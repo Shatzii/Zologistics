@@ -1,7 +1,8 @@
 import OpenAI from "openai";
+import { storage } from './storage';
 
 const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "default_key"
+  apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "sk-placeholder"
 });
 
 export interface VoiceCommand {

@@ -54,6 +54,9 @@ import { carrierPacketAIAgent } from './carrier-packet-ai-agent';
 import { rhimsGoHighwayIntegration } from './rhims-gohighway-integration';
 import { openSourceELDIntegration } from './open-source-eld-integration';
 import { carrierSolutionsSuite } from './carrier-solutions-suite';
+import { productionEmailSystem } from './production-email-system';
+import { voiceAssistant } from './voice-assistant';
+import { computerVision } from './computer-vision';
 import { liveRouteTracker } from "./live-route-tracker";
 import { eldIntegrationService } from "./eld-integration";
 import { fuelCardManagementSystem } from "./fuel-card-management";
@@ -3485,42 +3488,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Fixed Autonomous Operations API endpoints
+  // Working Autonomous Operations API endpoints
   app.get('/api/autonomous/customer-acquisition', (req, res) => {
     try {
-      // Return mock data since methods are missing
-      const prospects = [
-        { id: 1, company: 'Test Company 1', status: 'hot', value: 50000 },
-        { id: 2, company: 'Test Company 2', status: 'warm', value: 75000 }
-      ];
+      const prospects = Array.from(aggressiveCustomerAcquisition.getHotProspects().values());
       res.json(prospects);
     } catch (error) {
+      console.error('Customer acquisition error:', error);
       res.status(500).json({ error: "Failed to fetch prospects" });
     }
   });
 
   app.get('/api/autonomous/agreements', (req, res) => {
     try {
-      // Return mock data since methods are missing
-      const agreements = [
-        { id: 1, company: 'Agreement 1', status: 'active', value: 100000 },
-        { id: 2, company: 'Agreement 2', status: 'pending', value: 150000 }
-      ];
+      const agreements = Array.from(autonomousBrokerAgreements.getActiveAgreements().values());
       res.json(agreements);
     } catch (error) {
+      console.error('Agreements fetch error:', error);
       res.status(500).json({ error: "Failed to fetch agreements" });
     }
   });
 
   app.get('/api/autonomous/owner-alerts', (req, res) => {
     try {
-      // Return mock data since methods are missing
-      const alerts = [
-        { id: 1, message: 'High value agreement pending approval', priority: 'high' },
-        { id: 2, message: 'New prospect requires attention', priority: 'medium' }
-      ];
+      const alerts = Array.from(aggressiveCustomerAcquisition.getOwnerAlerts().values());
       res.json(alerts);
     } catch (error) {
+      console.error('Owner alerts error:', error);
       res.status(500).json({ error: "Failed to fetch alerts" });
     }
   });
