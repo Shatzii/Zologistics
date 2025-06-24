@@ -157,6 +157,12 @@ const navigation = [
     href: "/live-tracking",
     icon: MapPin,
     badge: "LIVE"
+  },
+  {
+    name: "Sea & Air Freight",
+    href: "/multi-modal",
+    icon: Globe,
+    badge: "$9.35B"
   }
 ];
 
