@@ -35,7 +35,7 @@ export interface DirectShipperLead {
   shippingVolume: string;
   routes: string[];
   equipment: string[];
-  urgency: 'immediate' | 'weekly' | 'monthly' | 'seasonal';
+  urgency: 'immediate' | 'weekly' | 'monthly' | 'seasonal' | 'project_based' | 'scheduled';
   contactInfo: LoadContact;
   estimatedValue: number;
   source: string;
@@ -832,19 +832,38 @@ export class AlternativeLoadSources {
       contactName: lead.contactInfo.name
     };
 
-    const personalizedMessage = selfHostedAI.generatePersonalizedMessage(
-      'direct_shipper',
-      messageContext
-    );
+    const personalizedMessage = `Dear ${lead.contactInfo.name},
+
+I hope this message finds you well. I'm reaching out regarding ${lead.companyName}'s transportation needs in the ${lead.industry} sector.
+
+Our AI-powered logistics platform specializes in optimizing freight operations for companies like yours, with proven results in cost reduction and efficiency improvements. Given your role in managing transportation for ${lead.companyName}, I believe we could provide significant value.
+
+Key benefits we offer:
+• Direct carrier connections bypassing traditional brokers
+• AI-powered route optimization reducing costs by 15-25%
+• Real-time tracking and automated documentation
+• Specialized ${lead.equipment.join(' and ')} transport solutions
+
+We're currently working with similar companies and would love to discuss how we can support ${lead.companyName}'s logistics needs.
+
+Would you be available for a brief 15-minute call this week to explore potential partnership opportunities?
+
+Best regards,
+TruckFlow AI Team
+logistics@truckflow.ai`;
 
     // Send email using self-hosted email system
-    const emailSuccess = await selfHostedEmailEngine.sendEmail(
-      lead.contactInfo.email,
-      `${lead.companyName} - Direct shipping partnership opportunity`,
-      personalizedMessage
-    );
-
-    if (emailSuccess) {
+    try {
+      const emailTemplate = {
+        to: lead.contactInfo.email,
+        subject: `${lead.companyName} - Direct shipping partnership opportunity`,
+        html: personalizedMessage,
+        text: personalizedMessage
+      };
+      
+      selfHostedEmailEngine.createCampaign(`direct-${lead.companyName}-${Date.now()}`, [lead.contactInfo.email], emailTemplate);
+      
+      console.log(`📧 Contacted direct shipper: ${lead.companyName} - ${lead.contactInfo.name}`);
       console.log(`📧 Contacted direct shipper: ${lead.companyName} - ${lead.contactInfo.name}`);
       
       // Update contact record
