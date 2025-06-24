@@ -1,582 +1,335 @@
-# TruckFlow AI - Production Deployment Guide
+# TruckFlow AI - GitHub Deployment Guide
 
-## Overview
+This guide covers deploying TruckFlow AI from GitHub to various platforms including Replit, Railway, Vercel, and self-hosted environments.
 
-This guide provides step-by-step instructions for deploying TruckFlow AI to production environments. The platform has been thoroughly tested and is ready for enterprise deployment with proper configuration.
+## 🚀 Quick Deploy Options
 
-## Pre-Deployment Checklist
+### Option 1: Replit (Recommended for Development)
 
-### Infrastructure Requirements
-- [ ] Production database server (PostgreSQL 14+)
-- [ ] Application server (Node.js 20+)
-- [ ] Load balancer with SSL termination
-- [ ] CDN for static assets
-- [ ] Monitoring and logging infrastructure
-- [ ] Backup and disaster recovery systems
+1. **Fork on GitHub**
+   ```bash
+   # Fork the repository to your GitHub account
+   # Then import to Replit
+   ```
 
-### Security Requirements
-- [ ] SSL certificates installed
-- [ ] API rate limiting configured
-- [ ] Database encryption enabled
-- [ ] Audit logging implemented
-- [ ] Access controls established
-- [ ] Security scanning completed
+2. **Import to Replit**
+   - Go to [Replit](https://replit.com)
+   - Click "Import from GitHub"
+   - Select your forked repository
+   - Choose Node.js template
 
-### Integration Requirements
-- [ ] OpenAI API key provisioned
-- [ ] Third-party API integrations tested
-- [ ] External service health checks configured
-- [ ] Data migration scripts validated
-- [ ] Backup procedures tested
+3. **Configure Environment**
+   - Add environment variables in Replit Secrets
+   - Database will be automatically provisioned
 
-## Environment Configuration
+4. **Deploy**
+   ```bash
+   npm install
+   npm run db:push
+   npm run dev
+   ```
 
-### Production Environment Variables
+### Option 2: Railway (Recommended for Production)
 
-```bash
-# Database Configuration
-DATABASE_URL=postgresql://user:password@host:5432/truckflow_prod
-PGHOST=your-postgres-host
-PGPORT=5432
-PGUSER=truckflow_prod_user
-PGPASSWORD=secure_password
-PGDATABASE=truckflow_production
+1. **Connect GitHub Repository**
+   - Visit [Railway](https://railway.app)
+   - Click "Deploy from GitHub repo"
+   - Select TruckFlow AI repository
 
-# Application Configuration
-NODE_ENV=production
-PORT=5000
-SESSION_SECRET=your-secure-session-secret-min-32-chars
+2. **Configure Services**
+   ```yaml
+   # railway.json (already included)
+   {
+     "deploy": {
+       "startCommand": "npm start",
+       "healthcheckPath": "/api/health"
+     }
+   }
+   ```
 
-# API Keys
-OPENAI_API_KEY=your-openai-api-key
-WEATHER_API_KEY=your-weather-service-key
-MAPS_API_KEY=your-google-maps-key
+3. **Environment Variables**
+   - Set all required environment variables in Railway dashboard
+   - PostgreSQL will be automatically provisioned
 
-# Security Configuration
-ENCRYPTION_KEY=your-256-bit-encryption-key
-JWT_SECRET=your-jwt-signing-secret
-API_RATE_LIMIT=100
+4. **Custom Domain**
+   - Add your custom domain in Railway settings
+   - SSL certificates are automatically managed
+
+### Option 3: Vercel (Frontend + Serverless)
+
+1. **Deploy Frontend**
+   ```bash
+   # Install Vercel CLI
+   npm i -g vercel
+   
+   # Deploy
+   vercel --prod
+   ```
+
+2. **Configure Serverless Functions**
+   - API routes will be automatically converted to serverless functions
+   - Configure environment variables in Vercel dashboard
+
+### Option 4: Self-Hosted Docker
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/your-org/truckflow-ai.git
+   cd truckflow-ai
+   ```
+
+2. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+3. **Deploy with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+## 🔧 Configuration
+
+### Required Environment Variables
+
+```env
+# Core Configuration
+DATABASE_URL=postgresql://user:pass@host:port/db
+SESSION_SECRET=your_secure_session_secret
+
+# AI Services
+OPENAI_API_KEY=sk-your_openai_key
+ANTHROPIC_API_KEY=sk-ant-your_anthropic_key
+
+# Email Service
+SENDGRID_API_KEY=SG.your_sendgrid_key
+
+# Authentication (for Replit Auth)
+REPL_ID=your_repl_id
+REPLIT_DOMAINS=your-domain.replit.app
+```
+
+### Optional Integrations
+
+```env
+# Load Board APIs
+DAT_API_KEY=your_dat_api_key
+TRUCKSTOP_API_KEY=your_truckstop_key
+
+# Payment Processing
+STRIPE_SECRET_KEY=sk_live_your_stripe_key
+
+# Communication
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_token
 
 # External Services
-TWILIO_ACCOUNT_SID=your-twilio-sid
-TWILIO_AUTH_TOKEN=your-twilio-token
-TWILIO_PHONE_NUMBER=your-twilio-number
-
-# Monitoring
-LOG_LEVEL=info
-METRICS_ENABLED=true
-HEALTH_CHECK_INTERVAL=30000
+WEATHER_API_KEY=your_weather_key
+MAPS_API_KEY=your_maps_key
 ```
 
-### Database Setup
+## 🗄️ Database Setup
 
-1. **Create Production Database**
-```sql
-CREATE DATABASE truckflow_production;
-CREATE USER truckflow_prod_user WITH PASSWORD 'secure_password';
-GRANT ALL PRIVILEGES ON DATABASE truckflow_production TO truckflow_prod_user;
-```
+### PostgreSQL Schema
 
-2. **Run Database Migrations**
+The application uses Drizzle ORM with automatic migrations:
+
 ```bash
+# Push schema to database
 npm run db:push
+
+# Generate migrations (if needed)
+npm run db:generate
 ```
 
-3. **Verify Database Schema**
-```bash
-npm run db:verify
-```
+### Database Providers
 
-### SSL Configuration
+**Recommended Providers:**
+- **Neon** (Serverless PostgreSQL) - Free tier available
+- **Railway PostgreSQL** - Included with Railway deployment
+- **Supabase** - Free tier with additional features
+- **PlanetScale** - Serverless MySQL alternative
 
-1. **Install SSL Certificates**
+## 🔐 Security Configuration
+
+### SSL/TLS Setup
+
+For production deployments:
+
 ```nginx
+# nginx.conf (included in repository)
 server {
     listen 443 ssl http2;
     server_name your-domain.com;
     
-    ssl_certificate /path/to/certificate.crt;
-    ssl_certificate_key /path/to/private.key;
+    ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/private.key;
     
     location / {
-        proxy_pass http://localhost:5000;
+        proxy_pass http://app:5000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
 
-## Deployment Steps
+### Environment Security
 
-### 1. Server Preparation
+- Use strong session secrets (minimum 32 characters)
+- Rotate API keys regularly
+- Enable rate limiting in production
+- Use HTTPS only in production
 
-```bash
-# Update system packages
-sudo apt update && sudo apt upgrade -y
+## 📊 Monitoring & Logging
 
-# Install Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
+### Health Checks
 
-# Install PM2 for process management
-sudo npm install -g pm2
-
-# Create application user
-sudo useradd -r -s /bin/bash truckflow
-sudo mkdir -p /opt/truckflow
-sudo chown truckflow:truckflow /opt/truckflow
-```
-
-### 2. Application Deployment
+The application includes built-in health check endpoints:
 
 ```bash
-# Clone or upload application code
-cd /opt/truckflow
-git clone https://github.com/your-org/truckflow-ai.git .
-
-# Install dependencies
-npm ci --production
-
-# Build application
-npm run build
-
-# Set file permissions
-sudo chown -R truckflow:truckflow /opt/truckflow
+GET /api/health              # Basic health check
+GET /api/health/database     # Database connectivity
+GET /api/health/services     # External service status
 ```
 
-### 3. Process Management
+### Logging Configuration
 
-Create PM2 ecosystem file:
-```javascript
-// ecosystem.config.js
-module.exports = {
-  apps: [{
-    name: 'truckflow-ai',
-    script: 'server/index.js',
-    instances: 'max',
-    exec_mode: 'cluster',
-    env: {
-      NODE_ENV: 'development'
-    },
-    env_production: {
-      NODE_ENV: 'production',
-      PORT: 5000
-    },
-    error_file: '/var/log/truckflow/error.log',
-    out_file: '/var/log/truckflow/out.log',
-    log_file: '/var/log/truckflow/combined.log',
-    time: true
-  }]
-};
+```env
+# Logging levels: error, warn, info, debug
+LOG_LEVEL=info
+
+# Error tracking (optional)
+SENTRY_DSN=your_sentry_dsn
 ```
 
-Start application:
-```bash
-# Start with PM2
-pm2 start ecosystem.config.js --env production
-
-# Save PM2 configuration
-pm2 save
-
-# Setup PM2 startup script
-pm2 startup
-```
-
-### 4. Load Balancer Configuration
-
-```nginx
-upstream truckflow_backend {
-    server 127.0.0.1:5000;
-    server 127.0.0.1:5001;
-    server 127.0.0.1:5002;
-    server 127.0.0.1:5003;
-}
-
-server {
-    listen 80;
-    server_name your-domain.com;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
-    
-    # SSL configuration
-    ssl_certificate /path/to/certificate.crt;
-    ssl_certificate_key /path/to/private.key;
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
-    
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options DENY always;
-    add_header X-Content-Type-Options nosniff always;
-    
-    # Gzip compression
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript;
-    
-    location / {
-        proxy_pass http://truckflow_backend;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # WebSocket support
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-    
-    location /static/ {
-        alias /opt/truckflow/client/dist/;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-}
-```
-
-## Monitoring and Logging
-
-### 1. Application Monitoring
-
-```javascript
-// Add to server/index.js
-import { monitoringConfig } from './production-config.js';
-
-// Health check endpoint
-app.get('/health', async (req, res) => {
-  const health = await monitoringConfig.healthCheck.database();
-  const services = await monitoringConfig.healthCheck.externalServices();
-  
-  res.json({
-    status: health.status === 'healthy' ? 'ok' : 'error',
-    timestamp: new Date(),
-    uptime: process.uptime(),
-    database: health,
-    services: services
-  });
-});
-
-// Metrics endpoint
-app.get('/metrics', (req, res) => {
-  res.json(monitoringConfig.metrics);
-});
-```
-
-### 2. Log Management
+### Performance Monitoring
 
 ```bash
-# Create log directories
-sudo mkdir -p /var/log/truckflow
-sudo chown truckflow:truckflow /var/log/truckflow
-
-# Configure log rotation
-sudo tee /etc/logrotate.d/truckflow << EOF
-/var/log/truckflow/*.log {
-    daily
-    rotate 14
-    compress
-    delaycompress
-    missingok
-    notifempty
-    copytruncate
-}
-EOF
+# Built-in performance metrics
+GET /api/metrics/performance
+GET /api/metrics/usage
+GET /api/metrics/revenue
 ```
 
-### 3. System Monitoring
+## 🔄 CI/CD Pipeline
 
-Install and configure monitoring tools:
-```bash
-# Install monitoring agents
-curl -sSL https://repos.insights.digitalocean.com/install.sh | sudo bash
+### GitHub Actions Workflow
 
-# Configure alerts
-sudo tee /etc/systemd/system/truckflow-monitor.service << EOF
-[Unit]
-Description=TruckFlow Monitoring Service
-After=network.target
+The repository includes a complete CI/CD pipeline:
 
-[Service]
-Type=simple
-User=truckflow
-ExecStart=/usr/bin/node /opt/truckflow/monitoring/monitor.js
-Restart=always
-RestartSec=10
+1. **Testing**: Automated tests on pull requests
+2. **Security**: Vulnerability scanning with Trivy
+3. **Building**: Docker image creation and registry push
+4. **Deployment**: Automatic deployment to staging/production
 
-[Install]
-WantedBy=multi-user.target
-EOF
-```
+### Deployment Triggers
 
-## Security Hardening
+- **Push to `main`**: Deploy to staging
+- **Push to `production`**: Deploy to production
+- **Pull Request**: Run tests and security scans
 
-### 1. Firewall Configuration
+## 🚢 Production Checklist
 
-```bash
-# Configure UFW firewall
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-sudo ufw allow 22/tcp    # SSH
-sudo ufw allow 80/tcp    # HTTP
-sudo ufw allow 443/tcp   # HTTPS
-sudo ufw enable
-```
+### Pre-Deployment
 
-### 2. Database Security
+- [ ] All environment variables configured
+- [ ] Database migrations run successfully
+- [ ] SSL certificates installed
+- [ ] Domain DNS configured
+- [ ] Monitoring and alerting set up
 
-```sql
--- Create read-only user for monitoring
-CREATE USER truckflow_monitor WITH PASSWORD 'monitor_password';
-GRANT CONNECT ON DATABASE truckflow_production TO truckflow_monitor;
-GRANT USAGE ON SCHEMA public TO truckflow_monitor;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO truckflow_monitor;
+### Post-Deployment
 
--- Enable row-level security
-ALTER TABLE loads ENABLE ROW LEVEL SECURITY;
-CREATE POLICY company_isolation ON loads USING (company_id = current_setting('app.current_company')::int);
-```
+- [ ] Health checks passing
+- [ ] Application loads correctly
+- [ ] Database connections working
+- [ ] External API integrations functional
+- [ ] Email delivery working
+- [ ] Performance metrics normal
 
-### 3. API Security
-
-```javascript
-// Add to server/routes.js
-import { productionMiddleware, productionValidation } from './production-config.js';
-
-// Apply security middleware
-app.use(productionMiddleware.security);
-app.use(productionMiddleware.compression);
-app.use('/api/', productionMiddleware.rateLimiter);
-app.use('/api/auth/', productionMiddleware.strictRateLimiter);
-
-// Input validation
-app.use('/api/', productionValidation.sanitizeInput);
-app.use('/api/', productionValidation.validateApiKey);
-```
-
-## Backup and Recovery
-
-### 1. Database Backups
-
-```bash
-# Daily backup script
-#!/bin/bash
-BACKUP_DIR="/backup/truckflow"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="truckflow_backup_${TIMESTAMP}.sql"
-
-# Create backup
-pg_dump -h $PGHOST -U $PGUSER -d $PGDATABASE > ${BACKUP_DIR}/${BACKUP_FILE}
-
-# Compress backup
-gzip ${BACKUP_DIR}/${BACKUP_FILE}
-
-# Remove backups older than 30 days
-find ${BACKUP_DIR} -name "*.sql.gz" -mtime +30 -delete
-
-# Upload to cloud storage (optional)
-aws s3 cp ${BACKUP_DIR}/${BACKUP_FILE}.gz s3://your-backup-bucket/database/
-```
-
-### 2. Application Backups
-
-```bash
-# Backup application and configuration
-tar -czf /backup/truckflow/app_backup_$(date +%Y%m%d).tar.gz \
-    /opt/truckflow \
-    /etc/nginx/sites-available/truckflow \
-    /etc/systemd/system/truckflow*
-```
-
-## Performance Optimization
-
-### 1. Database Optimization
-
-```sql
--- Create indexes for performance
-CREATE INDEX CONCURRENTLY idx_loads_status ON loads(status);
-CREATE INDEX CONCURRENTLY idx_loads_company ON loads(company_id);
-CREATE INDEX CONCURRENTLY idx_drivers_status ON drivers(status);
-CREATE INDEX CONCURRENTLY idx_negotiations_status ON negotiations(status);
-
--- Analyze tables
-ANALYZE loads;
-ANALYZE drivers;
-ANALYZE negotiations;
-```
-
-### 2. Caching Configuration
-
-```javascript
-// Add Redis caching
-import Redis from 'redis';
-
-const redis = Redis.createClient({
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT
-});
-
-// Cache middleware
-const cacheMiddleware = (ttl = 300) => {
-  return async (req, res, next) => {
-    const key = `cache:${req.originalUrl}`;
-    const cached = await redis.get(key);
-    
-    if (cached) {
-      return res.json(JSON.parse(cached));
-    }
-    
-    res.sendResponse = res.json;
-    res.json = (body) => {
-      redis.setex(key, ttl, JSON.stringify(body));
-      res.sendResponse(body);
-    };
-    
-    next();
-  };
-};
-```
-
-## Testing in Production
-
-### 1. Smoke Tests
-
-```bash
-# Test basic functionality
-curl -k https://your-domain.com/health
-curl -k https://your-domain.com/api/system-status
-curl -k https://your-domain.com/api/metrics
-```
-
-### 2. Load Testing
-
-```bash
-# Install artillery for load testing
-npm install -g artillery
-
-# Create load test configuration
-cat > load-test.yml << EOF
-config:
-  target: https://your-domain.com
-  phases:
-    - duration: 60
-      arrivalRate: 10
-    - duration: 120
-      arrivalRate: 50
-scenarios:
-  - name: "API Load Test"
-    requests:
-      - get:
-          url: "/api/loads"
-      - get:
-          url: "/api/drivers"
-      - get:
-          url: "/api/metrics"
-EOF
-
-# Run load test
-artillery run load-test.yml
-```
-
-## Rollback Procedures
-
-### 1. Application Rollback
-
-```bash
-# Stop current version
-pm2 stop truckflow-ai
-
-# Switch to previous version
-cd /opt/truckflow
-git checkout previous-tag
-
-# Reinstall dependencies
-npm ci --production
-
-# Restart application
-pm2 start truckflow-ai
-```
-
-### 2. Database Rollback
-
-```bash
-# Restore from backup
-gunzip -c /backup/truckflow/truckflow_backup_YYYYMMDD_HHMMSS.sql.gz | \
-psql -h $PGHOST -U $PGUSER -d $PGDATABASE
-```
-
-## Maintenance Procedures
-
-### 1. Regular Maintenance
-
-```bash
-# Weekly maintenance script
-#!/bin/bash
-
-# Update system packages
-sudo apt update && sudo apt upgrade -y
-
-# Restart application
-pm2 restart truckflow-ai
-
-# Clean up logs
-find /var/log/truckflow -name "*.log" -mtime +7 -delete
-
-# Database maintenance
-psql -h $PGHOST -U $PGUSER -d $PGDATABASE -c "VACUUM ANALYZE;"
-
-# Check disk space
-df -h
-```
-
-### 2. Security Updates
-
-```bash
-# Monthly security audit
-npm audit
-npm audit fix
-
-# Update PM2
-pm2 update
-
-# Review access logs
-tail -100 /var/log/nginx/access.log | grep -E "(4[0-9]{2}|5[0-9]{2})"
-```
-
-## Troubleshooting
+## 🆘 Troubleshooting
 
 ### Common Issues
 
-1. **Database Connection Issues**
-   - Check DATABASE_URL environment variable
-   - Verify database server accessibility
-   - Review connection pool settings
+**Database Connection Errors**
+```bash
+# Check connection string format
+DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require
 
-2. **High Memory Usage**
-   - Monitor PM2 process memory
-   - Check for memory leaks
-   - Adjust cluster instances
+# Test connection
+npm run db:push
+```
 
-3. **API Rate Limiting**
-   - Review rate limit configuration
-   - Check client request patterns
-   - Adjust limits if necessary
+**Build Failures**
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
 
-4. **SSL Certificate Issues**
-   - Verify certificate expiration
-   - Check certificate chain
-   - Update certificate files
+# Check Node.js version
+node --version  # Should be 20+
+```
 
-### Support Contacts
+**Environment Variable Issues**
+```bash
+# Verify all required variables are set
+npm run env:check
 
-- **Technical Support**: support@truckflow.ai
-- **Emergency Hotline**: 1-800-TRUCKFLOW-911
-- **Documentation**: docs.truckflow.ai
-- **Status Page**: status.truckflow.ai
+# Check variable loading
+console.log(process.env.DATABASE_URL)
+```
 
-This deployment guide ensures a secure, scalable, and maintainable production environment for TruckFlow AI.
+### Performance Issues
+
+**High Memory Usage**
+- Check for memory leaks in long-running processes
+- Optimize database queries
+- Implement connection pooling
+
+**Slow API Responses**
+- Enable database query logging
+- Implement caching strategies
+- Optimize AI service calls
+
+### Support Resources
+
+- **Documentation**: [docs.truckflow.ai](https://docs.truckflow.ai)
+- **GitHub Issues**: Report bugs and feature requests
+- **Discord Community**: Real-time support and discussions
+- **Email Support**: support@truckflow.ai
+
+## 📈 Scaling Considerations
+
+### Horizontal Scaling
+
+```yaml
+# docker-compose.scale.yml
+services:
+  app:
+    deploy:
+      replicas: 3
+    
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - app
+```
+
+### Database Scaling
+
+- Implement read replicas for heavy read workloads
+- Use connection pooling (PgBouncer)
+- Consider database sharding for massive scale
+
+### CDN Configuration
+
+- Use CloudFlare or AWS CloudFront
+- Cache static assets and API responses
+- Implement edge computing for global performance
+
+---
+
+**TruckFlow AI** is production-ready and designed for enterprise-scale deployment.
+
+For deployment assistance, contact our support team or join our Discord community.
