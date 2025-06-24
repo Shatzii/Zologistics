@@ -50,6 +50,7 @@ import EnhancedWellnessDashboard from "@/pages/enhanced-wellness-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import CarrierRegistrationDashboard from "@/pages/carrier-registration-dashboard";
 import OpenSourceELDDashboard from "@/pages/open-source-eld-dashboard";
+import CarrierSolutionsDashboard from "@/pages/carrier-solutions-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -144,6 +145,7 @@ function Router() {
         <Route path="/load-probability" component={LoadProbabilityDashboard} />
         <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
         <Route path="/open-source-eld" component={OpenSourceELDDashboard} />
+        <Route path="/carrier-solutions" component={CarrierSolutionsDashboard} />
         <Route path="/global-expansion" component={() => {
           const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;

@@ -53,6 +53,7 @@ import { realTimeLoadProbability } from './real-time-load-probability';
 import { carrierPacketAIAgent } from './carrier-packet-ai-agent';
 import { rhimsGoHighwayIntegration } from './rhims-gohighway-integration';
 import { openSourceELDIntegration } from './open-source-eld-integration';
+import { carrierSolutionsSuite } from './carrier-solutions-suite';
 import { liveRouteTracker } from "./live-route-tracker";
 import { eldIntegrationService } from "./eld-integration";
 import { fuelCardManagementSystem } from "./fuel-card-management";
