@@ -46,6 +46,8 @@ import DriverEarningsSimulator from "@/pages/driver-earnings-simulator";
 import LiveTrackingDashboard from "@/pages/live-tracking-dashboard";
 import DirectShipperDashboard from "@/pages/direct-shipper-dashboard";
 import LoadBoardManagement from "@/pages/load-board-management";
+import EnhancedWellnessDashboard from "@/pages/enhanced-wellness-dashboard";
+import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -136,6 +138,8 @@ function Router() {
         <Route path="/live-tracking" component={LiveTrackingDashboard} />
         <Route path="/direct-shipper-dashboard" component={DirectShipperDashboard} />
         <Route path="/load-board-management" component={LoadBoardManagement} />
+        <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
+        <Route path="/load-probability" component={LoadProbabilityDashboard} />
         <Route path="/global-expansion" component={() => {
           const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;
