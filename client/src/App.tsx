@@ -147,6 +147,7 @@ function Router() {
         <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
         <Route path="/open-source-eld" component={OpenSourceELDDashboard} />
         <Route path="/carrier-solutions" component={CarrierSolutionsDashboard} />
+        <Route path="/feature-completion" component={FeatureCompletionDashboard} />
         <Route path="/global-expansion" component={() => {
           const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
           return <GlobalExpansion />;
