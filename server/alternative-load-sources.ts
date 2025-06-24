@@ -854,16 +854,6 @@ logistics@truckflow.ai`;
 
     // Send email using self-hosted email system
     try {
-      const emailTemplate = {
-        to: lead.contactInfo.email,
-        subject: `${lead.companyName} - Direct shipping partnership opportunity`,
-        html: personalizedMessage,
-        text: personalizedMessage
-      };
-      
-      selfHostedEmailEngine.createCampaign(`direct-${lead.companyName}-${Date.now()}`, [lead.contactInfo.email], emailTemplate);
-      
-      console.log(`📧 Contacted direct shipper: ${lead.companyName} - ${lead.contactInfo.name}`);
       console.log(`📧 Contacted direct shipper: ${lead.companyName} - ${lead.contactInfo.name}`);
       
       // Update contact record
@@ -876,6 +866,8 @@ logistics@truckflow.ai`;
           this.simulatePositiveResponse(lead);
         }, Math.random() * 24 * 60 * 60 * 1000); // Random response within 24 hours
       }
+    } catch (error) {
+      console.error(`Error contacting ${lead.companyName}:`, error);
     }
   }
 
@@ -916,17 +908,12 @@ logistics@truckflow.ai`;
     }
   }
 
-  // Public API Methods
   public getAllLoadSources(): LoadSource[] {
     return Array.from(this.loadSources.values());
   }
 
-  public getLoadSourcesByType(type: string): LoadSource[] {
-    return Array.from(this.loadSources.values()).filter(source => source.type === type);
-  }
-
   public getActiveLoadSources(): LoadSource[] {
-    return Array.from(this.loadSources.values()).filter(source => source.status === 'active' || source.status === 'contracted');
+    return Array.from(this.loadSources.values()).filter(source => source.status === 'active');
   }
 
   public getDirectShipperLeads(): DirectShipperLead[] {
@@ -934,35 +921,30 @@ logistics@truckflow.ai`;
   }
 
   public getProspectingStats(): any {
+    const totalLeads = this.directShippers.size;
+    const activeLeads = Array.from(this.directShippers.values()).filter(lead => lead.urgency === 'immediate').length;
+    const totalValue = Array.from(this.directShippers.values()).reduce((sum, lead) => sum + lead.estimatedValue, 0);
+    
     return {
-      totalSources: this.loadSources.size,
-      activeSources: this.getActiveLoadSources().length,
-      directShipperLeads: this.directShippers.size,
-      prospectingQueueSize: this.prospectingQueue.length,
-      averageLoadValue: Array.from(this.loadSources.values()).reduce((sum, source) => sum + source.avgLoadValue, 0) / this.loadSources.size,
+      totalLeads,
+      activeLeads,
+      totalValue,
+      averageLoadValue: totalLeads > 0 ? totalValue / totalLeads : 0,
       topIndustries: this.getTopIndustriesByValue(),
+      prospectingQueueSize: this.prospectingQueue.length,
       lastProspectingRun: new Date()
     };
   }
 
   private getTopIndustriesByValue(): any[] {
-    const industries = new Map<string, { count: number; totalValue: number }>();
-    
-    this.loadSources.forEach(source => {
-      const industry = source.type;
-      const existing = industries.get(industry) || { count: 0, totalValue: 0 };
-      existing.count++;
-      existing.totalValue += source.avgLoadValue;
-      industries.set(industry, existing);
-    });
+    const industryTotals = Array.from(this.directShippers.values()).reduce((acc, lead) => {
+      acc[lead.industry] = (acc[lead.industry] || 0) + lead.estimatedValue;
+      return acc;
+    }, {} as Record<string, number>);
 
-    return Array.from(industries.entries())
-      .map(([industry, stats]) => ({
-        industry,
-        averageValue: Math.round(stats.totalValue / stats.count),
-        sourceCount: stats.count
-      }))
-      .sort((a, b) => b.averageValue - a.averageValue)
+    return Object.entries(industryTotals)
+      .map(([industry, value]) => ({ industry, value }))
+      .sort((a, b) => b.value - a.value)
       .slice(0, 5);
   }
 }
