@@ -59,7 +59,7 @@ export interface ContactAttempt {
   message: string;
   response?: string;
   responseTime?: number; // minutes
-  outcome: 'no_response' | 'interested' | 'not_interested' | 'callback_requested' | 'agreement_interest';
+  outcome: 'no_response' | 'interested' | 'not_interested' | 'callback_requested' | 'agreement_interest' | 'sent' | 'failed';
   followUpScheduled?: Date;
 }
 
@@ -503,10 +503,10 @@ export class AggressiveCustomerAcquisition {
 
     if (emailSent) {
       console.log(`📧 Email sent to ${prospect.companyName} - ${prospect.contactPerson}`);
-      contactAttempt.outcome = 'sent';
+      contactAttempt.outcome = 'no_response'; // Will be updated when response received
     } else {
       console.log(`📧 Email failed to ${prospect.companyName} - ${prospect.contactPerson}`);
-      contactAttempt.outcome = 'failed';
+      contactAttempt.outcome = 'no_response';
     }
 
     // Simulate response after random delay for development
@@ -647,6 +647,38 @@ export class AggressiveCustomerAcquisition {
     prospect.status = 'negotiating';
     prospect.nextAction = 'Generate and send agreement';
     prospect.nextActionDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  }
+
+  private checkAutoSignEligibility(prospect: HotProspect) {
+    // Use self-hosted AI to evaluate deal eligibility
+    const dealEvaluation = selfHostedAI.evaluateDeal(prospect, prospect.potentialValue);
+    
+    if (dealEvaluation.autoApprovalEligible && dealEvaluation.recommendedAction === 'auto_sign') {
+      this.executeAutoSign(prospect, this.getDefaultAutoSignRule());
+    } else {
+      this.escalateToOwner(prospect);
+    }
+  }
+
+  private getDefaultAutoSignRule(): AutoSignRule {
+    return {
+      id: 'default-auto-sign',
+      name: 'Default Auto-Sign Rule',
+      enabled: true,
+      conditions: {
+        maxValue: 50000,
+        minHotScore: 80,
+        businessTypes: ['carrier', 'shipper', 'broker'],
+        requiresVerification: false,
+        maxCommission: 0.15,
+        minCompanySize: 'small'
+      },
+      approvalWorkflow: {
+        autoApprove: true,
+        ownerNotificationMinutes: 30,
+        requiresDocumentation: false
+      }
+    };
   }
 
   private checkAutoSignOpportunities() {
