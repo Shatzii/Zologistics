@@ -44,6 +44,8 @@ import GlobalValuationDashboard from "@/pages/global-valuation-dashboard";
 import EarningsSimulator from "@/pages/earnings-simulator";
 import DriverEarningsSimulator from "@/pages/driver-earnings-simulator";
 import LiveTrackingDashboard from "@/pages/live-tracking-dashboard";
+import DirectShipperDashboard from "@/pages/direct-shipper-dashboard";
+import LoadBoardManagement from "@/pages/load-board-management";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

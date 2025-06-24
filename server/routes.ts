@@ -27,6 +27,10 @@ import { selfHostedAI } from "./self-hosted-ai-engine";
 import { complianceEngine } from "./international-compliance";
 import { localizationEngine } from "./localization-engine";
 import { advancedComplianceSuite } from "./advanced-compliance-suite";
+import { contentManagement } from "./content-management";
+import { alternativeLoadSources } from "./alternative-load-sources";
+import { aggressiveCustomerAcquisition } from "./aggressive-customer-acquisition";
+import { autonomousBrokerAgreements } from "./autonomous-broker-agreements";
 import { collaborativeDriverNetwork } from "./collaborative-driver-network";
 import { multiVehicleBrokerage } from "./multi-vehicle-brokerage";
 import { globalLogisticsOptimizer } from "./global-logistics-optimization";
@@ -3453,6 +3457,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
       autoSignPending: prospects.filter(p => p.autoApprovalEligible && p.status === 'agreement_ready').length,
       lastUpdated: new Date().toISOString()
     });
+  });
+
+  // Content Management System endpoints for real load board integration
+  app.get('/api/content-management/load-boards', (req, res) => {
+    const loadBoards = contentManagement.getLoadBoardConfigs();
+    res.json(loadBoards);
+  });
+
+  app.get('/api/content-management/stats', (req, res) => {
+    const stats = contentManagement.getDataSourceStats();
+    res.json(stats);
+  });
+
+  app.get('/api/content-management/real-loads', async (req, res) => {
+    try {
+      const realLoads = await contentManagement.fetchRealLoads();
+      res.json(realLoads);
+    } catch (error) {
+      console.error('Error fetching real loads:', error);
+      res.status(500).json({ message: 'Failed to fetch real load data' });
+    }
+  });
+
+  app.post('/api/content-management/enable-board', (req, res) => {
+    const { id, apiKey } = req.body;
+    
+    try {
+      const success = contentManagement.enableLoadBoard(id, apiKey);
+      if (success) {
+        res.json({ success: true, message: 'Load board enabled successfully' });
+      } else {
+        res.status(404).json({ success: false, message: 'Load board not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to enable load board' });
+    }
+  });
+
+  app.post('/api/content-management/test-connection', async (req, res) => {
+    const { id } = req.body;
+    
+    try {
+      const loads = await contentManagement.fetchRealLoads(id);
+      res.json({ 
+        success: true, 
+        message: 'Connection successful',
+        loadCount: loads.length,
+        sampleLoad: loads[0] || null
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: error.message 
+      });
+    }
+  });
+
+  app.post('/api/content-management/add-custom-board', (req, res) => {
+    const boardConfig = req.body;
+    
+    try {
+      const success = contentManagement.addCustomLoadBoard(boardConfig);
+      if (success) {
+        res.json({ success: true, message: 'Custom load board added successfully' });
+      } else {
+        res.status(400).json({ success: false, message: 'Load board already exists' });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to add custom load board' });
+    }
+  });
+
+  // Alternative Load Sources - Direct Shipper Integration
+  app.get('/api/alternative-loads/sources', (req, res) => {
+    const sources = alternativeLoadSources.getAllLoadSources();
+    res.json(sources);
+  });
+
+  app.get('/api/alternative-loads/direct-shippers', (req, res) => {
+    const shippers = alternativeLoadSources.getDirectShipperLeads();
+    res.json(shippers);
+  });
+
+  app.get('/api/alternative-loads/by-type/:type', (req, res) => {
+    const { type } = req.params;
+    const sources = alternativeLoadSources.getLoadSourcesByType(type);
+    res.json(sources);
+  });
+
+  app.get('/api/alternative-loads/active-sources', (req, res) => {
+    const activeSources = alternativeLoadSources.getActiveLoadSources();
+    res.json(activeSources);
+  });
+
+  app.get('/api/alternative-loads/stats', (req, res) => {
+    const stats = alternativeLoadSources.getProspectingStats();
+    res.json(stats);
+  });
+
+  app.post('/api/alternative-loads/scan-opportunities', async (req, res) => {
+    try {
+      const opportunities = await alternativeLoadSources.scanDirectShipperOpportunities();
+      res.json({
+        success: true,
+        opportunitiesFound: opportunities.length,
+        opportunities: opportunities.slice(0, 10) // Return first 10 for preview
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to scan for direct shipper opportunities'
+      });
+    }
   });
 
   // Driver Route Optimizer endpoints
