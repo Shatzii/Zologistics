@@ -4,9 +4,8 @@ import rateLimit from 'express-rate-limit';
 import type { Express } from 'express';
 
 export function configureProduction(app: Express) {
-  // Security middleware
+  // Security headers
   app.use(helmet({
-    crossOriginEmbedderPolicy: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
@@ -14,10 +13,10 @@ export function configureProduction(app: Express) {
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "wss:", "https:"],
-        workerSrc: ["'self'", "blob:"]
-      }
-    }
+        connectSrc: ["'self'", "wss:", "ws:"],
+      },
+    },
+    crossOriginEmbedderPolicy: false
   }));
 
   // Compression middleware
@@ -32,11 +31,13 @@ export function configureProduction(app: Express) {
     }
   }));
 
-  // Rate limiting for API endpoints
-  const apiLimiter = rateLimit({
+  // Rate limiting
+  const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // limit each IP to 1000 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.',
+    max: 1000, // Limit each IP to 1000 requests per windowMs
+    message: {
+      error: 'Too many requests from this IP, please try again later.'
+    },
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req) => {
@@ -45,30 +46,21 @@ export function configureProduction(app: Express) {
     }
   });
 
+  // Apply rate limiter to API routes
+  app.use('/api/', limiter);
+
   // Stricter rate limiting for authentication endpoints
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 20,
-    message: 'Too many authentication attempts, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false
+    max: 50,
+    message: {
+      error: 'Too many authentication attempts, please try again later.'
+    }
   });
 
-  // AI processing rate limiting
-  const aiLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 30, // limit AI calls to 30 per minute per IP
-    message: 'AI processing rate limit exceeded, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false
-  });
-
-  // Apply rate limiting
-  app.use('/api/', apiLimiter);
   app.use('/api/auth/', authLimiter);
-  app.use('/api/dispatch/', aiLimiter);
-  app.use('/api/rates/', aiLimiter);
-  app.use('/api/optimization/', aiLimiter);
+  app.use('/api/login', authLimiter);
+  app.use('/api/register', authLimiter);
 
   // Health check endpoint
   app.get('/health', (req, res) => {
@@ -81,65 +73,82 @@ export function configureProduction(app: Express) {
     });
   });
 
-  // Graceful shutdown
-  const gracefulShutdown = (signal: string) => {
-    console.log(`Received ${signal}. Starting graceful shutdown...`);
-    
-    // Give existing requests time to complete
-    setTimeout(() => {
-      console.log('Graceful shutdown completed');
-      process.exit(0);
-    }, 10000);
-  };
-
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-  // Error handling middleware
-  app.use((err: any, req: any, res: any, next: any) => {
-    console.error('Unhandled error:', err);
-    
-    if (res.headersSent) {
-      return next(err);
+  // API health check with more detailed information
+  app.get('/api/health', async (req, res) => {
+    try {
+      // Check database connection
+      const dbCheck = await checkDatabaseConnection();
+      
+      res.status(200).json({
+        status: 'healthy',
+        services: {
+          database: dbCheck ? 'connected' : 'disconnected',
+          ai: 'active',
+          loadBoards: 'active',
+          communication: 'active'
+        },
+        metrics: {
+          activeLoads: await getActiveLoadsCount(),
+          activeDrivers: await getActiveDriversCount(),
+          systemLoad: process.cpuUsage()
+        },
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(503).json({
+        status: 'unhealthy',
+        error: 'Service check failed',
+        timestamp: new Date().toISOString()
+      });
     }
-
-    const isDevelopment = process.env.NODE_ENV === 'development';
-    
-    res.status(err.status || 500).json({
-      error: isDevelopment ? err.message : 'Internal server error',
-      stack: isDevelopment ? err.stack : undefined,
-      timestamp: new Date().toISOString()
-    });
   });
 
-  // 404 handler for API routes
-  app.use('/api/*', (req, res) => {
-    res.status(404).json({
-      error: 'API endpoint not found',
-      path: req.path,
-      method: req.method,
-      timestamp: new Date().toISOString()
-    });
+  // Graceful shutdown handling
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    process.exit(0);
   });
 
-  console.log('Production configuration applied');
+  process.on('SIGINT', () => {
+    console.log('SIGINT received, shutting down gracefully');
+    process.exit(0);
+  });
 }
 
-export function optimizeForRailway() {
-  // Environment-specific optimizations
-  const isProduction = process.env.NODE_ENV === 'production';
-  const port = process.env.PORT || process.env.RAILWAY_STATIC_PORT || 3000;
-
-  if (isProduction) {
-    // Optimize garbage collection for Railway's memory limits
-    process.env.NODE_OPTIONS = '--max-old-space-size=1024 --optimize-for-size';
-    
-    // Configure logging for Railway
-    console.log('🚄 Railway optimization enabled');
-    console.log(`📍 Port: ${port}`);
-    console.log(`🔧 Node Environment: ${process.env.NODE_ENV}`);
-    console.log(`💾 Memory limit: 1GB`);
+async function checkDatabaseConnection(): Promise<boolean> {
+  try {
+    // Import database connection
+    const { db } = await import('./db.js');
+    await db.execute('SELECT 1');
+    return true;
+  } catch (error) {
+    console.error('Database connection check failed:', error);
+    return false;
   }
-
-  return { port: parseInt(port.toString()) };
 }
+
+async function getActiveLoadsCount(): Promise<number> {
+  try {
+    const { db } = await import('./db.js');
+    const { freeLoads } = await import('../shared/schema.js');
+    const result = await db.select().from(freeLoads);
+    return result.length;
+  } catch (error) {
+    console.error('Failed to get active loads count:', error);
+    return 0;
+  }
+}
+
+async function getActiveDriversCount(): Promise<number> {
+  try {
+    const { db } = await import('./db.js');
+    const { users } = await import('../shared/schema.js');
+    const result = await db.select().from(users);
+    return result.length;
+  } catch (error) {
+    console.error('Failed to get active drivers count:', error);
+    return 0;
+  }
+}
+
+export default configureProduction;

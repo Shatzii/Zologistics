@@ -5006,6 +5006,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add a simple root route for health check
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   // Register AI Load Board Platform routes
   registerLoadBoardRoutes(app);
 
