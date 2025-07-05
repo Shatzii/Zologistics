@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, varchar, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, varchar, jsonb, index, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -249,6 +249,265 @@ export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 
 export type Alert = typeof alerts.$inferSelect;
 export type InsertAlert = z.infer<typeof insertAlertSchema>;
+
+// AI-Powered Load Board Platform Tables
+
+// Free Load Boards Management
+export const freeLoadBoards = pgTable("free_load_boards", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  url: varchar("url", { length: 255 }).notNull(),
+  tags: text("tags").array().notNull(),
+  description: text("description"),
+  apiAvailable: boolean("api_available").default(false),
+  scrapingDifficulty: varchar("scraping_difficulty", { length: 50 }),
+  updateFrequency: varchar("update_frequency", { length: 50 }),
+  isActive: boolean("is_active").default(true),
+  lastScraped: timestamp("last_scraped"),
+  totalLoadsScraped: integer("total_loads_scraped").default(0),
+  successRate: decimal("success_rate", { precision: 5, scale: 2 }).default("0"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Free Load Aggregation from Multiple Sources
+export const freeLoads = pgTable("free_loads", {
+  id: serial("id").primaryKey(),
+  loadBoardId: integer("load_board_id").references(() => freeLoadBoards.id),
+  externalId: varchar("external_id", { length: 100 }),
+  origin: varchar("origin", { length: 100 }).notNull(),
+  destination: varchar("destination", { length: 100 }).notNull(),
+  originCoords: jsonb("origin_coords"), // { lat, lng }
+  destinationCoords: jsonb("destination_coords"), // { lat, lng }
+  pickupDate: timestamp("pickup_date"),
+  deliveryDate: timestamp("delivery_date"),
+  equipmentType: varchar("equipment_type", { length: 50 }),
+  weight: integer("weight"),
+  distance: integer("distance"),
+  rate: decimal("rate", { precision: 10, scale: 2 }),
+  rateType: varchar("rate_type", { length: 20 }), // per_mile, flat_rate, etc.
+  ratePerMile: decimal("rate_per_mile", { precision: 10, scale: 2 }),
+  commodity: varchar("commodity", { length: 100 }),
+  loadDetails: jsonb("load_details"),
+  contactInfo: jsonb("contact_info"),
+  requirements: text("requirements").array(),
+  aiScore: integer("ai_score").default(0), // AI-generated quality/profit score
+  profitMargin: decimal("profit_margin", { precision: 10, scale: 2 }),
+  isDead: boolean("is_dead").default(false), // Load no longer available
+  isProcessed: boolean("is_processed").default(false),
+  sourceUrl: varchar("source_url", { length: 500 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Driver Profiles for Smart Load Matching
+export const smartDriverProfiles = pgTable("smart_driver_profiles", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  email: varchar("email", { length: 100 }),
+  whatsappNumber: varchar("whatsapp_number", { length: 20 }),
+  currentLocation: varchar("current_location", { length: 100 }),
+  homeBase: varchar("home_base", { length: 100 }),
+  preferredLanes: text("preferred_lanes").array(),
+  equipmentTypes: text("equipment_types").array(),
+  maxRadius: integer("max_radius").default(500), // miles willing to travel
+  minRate: decimal("min_rate", { precision: 10, scale: 2 }),
+  minRatePerMile: decimal("min_rate_per_mile", { precision: 5, scale: 2 }),
+  preferences: jsonb("preferences"), // Load preferences, schedule, etc.
+  communicationPrefs: jsonb("communication_prefs"), // SMS, WhatsApp, email preferences
+  isActive: boolean("is_active").default(true),
+  deviceToken: varchar("device_token", { length: 255 }), // For push notifications
+  browserExtensionId: varchar("browser_extension_id", { length: 100 }),
+  lastActive: timestamp("last_active"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Load Recommendations Engine
+export const aiLoadRecommendations = pgTable("ai_load_recommendations", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").references(() => smartDriverProfiles.id),
+  loadId: integer("load_id").references(() => freeLoads.id),
+  aiScore: integer("ai_score").notNull(), // 0-100 match score
+  profitabilityScore: integer("profitability_score").notNull(), // 0-100 profit potential
+  reasons: text("reasons").array(), // Why this load was recommended
+  matchFactors: jsonb("match_factors"), // Detailed matching analysis
+  estimatedProfit: decimal("estimated_profit", { precision: 10, scale: 2 }),
+  fuelCosts: decimal("fuel_costs", { precision: 10, scale: 2 }),
+  tollCosts: decimal("toll_costs", { precision: 10, scale: 2 }),
+  deadheadMiles: integer("deadhead_miles"),
+  totalMiles: integer("total_miles"),
+  hoursToComplete: decimal("hours_to_complete", { precision: 5, scale: 2 }),
+  urgencyLevel: varchar("urgency_level", { length: 20 }).default("normal"), // low, normal, high, urgent
+  sentVia: varchar("sent_via", { length: 20 }), // sms, whatsapp, email, browser, push
+  sentAt: timestamp("sent_at"),
+  viewedAt: timestamp("viewed_at"),
+  clickedAt: timestamp("clicked_at"),
+  bookedAt: timestamp("booked_at"),
+  status: varchar("status", { length: 20 }).default("pending"), // pending, sent, viewed, clicked, booked, ignored, expired
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Communication Tracking for All Channels
+export const communicationLogs = pgTable("communication_logs", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").references(() => smartDriverProfiles.id),
+  loadId: integer("load_id").references(() => freeLoads.id),
+  recommendationId: integer("recommendation_id").references(() => aiLoadRecommendations.id),
+  method: varchar("method", { length: 20 }).notNull(), // sms, whatsapp, email, browser, push
+  recipient: varchar("recipient", { length: 100 }).notNull(),
+  message: text("message"),
+  messageData: jsonb("message_data"), // Rich message content
+  status: varchar("status", { length: 20 }).default("pending"), // pending, sent, delivered, read, failed
+  response: text("response"),
+  responseData: jsonb("response_data"),
+  sentAt: timestamp("sent_at").defaultNow(),
+  deliveredAt: timestamp("delivered_at"),
+  readAt: timestamp("read_at"),
+  respondedAt: timestamp("responded_at"),
+  cost: decimal("cost", { precision: 10, scale: 4 }), // Communication cost
+});
+
+// Browser Extension Integration
+export const browserExtensions = pgTable("browser_extensions", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").references(() => smartDriverProfiles.id),
+  extensionId: varchar("extension_id", { length: 100 }).notNull().unique(),
+  currentUrl: varchar("current_url", { length: 500 }),
+  activeLoadBoard: varchar("active_load_board", { length: 100 }),
+  overlayData: jsonb("overlay_data"), // Current overlay information
+  recommendations: jsonb("recommendations"), // Active recommendations to show
+  settings: jsonb("settings"), // Extension settings and preferences
+  isActive: boolean("is_active").default(true),
+  lastHeartbeat: timestamp("last_heartbeat"),
+  installDate: timestamp("install_date").defaultNow(),
+  lastUpdate: timestamp("last_update").defaultNow(),
+});
+
+// Load Board Scraping Performance
+export const scrapingPerformance = pgTable("scraping_performance", {
+  id: serial("id").primaryKey(),
+  loadBoardId: integer("load_board_id").references(() => freeLoadBoards.id),
+  sessionId: varchar("session_id", { length: 100 }),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  loadsFound: integer("loads_found").default(0),
+  loadsAdded: integer("loads_added").default(0),
+  loadsUpdated: integer("loads_updated").default(0),
+  loadsDuplicated: integer("loads_duplicated").default(0),
+  errors: jsonb("errors"),
+  performance: jsonb("performance"), // Speed, success rate, etc.
+  status: varchar("status", { length: 20 }).default("running"), // running, completed, failed, timeout
+});
+
+// AI Model Performance Tracking
+export const aiPerformance = pgTable("ai_performance", {
+  id: serial("id").primaryKey(),
+  modelType: varchar("model_type", { length: 50 }).notNull(), // load_matching, profit_prediction, etc.
+  inputData: jsonb("input_data"),
+  outputData: jsonb("output_data"),
+  actualOutcome: jsonb("actual_outcome"), // What actually happened
+  accuracyScore: decimal("accuracy_score", { precision: 5, scale: 2 }),
+  processingTime: integer("processing_time"), // milliseconds
+  feedback: jsonb("feedback"), // User feedback on AI recommendations
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Revenue Tracking
+export const revenueTracking = pgTable("revenue_tracking", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").references(() => smartDriverProfiles.id),
+  loadId: integer("load_id").references(() => freeLoads.id),
+  recommendationId: integer("recommendation_id").references(() => aiLoadRecommendations.id),
+  grossRevenue: decimal("gross_revenue", { precision: 10, scale: 2 }),
+  platformFee: decimal("platform_fee", { precision: 10, scale: 2 }),
+  netRevenue: decimal("net_revenue", { precision: 10, scale: 2 }),
+  communicationCost: decimal("communication_cost", { precision: 10, scale: 4 }),
+  aiProcessingCost: decimal("ai_processing_cost", { precision: 10, scale: 4 }),
+  totalCost: decimal("total_cost", { precision: 10, scale: 2 }),
+  profit: decimal("profit", { precision: 10, scale: 2 }),
+  bookingDate: timestamp("booking_date"),
+  completionDate: timestamp("completion_date"),
+  paymentDate: timestamp("payment_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Insert Schemas for Load Board Platform
+export const insertFreeLoadBoardSchema = createInsertSchema(freeLoadBoards).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFreeLoadSchema = createInsertSchema(freeLoads).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSmartDriverProfileSchema = createInsertSchema(smartDriverProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAiLoadRecommendationSchema = createInsertSchema(aiLoadRecommendations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCommunicationLogSchema = createInsertSchema(communicationLogs).omit({
+  id: true,
+});
+
+export const insertBrowserExtensionSchema = createInsertSchema(browserExtensions).omit({
+  id: true,
+  installDate: true,
+  lastUpdate: true,
+});
+
+export const insertScrapingPerformanceSchema = createInsertSchema(scrapingPerformance).omit({
+  id: true,
+});
+
+export const insertAiPerformanceSchema = createInsertSchema(aiPerformance).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertRevenueTrackingSchema = createInsertSchema(revenueTracking).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Types for Load Board Platform
+export type FreeLoadBoard = typeof freeLoadBoards.$inferSelect;
+export type InsertFreeLoadBoard = z.infer<typeof insertFreeLoadBoardSchema>;
+
+export type FreeLoad = typeof freeLoads.$inferSelect;
+export type InsertFreeLoad = z.infer<typeof insertFreeLoadSchema>;
+
+export type SmartDriverProfile = typeof smartDriverProfiles.$inferSelect;
+export type InsertSmartDriverProfile = z.infer<typeof insertSmartDriverProfileSchema>;
+
+export type AiLoadRecommendation = typeof aiLoadRecommendations.$inferSelect;
+export type InsertAiLoadRecommendation = z.infer<typeof insertAiLoadRecommendationSchema>;
+
+export type CommunicationLog = typeof communicationLogs.$inferSelect;
+export type InsertCommunicationLog = z.infer<typeof insertCommunicationLogSchema>;
+
+export type BrowserExtension = typeof browserExtensions.$inferSelect;
+export type InsertBrowserExtension = z.infer<typeof insertBrowserExtensionSchema>;
+
+export type ScrapingPerformance = typeof scrapingPerformance.$inferSelect;
+export type InsertScrapingPerformance = z.infer<typeof insertScrapingPerformanceSchema>;
+
+export type AiPerformance = typeof aiPerformance.$inferSelect;
+export type InsertAiPerformance = z.infer<typeof insertAiPerformanceSchema>;
+
+export type RevenueTracking = typeof revenueTracking.$inferSelect;
+export type InsertRevenueTracking = z.infer<typeof insertRevenueTrackingSchema>;
 
 // Wellness and Mental Health Support Tables
 

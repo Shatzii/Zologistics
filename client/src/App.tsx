@@ -48,6 +48,7 @@ import DirectShipperDashboard from "@/pages/direct-shipper-dashboard";
 import LoadBoardManagement from "@/pages/load-board-management";
 import EnhancedWellnessDashboard from "@/pages/enhanced-wellness-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
+import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
 import CarrierRegistrationDashboard from "@/pages/carrier-registration-dashboard";
 import OpenSourceELDDashboard from "@/pages/open-source-eld-dashboard";
 import CarrierSolutionsDashboard from "@/pages/carrier-solutions-dashboard";
@@ -145,6 +146,7 @@ function Router() {
         <Route path="/load-board-management" component={LoadBoardManagement} />
         <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
         <Route path="/load-probability" component={LoadProbabilityDashboard} />
+        <Route path="/ai-load-board" component={LoadBoardDashboard} />
         <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
         <Route path="/open-source-eld" component={OpenSourceELDDashboard} />
         <Route path="/carrier-solutions" component={CarrierSolutionsDashboard} />

@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { registerLoadBoardRoutes } from "./load-board-routes";
 import { insertDriverSchema, insertLoadSchema, insertNegotiationSchema, insertAlertSchema } from "@shared/schema";
 import { registerMobileRoutes } from "./mobile-api";
 import { aiRateOptimizer } from "./ai-rate-optimizer";
@@ -5004,6 +5005,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch campaign performance' });
     }
   });
+
+  // Register AI Load Board Platform routes
+  registerLoadBoardRoutes(app);
 
   const httpServer = createServer(app);
   

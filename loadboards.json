@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Trucker Path",
+    "url": "https://truckerpath.com/truck-loads/",
+    "tags": ["US", "Free", "Mobile", "AI-ready"],
+    "description": "Mobile-first platform with free load posting and searching",
+    "api_available": false,
+    "scraping_difficulty": "Medium",
+    "update_frequency": "Real-time"
+  },
+  {
+    "name": "123Loadboard",
+    "url": "https://www.123loadboard.com/",
+    "tags": ["US", "Free Tier", "API (Partial)"],
+    "description": "Established load board with free tier and API access",
+    "api_available": true,
+    "scraping_difficulty": "Easy",
+    "update_frequency": "Every 15 minutes"
+  },
+  {
+    "name": "FreeFreightSearch",
+    "url": "https://www.freefreightsearch.com/",
+    "tags": ["US", "Free"],
+    "description": "Free freight search and posting platform",
+    "api_available": false,
+    "scraping_difficulty": "Easy",
+    "update_frequency": "Every 30 minutes"
+  },
+  {
+    "name": "NextLOAD",
+    "url": "https://www.nextload.com/",
+    "tags": ["US", "Free", "Embed"],
+    "description": "Free load board with embeddable widgets",
+    "api_available": false,
+    "scraping_difficulty": "Easy",
+    "update_frequency": "Every 30 minutes"
+  },
+  {
+    "name": "TruckSmarter",
+    "url": "https://trucksmarter.com/",
+    "tags": ["US", "Free", "AI-Compatible"],
+    "description": "AI-compatible load board with free access",
+    "api_available": false,
+    "scraping_difficulty": "Medium",
+    "update_frequency": "Real-time"
+  },
+  {
+    "name": "Shiply",
+    "url": "https://www.shiply.com/",
+    "tags": ["EU", "Free"],
+    "description": "European freight marketplace with free posting",
+    "api_available": false,
+    "scraping_difficulty": "Medium",
+    "update_frequency": "Every 30 minutes"
+  },
+  {
+    "name": "FreightCenter",
+    "url": "https://www.freightcenter.com/",
+    "tags": ["US", "Free Quotes"],
+    "description": "Free freight quotes and load matching",
+    "api_available": false,
+    "scraping_difficulty": "Hard",
+    "update_frequency": "Every 60 minutes"
+  },
+  {
+    "name": "uShip",
+    "url": "https://www.uship.com/",
+    "tags": ["US", "Free Tier", "Marketplace"],
+    "description": "Marketplace with free tier for carriers",
+    "api_available": true,
+    "scraping_difficulty": "Medium",
+    "update_frequency": "Real-time"
+  },
+  {
+    "name": "Cargomatic",
+    "url": "https://www.cargomatic.com/",
+    "tags": ["US", "Free", "Local"],
+    "description": "Local freight marketplace with free access",
+    "api_available": false,
+    "scraping_difficulty": "Hard",
+    "update_frequency": "Real-time"
+  },
+  {
+    "name": "Convoy",
+    "url": "https://convoy.com/",
+    "tags": ["US", "Free", "Tech-Forward"],
+    "description": "Tech-forward freight platform with free carrier signup",
+    "api_available": false,
+    "scraping_difficulty": "Hard",
+    "update_frequency": "Real-time"
+  }
+]
