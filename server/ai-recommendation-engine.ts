@@ -9,6 +9,7 @@ import {
   type InsertAiLoadRecommendation 
 } from "@shared/schema";
 import { eq, and, gte, lte, sql, desc } from "drizzle-orm";
+import { AIRateOptimizer, type MarketAnalysis } from "./ai-rate-optimizer";
 
 interface LoadMatchFactors {
   locationMatch: number;
@@ -35,8 +36,10 @@ interface RecommendationResult {
 export class AIRecommendationEngine {
   private processingInterval: NodeJS.Timeout | null = null;
   private isProcessing = false;
+  private rateOptimizer: AIRateOptimizer;
 
   constructor() {
+    this.rateOptimizer = new AIRateOptimizer();
     this.startContinuousProcessing();
   }
 
@@ -324,10 +327,31 @@ export class AIRecommendationEngine {
     return 10;
   }
 
-  private calculateEstimatedProfit(load: FreeLoad, driver: SmartDriverProfile): number {
+  private async calculateEstimatedProfit(load: FreeLoad, driver: SmartDriverProfile): Promise<number> {
     if (!load.rate || !load.distance) return 0;
     
-    const revenue = parseFloat(load.rate.toString());
+    let revenue = parseFloat(load.rate.toString());
+    
+    // Use AI rate optimizer to get better rate if possible
+    try {
+      const loadData = {
+        id: load.id,
+        origin: load.origin,
+        destination: load.destination,
+        rate: revenue,
+        distance: load.distance,
+        equipmentType: load.equipmentType,
+        pickupDate: load.pickupDate?.toISOString() || new Date().toISOString(),
+        deliveryDate: load.deliveryDate?.toISOString() || new Date().toISOString()
+      };
+      
+      const negotiationResult = await this.rateOptimizer.analyzeAndNegotiate(loadData as any);
+      if (negotiationResult && negotiationResult.suggestedRate > revenue) {
+        revenue = negotiationResult.suggestedRate;
+      }
+    } catch (error) {
+      console.log("Rate optimization failed, using original rate");
+    }
     
     // Estimate costs
     const fuelCostPerMile = 0.65;

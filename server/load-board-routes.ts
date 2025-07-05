@@ -17,8 +17,10 @@ import { eq, desc, and, gte, sql, count } from "drizzle-orm";
 import { loadBoardAggregator } from "./load-board-aggregator";
 import { aiRecommendationEngine } from "./ai-recommendation-engine";
 import { communicationService } from "./communication-service";
+import { AIRateOptimizer } from "./ai-rate-optimizer";
 
 export function registerLoadBoardRoutes(app: Express) {
+  const rateOptimizer = new AIRateOptimizer();
 
   // Load Boards Management
   app.get('/api/load-boards', async (req, res) => {
@@ -476,6 +478,72 @@ export function registerLoadBoardRoutes(app: Express) {
     }
   });
 
+  // AI Rate Negotiation Integration
+  app.post('/api/loads/:id/negotiate-rate', async (req, res) => {
+    try {
+      const loadId = parseInt(req.params.id);
+      const [load] = await db
+        .select()
+        .from(freeLoads)
+        .where(eq(freeLoads.id, loadId))
+        .limit(1);
+
+      if (!load) {
+        return res.status(404).json({ error: "Load not found" });
+      }
+
+      // Convert load to format expected by rate optimizer
+      const loadData = {
+        id: load.id,
+        origin: load.origin,
+        destination: load.destination,
+        rate: parseFloat(load.rate || "0"),
+        distance: load.distance || 0,
+        equipmentType: load.equipmentType || "Van",
+        pickupDate: load.pickupDate?.toISOString() || new Date().toISOString(),
+        deliveryDate: load.deliveryDate?.toISOString() || new Date().toISOString()
+      };
+
+      const negotiationResult = await rateOptimizer.optimizeRate(loadData);
+      res.json(negotiationResult);
+    } catch (error) {
+      console.error("Error negotiating rate:", error);
+      res.status(500).json({ error: "Failed to negotiate rate" });
+    }
+  });
+
+  app.post('/api/loads/:id/market-analysis', async (req, res) => {
+    try {
+      const loadId = parseInt(req.params.id);
+      const [load] = await db
+        .select()
+        .from(freeLoads)
+        .where(eq(freeLoads.id, loadId))
+        .limit(1);
+
+      if (!load) {
+        return res.status(404).json({ error: "Load not found" });
+      }
+
+      const loadData = {
+        id: load.id,
+        origin: load.origin,
+        destination: load.destination,
+        rate: parseFloat(load.rate || "0"),
+        distance: load.distance || 0,
+        equipmentType: load.equipmentType || "Van",
+        pickupDate: load.pickupDate?.toISOString() || new Date().toISOString(),
+        deliveryDate: load.deliveryDate?.toISOString() || new Date().toISOString()
+      };
+
+      const marketAnalysis = await rateOptimizer.analyzeMarket(loadData);
+      res.json(marketAnalysis);
+    } catch (error) {
+      console.error("Error analyzing market:", error);
+      res.status(500).json({ error: "Failed to analyze market" });
+    }
+  });
+
   // Load Board Health Check
   app.get('/api/health/load-boards', async (req, res) => {
     try {
@@ -483,6 +551,7 @@ export function registerLoadBoardRoutes(app: Express) {
         aggregatorStatus: "running",
         aiEngineStatus: "running", 
         communicationStatus: "running",
+        rateNegotiationStatus: "running",
         lastScrapingTime: new Date(),
         activeConnections: await db.select({ count: count() }).from(freeLoadBoards).where(eq(freeLoadBoards.isActive, true)),
         recentErrors: [],
