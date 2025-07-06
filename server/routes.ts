@@ -83,19 +83,9 @@ function generateVoiceResponse(intent: string, entities: any[]): string {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // NDA Protection Routes
-  app.get("/", (req, res) => {
-    res.sendFile('nda-gate.html', { root: './public' });
-  });
-  
+  // Demo route with NDA protection (legacy - now using in-app popup)
   app.get("/demo", (req, res) => {
     res.sendFile('nda-gate.html', { root: './public' });
-  });
-  
-  // Main application route (protected by NDA)
-  app.get("/app", (req, res) => {
-    // Serve the main React application
-    res.redirect('/#/dashboard');
   });
   
   // Register mobile API routes for driver app
