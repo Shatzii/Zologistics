@@ -9,6 +9,7 @@ import { EnhancedSidebar } from "@/components/enhanced-sidebar";
 import { QuickCommandPalette } from "@/components/quick-command-palette";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ConfidentialityPopup } from "@/components/ConfidentialityPopup";
 
 // Import available page components
 import Dashboard from "@/pages/dashboard";
@@ -107,80 +108,78 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 }
 
 function Router() {
-  // Check for NDA acceptance
-  const ndaAccepted = localStorage.getItem('truckflowNdaAccepted') === 'true';
+  const [showConfidentialityPopup, setShowConfidentialityPopup] = useState(false);
   
-  // If NDA not accepted, redirect to NDA gate
+  // Check for NDA acceptance on mount
   useEffect(() => {
-    if (!ndaAccepted) {
-      window.location.href = '/demo';
+    const hasAccepted = localStorage.getItem('truckflowNdaAccepted') === 'true';
+    if (!hasAccepted) {
+      setShowConfidentialityPopup(true);
     }
-  }, [ndaAccepted]);
+  }, []);
 
-  // Only render app if NDA is accepted
-  if (!ndaAccepted) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <h2 className="text-2xl mb-4">🔒 Access Restricted</h2>
-          <p>Please accept the NDA to access the demo.</p>
-        </div>
-      </div>
-    );
-  }
+  const handlePopupAccept = () => {
+    setShowConfidentialityPopup(false);
+  };
 
   return (
-    <AppLayout>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/loads" component={LoadsPage} />
-        <Route path="/drivers" component={DriversPage} />
-        <Route path="/enhanced-drivers" component={EnhancedDriversPage} />
-        <Route path="/negotiations" component={NegotiationsPage} />
-        <Route path="/analytics" component={AnalyticsPage} />
-        <Route path="/reports" component={ReportsPage} />
-        <Route path="/settings" component={SettingsPage} />
-        <Route path="/wellness" component={DriverWellnessDashboard} />
-        <Route path="/personalized-wellness" component={WellnessPage} />
-        <Route path="/revolutionary-features" component={RevolutionaryFeaturesPage} />
-        <Route path="/self-hosted-ai" component={SelfHostedAIPage} />
-        <Route path="/international-compliance" component={InternationalCompliancePage} />
-        <Route path="/advanced-compliance" component={AdvancedCompliancePage} />
-        <Route path="/international-regions" component={InternationalRegionsPage} />
-        <Route path="/collaborative-network" component={CollaborativeNetworkPage} />
-        <Route path="/multi-vehicle-brokerage" component={MultiVehicleBrokeragePage} />
-        <Route path="/production-dashboard" component={ProductionDashboardPage} />
-        <Route path="/load-sources" component={LoadSourcesIntegrationPage} />
-        <Route path="/driver-marketing" component={DriverMarketingPage} />
-        <Route path="/driver-loads" component={DriverLoadsDashboardPage} />
-        <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
-        <Route path="/ghost-loads" component={GhostLoads} />
-        <Route path="/driver-solutions" component={DriverPainPointSolutions} />
-        <Route path="/referral-dashboard" component={ReferralDashboard} />
-        <Route path="/load-board-optimizer" component={LoadBoardOptimizer} />
-        <Route path="/backhaul-optimizer" component={BackhaulOptimizer} />
-        <Route path="/international-load-boards" component={InternationalLoadBoards} />
-        <Route path="/global-valuation" component={GlobalValuationDashboard} />
-        <Route path="/earnings-simulator" component={EarningsSimulator} />
-        <Route path="/driver-earnings" component={DriverEarningsSimulator} />
-        <Route path="/live-tracking" component={LiveTrackingDashboard} />
-        <Route path="/direct-shipper-dashboard" component={DirectShipperDashboard} />
-        <Route path="/load-board-management" component={LoadBoardManagement} />
-        <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
-        <Route path="/load-probability" component={LoadProbabilityDashboard} />
-        <Route path="/ai-load-board" component={LoadBoardDashboard} />
-        <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
-        <Route path="/open-source-eld" component={OpenSourceELDDashboard} />
-        <Route path="/carrier-solutions" component={CarrierSolutionsDashboard} />
-        <Route path="/feature-completion" component={FeatureCompletionDashboard} />
-        <Route path="/multi-modal" component={MultiModalLogistics} />
-        <Route path="/global-expansion" component={() => {
-          const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
-          return <GlobalExpansion />;
-        }} />
-        <Route component={NotFound} />
-      </Switch>
-    </AppLayout>
+    <>
+      <AppLayout>
+        <Switch>
+          <Route path="/" component={Dashboard} />
+          <Route path="/loads" component={LoadsPage} />
+          <Route path="/drivers" component={DriversPage} />
+          <Route path="/enhanced-drivers" component={EnhancedDriversPage} />
+          <Route path="/negotiations" component={NegotiationsPage} />
+          <Route path="/analytics" component={AnalyticsPage} />
+          <Route path="/reports" component={ReportsPage} />
+          <Route path="/settings" component={SettingsPage} />
+          <Route path="/wellness" component={DriverWellnessDashboard} />
+          <Route path="/personalized-wellness" component={WellnessPage} />
+          <Route path="/revolutionary-features" component={RevolutionaryFeaturesPage} />
+          <Route path="/self-hosted-ai" component={SelfHostedAIPage} />
+          <Route path="/international-compliance" component={InternationalCompliancePage} />
+          <Route path="/advanced-compliance" component={AdvancedCompliancePage} />
+          <Route path="/international-regions" component={InternationalRegionsPage} />
+          <Route path="/collaborative-network" component={CollaborativeNetworkPage} />
+          <Route path="/multi-vehicle-brokerage" component={MultiVehicleBrokeragePage} />
+          <Route path="/production-dashboard" component={ProductionDashboardPage} />
+          <Route path="/load-sources" component={LoadSourcesIntegrationPage} />
+          <Route path="/driver-marketing" component={DriverMarketingPage} />
+          <Route path="/driver-loads" component={DriverLoadsDashboardPage} />
+          <Route path="/web3-blockchain" component={Web3BlockchainDashboard} />
+          <Route path="/ghost-loads" component={GhostLoads} />
+          <Route path="/driver-solutions" component={DriverPainPointSolutions} />
+          <Route path="/referral-dashboard" component={ReferralDashboard} />
+          <Route path="/load-board-optimizer" component={LoadBoardOptimizer} />
+          <Route path="/backhaul-optimizer" component={BackhaulOptimizer} />
+          <Route path="/international-load-boards" component={InternationalLoadBoards} />
+          <Route path="/global-valuation" component={GlobalValuationDashboard} />
+          <Route path="/earnings-simulator" component={EarningsSimulator} />
+          <Route path="/driver-earnings" component={DriverEarningsSimulator} />
+          <Route path="/live-tracking" component={LiveTrackingDashboard} />
+          <Route path="/direct-shipper-dashboard" component={DirectShipperDashboard} />
+          <Route path="/load-board-management" component={LoadBoardManagement} />
+          <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
+          <Route path="/load-probability" component={LoadProbabilityDashboard} />
+          <Route path="/ai-load-board" component={LoadBoardDashboard} />
+          <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
+          <Route path="/open-source-eld" component={OpenSourceELDDashboard} />
+          <Route path="/carrier-solutions" component={CarrierSolutionsDashboard} />
+          <Route path="/feature-completion" component={FeatureCompletionDashboard} />
+          <Route path="/multi-modal" component={MultiModalLogistics} />
+          <Route path="/global-expansion" component={() => {
+            const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
+            return <GlobalExpansion />;
+          }} />
+          <Route component={NotFound} />
+        </Switch>
+      </AppLayout>
+      
+      {showConfidentialityPopup && (
+        <ConfidentialityPopup onAccept={handlePopupAccept} />
+      )}
+    </>
   );
 }
 
