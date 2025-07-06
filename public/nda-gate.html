@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TruckFlow AI Demo - NDA Required</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #0f172a; }
+    #nda-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); color: #fff; padding: 40px;
+      overflow-y: auto; display: flex; flex-direction: column; justify-content: center;
+    }
+    #nda-box {
+      background: #1e293b; padding: 30px; border-radius: 10px; max-height: 80vh; overflow-y: auto;
+      border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    h2 { color: #22c55e; margin-bottom: 20px; font-size: 24px; }
+    #agree-btn {
+      margin-top: 20px; padding: 12px 24px; background: #22c55e; border: none;
+      color: white; font-size: 16px; cursor: pointer; border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+    #agree-btn:hover { background: #16a34a; }
+    #app-content { padding: 20px; background: #0f172a; min-height: 100vh; }
+    .nda-text { 
+      font-size: 14px; line-height: 1.6; color: #e2e8f0; 
+      background: #334155; padding: 20px; border-radius: 6px; margin: 15px 0;
+    }
+    .highlight { color: #fbbf24; font-weight: bold; }
+    .warning { color: #ef4444; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="nda-modal">
+    <div id="nda-box">
+      <h2>🚛 TruckFlow AI Platform - Demo Access Agreement</h2>
+      <div class="nda-text">
+        <p><strong class="highlight">CONFIDENTIAL TECHNOLOGY DEMONSTRATION</strong></p>
+        
+        <p>This Non‑Disclosure Agreement ("Agreement") is effective as of the date you click "I Agree," between TruckFlow AI Technologies ("Disclosing Party") and you ("Receiving Party").</p>
+
+        <p><strong>1. Confidential Information</strong><br>
+        All proprietary algorithms, AI models, load optimization systems, autonomous dispatch technologies, rate negotiation engines, and business methodologies demonstrated are "Confidential Information."</p>
+
+        <p><strong>2. Your Obligations</strong><br>
+        • Maintain strict confidentiality of all demonstrated technologies<br>
+        • Use access solely to evaluate our platform capabilities<br>
+        • Prevent unauthorized third-party access or disclosure<br>
+        • Not reverse engineer, copy, or replicate any demonstrated systems</p>
+
+        <p><strong>3. Excluded Information</strong><br>
+        Public domain information, independently developed technologies, or legally required disclosures are not covered.</p>
+
+        <p><strong>4. Protection Period</strong><br>
+        Confidentiality obligations continue for <span class="highlight">5 years</span> from acceptance or until information becomes public through no fault of yours.</p>
+
+        <p><strong>5. No Rights Granted</strong><br>
+        No ownership, patent, licensing, or usage rights are granted. This is demonstration access only.</p>
+
+        <p><strong class="warning">6. Legal Remedies</strong><br>
+        Breach causes irreparable harm. We may seek immediate injunctive relief without bond, plus actual damages, punitive damages, attorneys' fees, and costs.</p>
+
+        <p><strong>7. Governing Law</strong><br>
+        Alabama state law governs this Agreement. Venue: Alabama courts. You waive jury trial and class action rights.</p>
+
+        <p><strong>8. Consent to Jurisdiction</strong><br>
+        By clicking "I Agree," you consent to Alabama jurisdiction and waive venue challenges.</p>
+
+        <p><strong>9. Entire Agreement</strong><br>
+        This supersedes all prior understandings regarding demo access.</p>
+
+        <div style="margin-top: 20px; padding: 15px; background: #374151; border-radius: 6px;">
+          <p class="warning">⚠️ IMPORTANT: This demo contains proprietary $29.85B market opportunity technologies including autonomous dispatch, AI rate optimization, and multi-modal logistics platforms. Unauthorized disclosure is prohibited.</p>
+        </div>
+      </div>
+      <button id="agree-btn">I Agree - Access Demo</button>
+    </div>
+  </div>
+
+  <div id="app-content" style="display:none;">
+    <div style="text-align: center; padding: 50px; color: white;">
+      <h1 style="color: #22c55e; font-size: 2.5rem; margin-bottom: 20px;">🚛 Welcome to TruckFlow AI</h1>
+      <p style="font-size: 1.2rem; margin-bottom: 30px;">NDA Accepted. Redirecting to proprietary platform...</p>
+      <div style="margin: 30px 0;">
+        <div style="display: inline-block; padding: 15px; background: #1e293b; border-radius: 8px; border: 1px solid #334155;">
+          <p style="margin: 0; color: #fbbf24;">🔒 Protected Demo Environment Active</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('nda-modal');
+    const content = document.getElementById('app-content');
+    const agreeBtn = document.getElementById('agree-btn');
+
+    // Check if NDA was previously accepted
+    if (localStorage.getItem('truckflowNdaAccepted') === 'true') {
+      modal.style.display = 'none';
+      content.style.display = 'block';
+      // Redirect to main app after brief display
+      setTimeout(() => {
+        window.location.href = '/#/dashboard';
+      }, 2000);
+    }
+
+    agreeBtn.onclick = () => {
+      localStorage.setItem('truckflowNdaAccepted', 'true');
+      localStorage.setItem('ndaAcceptedDate', new Date().toISOString());
+      modal.style.display = 'none';
+      content.style.display = 'block';
+      
+      // Redirect to main application
+      setTimeout(() => {
+        window.location.href = '/#/dashboard';
+      }, 3000);
+    };
+  </script>
+</body>
+</html>

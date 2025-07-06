@@ -107,6 +107,28 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 }
 
 function Router() {
+  // Check for NDA acceptance
+  const ndaAccepted = localStorage.getItem('truckflowNdaAccepted') === 'true';
+  
+  // If NDA not accepted, redirect to NDA gate
+  useEffect(() => {
+    if (!ndaAccepted) {
+      window.location.href = '/demo';
+    }
+  }, [ndaAccepted]);
+
+  // Only render app if NDA is accepted
+  if (!ndaAccepted) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <h2 className="text-2xl mb-4">🔒 Access Restricted</h2>
+          <p>Please accept the NDA to access the demo.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <AppLayout>
       <Switch>

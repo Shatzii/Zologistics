@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trucking AI Demo NDA Gate</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    #nda-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); color: #fff; padding: 40px;
+      overflow-y: auto; display: flex; flex-direction: column; justify-content: center;
+    }
+    #nda-box {
+      background: #222; padding: 20px; border-radius: 5px; max-height: 80vh; overflow-y: auto;
+    }
+    #agree-btn {
+      margin-top: 20px; padding: 10px 20px; background: #00cc66; border: none;
+      color: white; font-size: 16px; cursor: pointer; border-radius: 5px;
+    }
+    #app-content { padding: 20px; }
+  </style>
+</head>
+<body>
+  <div id="nda-modal">
+    <div id="nda-box">
+      <h2>Non-Disclosure Agreement (NDA)</h2>
+      <pre style="white-space: pre-wrap;">
+This Non‑Disclosure Agreement (“Agreement”) is effective as of the date the Receiving Party clicks “I Agree,” by and between [Your Company Name] (“Disclosing Party”) and the individual or entity accessing the demo (“Receiving Party”).
+
+1. Definition of Confidential Information
+All non-public information shared via the demo—code, algorithms, business/data plans—is “Confidential Information.”
+
+2. Obligations
+a) Maintain confidentiality and not disclose.
+b) Use solely to evaluate the demo.
+c) Prevent third-party access.
+
+3. Exclusions
+Public domain, independently developed, rightfully received, or legally required disclosures are not covered.
+
+4. Term
+Protection continues until info is public through no fault of Receiving Party or for 5 years from acceptance.
+
+5. No License
+No ownership, patent, or license rights are granted by this Agreement.
+
+6. Remedies & Injunctive Relief
+Breach causes irreparable harm. Disclosing Party may seek immediate injunctive relief without bond or proof of damage, plus actual and punitive damages, attorneys’ fees, and costs.
+
+7. Choice of Law & Jury Waiver
+Governing law: State of Alabama. Venue: courts in [Your County], Alabama. Receiving Party waives jury trial, class action, arbitration, and any objections to jurisdiction or venue.
+
+8. Consent to Suit
+By clicking “I Agree,” Receiving Party consents to being individually sued in Alabama and waives challenges to enforceability.
+
+9. Severability
+If any part is unenforceable, the rest remains valid.
+
+10. Entire Agreement
+This Agreement supersedes all prior understandings.
+
+[CLICK "I AGREE" TO CONTINUE]
+      </pre>
+      <button id="agree-btn">I Agree</button>
+    </div>
+  </div>
+
+  <div id="app-content" style="display:none;">
+    <h1>Welcome to the Trucking AI Demo</h1>
+    <p>Your NDA has been accepted. Enjoy the preview of our proprietary platform.</p>
+    <!-- Your real demo UI or iframe or React root mount goes here -->
+  </div>
+
+  <script>
+    const modal = document.getElementById('nda-modal');
+    const content = document.getElementById('app-content');
+    const agreeBtn = document.getElementById('agree-btn');
+
+    if (localStorage.getItem('ndaAccepted') === 'true') {
+      modal.style.display = 'none';
+      content.style.display = 'block';
+    }
+
+    agreeBtn.onclick = () => {
+      localStorage.setItem('ndaAccepted', 'true');
+      modal.style.display = 'none';
+      content.style.display = 'block';
+    };
+  </script>
+</body>
+</html>
