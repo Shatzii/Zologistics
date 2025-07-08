@@ -49,6 +49,9 @@ import DirectShipperDashboard from "@/pages/direct-shipper-dashboard";
 import LoadBoardManagement from "@/pages/load-board-management";
 import EnhancedWellnessDashboard from "@/pages/enhanced-wellness-dashboard";
 import DeploymentDashboard from "@/pages/deployment-dashboard";
+import MobileDriverApp from "@/pages/mobile-driver-app";
+import CustomerPortal from "@/pages/customer-portal";
+import PlatformImprovements from "@/pages/platform-improvements";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
 import CarrierRegistrationDashboard from "@/pages/carrier-registration-dashboard";
@@ -163,6 +166,9 @@ function Router() {
           <Route path="/load-board-management" component={LoadBoardManagement} />
           <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
           <Route path="/deployment" component={DeploymentDashboard} />
+          <Route path="/mobile-app" component={MobileDriverApp} />
+          <Route path="/customer-portal" component={CustomerPortal} />
+          <Route path="/improvements" component={PlatformImprovements} />
           <Route path="/load-probability" component={LoadProbabilityDashboard} />
           <Route path="/ai-load-board" component={LoadBoardDashboard} />
           <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
