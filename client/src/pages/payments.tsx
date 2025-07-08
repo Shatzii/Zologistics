@@ -8,10 +8,8 @@ import { CheckCircle, CreditCard, Truck } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 interface SubscriptionPlan {
   id: string;
@@ -241,6 +239,13 @@ export default function PaymentsPage() {
         <p className="text-muted-foreground">
           Get access to premium load boards and AI-powered features
         </p>
+        {!stripePublicKey && (
+          <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+              Payment processing is currently disabled. Configure Stripe keys to enable subscriptions.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -296,10 +301,11 @@ export default function PaymentsPage() {
               <Button 
                 className="w-full" 
                 onClick={() => handlePlanSelect(plan.id)}
-                disabled={isLoading}
+                disabled={isLoading || (!stripePublicKey && plan.price > 0)}
                 variant={plan.recommended ? 'default' : 'outline'}
               >
-                {isLoading && selectedPlan === plan.id ? 'Loading...' : `Select ${plan.name}`}
+                {!stripePublicKey && plan.price > 0 ? 'Payment Setup Required' :
+                 isLoading && selectedPlan === plan.id ? 'Loading...' : `Select ${plan.name}`}
               </Button>
             </CardContent>
           </Card>
