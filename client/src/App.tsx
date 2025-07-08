@@ -58,6 +58,7 @@ import EnhancedAnalyticsDashboard from "@/pages/enhanced-analytics-dashboard";
 import PredictiveMaintenanceDashboard from "@/pages/predictive-maintenance-dashboard";
 import MultiLanguageDashboard from "@/pages/multi-language-dashboard";
 import ComplianceMonitoringDashboard from "@/pages/compliance-monitoring-dashboard";
+import CreateDriverPage from "@/pages/create-driver";
 import FeaturesDashboard from "@/pages/features-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
@@ -182,6 +183,7 @@ function Router() {
           <Route path="/predictive-maintenance" component={PredictiveMaintenanceDashboard} />
           <Route path="/multi-language" component={MultiLanguageDashboard} />
           <Route path="/compliance-monitoring" component={ComplianceMonitoringDashboard} />
+          <Route path="/drivers/create" component={CreateDriverPage} />
           <Route path="/features" component={FeaturesDashboard} />
           <Route path="/load-probability" component={LoadProbabilityDashboard} />
           <Route path="/ai-load-board" component={LoadBoardDashboard} />
