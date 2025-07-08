@@ -55,6 +55,9 @@ import PlatformImprovements from "@/pages/platform-improvements";
 import VoiceAssistant from "@/pages/voice-assistant";
 import PaymentProcessingDashboard from "@/pages/payment-processing-dashboard";
 import EnhancedAnalyticsDashboard from "@/pages/enhanced-analytics-dashboard";
+import PredictiveMaintenanceDashboard from "@/pages/predictive-maintenance-dashboard";
+import MultiLanguageDashboard from "@/pages/multi-language-dashboard";
+import ComplianceMonitoringDashboard from "@/pages/compliance-monitoring-dashboard";
 import FeaturesDashboard from "@/pages/features-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
@@ -176,6 +179,9 @@ function Router() {
           <Route path="/voice-assistant" component={VoiceAssistant} />
           <Route path="/payment-processing" component={PaymentProcessingDashboard} />
           <Route path="/enhanced-analytics" component={EnhancedAnalyticsDashboard} />
+          <Route path="/predictive-maintenance" component={PredictiveMaintenanceDashboard} />
+          <Route path="/multi-language" component={MultiLanguageDashboard} />
+          <Route path="/compliance-monitoring" component={ComplianceMonitoringDashboard} />
           <Route path="/features" component={FeaturesDashboard} />
           <Route path="/load-probability" component={LoadProbabilityDashboard} />
           <Route path="/ai-load-board" component={LoadBoardDashboard} />
