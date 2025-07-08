@@ -22,7 +22,11 @@ import {
   Handshake,
   Database,
   Ghost,
-  MapPin
+  MapPin,
+  Smartphone,
+  Mic,
+  Brain,
+  Zap
 } from "lucide-react";
 
 const navigation = [
@@ -73,18 +77,57 @@ const navigation = [
     href: "/settings",
     icon: Settings,
     badge: null
+  }
+];
+
+const mobileAppsSection = [
+  {
+    name: "Mobile Driver App",
+    href: "/mobile-app",
+    icon: Smartphone,
+    badge: "LIVE"
   },
+  {
+    name: "Customer Portal",
+    href: "/customer-portal", 
+    icon: Users,
+    badge: "LIVE"
+  }
+];
+
+const aiSection = [
+  {
+    name: "Voice Assistant",
+    href: "/voice-assistant",
+    icon: Mic,
+    badge: "AI"
+  },
+  {
+    name: "Load Optimization",
+    href: "/load-probability",
+    icon: Brain,
+    badge: "AI"
+  },
+  {
+    name: "AI Load Board",
+    href: "/ai-load-board",
+    icon: Zap,
+    badge: "AI"
+  }
+];
+
+const advancedSection = [
   {
     name: "Driver Wellness",
     href: "/wellness",
     icon: Heart,
-    badge: "NEW"
+    badge: "ACTIVE"
   },
   {
-    name: "Driver Solutions",
-    href: "/driver-solutions",
-    icon: Shield,
-    badge: "5"
+    name: "Collaborative Network", 
+    href: "/collaborative-network",
+    icon: Handshake,
+    badge: "LIVE"
   },
   {
     name: "International Regions",
@@ -93,10 +136,31 @@ const navigation = [
     badge: "8 Regions"
   },
   {
-    name: "Collaborative Network",
-    href: "/collaborative-network",
-    icon: Handshake,
-    badge: "Active"
+    name: "Ghost Loads",
+    href: "/ghost-loads",
+    icon: Ghost,
+    badge: "LIVE"
+  },
+  {
+    name: "Live Tracking",
+    href: "/live-tracking",
+    icon: MapPin,
+    badge: "GPS"
+  }
+];
+
+const managementSection = [
+  {
+    name: "Deployment",
+    href: "/deployment",
+    icon: Database,
+    badge: "CRITICAL"
+  },
+  {
+    name: "Platform Improvements",
+    href: "/improvements",
+    icon: Settings,
+    badge: "ROADMAP"
   },
   {
     name: "Multi-Vehicle Brokerage",
