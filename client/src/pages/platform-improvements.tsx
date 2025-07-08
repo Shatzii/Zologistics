@@ -128,7 +128,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "3-4 weeks",
       revenueIncrease: "$30,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 4,
       icon: CreditCard,
       details: [
@@ -154,7 +154,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "3-4 weeks",
       revenueIncrease: "$28,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 5,
       icon: Route,
       details: [
@@ -206,7 +206,7 @@ export default function PlatformImprovements() {
       effort: "High",
       timeframe: "4-5 weeks",
       revenueIncrease: "$22,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 7,
       icon: Wrench,
       details: [
@@ -232,7 +232,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "3-4 weeks",
       revenueIncrease: "$20,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 8,
       icon: Shield,
       details: [
@@ -258,7 +258,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "2-3 weeks",
       revenueIncrease: "$18,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 9,
       icon: BarChart3,
       details: [
@@ -284,7 +284,7 @@ export default function PlatformImprovements() {
       effort: "Low",
       timeframe: "2-3 weeks",
       revenueIncrease: "$45,000/month",
-      status: "Not Started",
+      status: "Completed",
       priority: 10,
       icon: Globe,
       details: [

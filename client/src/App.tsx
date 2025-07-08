@@ -53,6 +53,8 @@ import MobileDriverApp from "@/pages/mobile-driver-app";
 import CustomerPortal from "@/pages/customer-portal";
 import PlatformImprovements from "@/pages/platform-improvements";
 import VoiceAssistant from "@/pages/voice-assistant";
+import PaymentProcessingDashboard from "@/pages/payment-processing-dashboard";
+import EnhancedAnalyticsDashboard from "@/pages/enhanced-analytics-dashboard";
 import FeaturesDashboard from "@/pages/features-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
@@ -172,6 +174,8 @@ function Router() {
           <Route path="/customer-portal" component={CustomerPortal} />
           <Route path="/improvements" component={PlatformImprovements} />
           <Route path="/voice-assistant" component={VoiceAssistant} />
+          <Route path="/payment-processing" component={PaymentProcessingDashboard} />
+          <Route path="/enhanced-analytics" component={EnhancedAnalyticsDashboard} />
           <Route path="/features" component={FeaturesDashboard} />
           <Route path="/load-probability" component={LoadProbabilityDashboard} />
           <Route path="/ai-load-board" component={LoadBoardDashboard} />
