@@ -1,0 +1,41 @@
+NON-DISCLOSURE AGREEMENT
+
+This Non‑Disclosure Agreement (“Agreement”) is effective as of the date the Receiving Party clicks “I Agree,” by and between
+**[Your Company Name]** (“Disclosing Party”) and the individual or entity accessing the demo (“Receiving Party”).
+
+1. Definition of Confidential Information  
+   All non-public information shared via the demo—code, algorithms, business/data plans—is “Confidential Information.”
+
+2. Obligations  
+   a) Maintain confidentiality and not disclose.  
+   b) Use solely to evaluate the demo.  
+   c) Prevent third-party access.
+
+3. Exclusions  
+   Public domain, independently developed, rightfully received, or legally required disclosures are not covered.
+
+4. Term  
+   Protection continues until info is public through no fault of Receiving Party **or for 5 years** from acceptance.
+
+5. No License  
+   No ownership, patent, or license rights are granted by this Agreement.
+
+6. Remedies & Injunctive Relief  
+   Breach causes irreparable harm. Disclosing Party may seek immediate injunctive relief without bond or proof of damage, plus actual and punitive damages, attorneys’ fees, and costs.
+
+7. **Choice of Law & Jury Waiver**  
+   Governed by the laws of the State of **Alabama**. Receiving Party irrevocably consents to exclusive jurisdiction and venue in state or federal courts in **[County], Alabama**. They waive jury trial, class action status, arbitration, and any objections to personal jurisdiction or venue.
+
+8. **Consent to Suit**  
+   By clicking “I Agree” the Receiving Party consents to being sued individually (no derivative or class claims) in Alabama courts and agrees not to challenge the enforceability of this Agreement.
+
+9. Severability  
+   If any part is unenforceable, the rest remains valid.
+
+10. Entire Agreement  
+   This Agreement is the full understanding between parties and supersedes prior agreements.
+
+---
+
+**[AGREE]** — BY CLICKING YOU ACKNOWLEDGE YOU HAVE READ, UNDERSTAND, AND AGREE TO THIS NDA IN FULL.
+
