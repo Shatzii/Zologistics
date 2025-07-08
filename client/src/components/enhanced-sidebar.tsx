@@ -50,7 +50,8 @@ import {
   Ship,
   Upload,
   Users2,
-  Bot
+  Bot,
+  KeyRound
 } from "lucide-react";
 
 const navigation = [
@@ -147,6 +148,12 @@ const paymentSection = [
     href: "/admin",
     icon: Shield,
     badge: "ADMIN"
+  },
+  {
+    name: "API Keys & Secrets",
+    href: "/secrets-config",
+    icon: KeyRound,
+    badge: "SETUP"
   },
   {
     name: "Payment Plans",

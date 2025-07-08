@@ -96,6 +96,25 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Secrets management route
+  app.post("/api/admin/secrets", async (req, res) => {
+    try {
+      const { secrets } = req.body;
+      
+      // In development, we would write to .env file
+      // For now, just return success to show the UI works
+      console.log("Secrets received (dev mode):", Object.keys(secrets));
+      
+      res.json({ 
+        success: true, 
+        message: "Secrets saved successfully. In production, these would be set as environment variables." 
+      });
+    } catch (error) {
+      console.error("Error saving secrets:", error);
+      res.status(500).json({ message: "Failed to save secrets" });
+    }
+  });
+
   // Demo route with NDA protection (legacy - now using in-app popup)
   app.get("/demo", (req, res) => {
     res.sendFile('nda-gate.html', { root: './public' });

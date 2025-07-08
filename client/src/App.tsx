@@ -69,6 +69,7 @@ import FeatureCompletionDashboard from "@/pages/feature-completion-dashboard";
 import MultiModalLogistics from "@/pages/multi-modal-logistics";
 import AdminPanel from "@/pages/admin";
 import PaymentsPage from "@/pages/payments";
+import SecretsConfig from "@/pages/secrets-config";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -199,6 +200,7 @@ function Router() {
             return <GlobalExpansion />;
           }} />
           <Route path="/admin" component={AdminPanel} />
+          <Route path="/secrets-config" component={SecretsConfig} />
           <Route path="/payments" component={PaymentsPage} />
           <Route component={NotFound} />
         </Switch>
