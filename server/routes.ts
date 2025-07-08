@@ -28,6 +28,7 @@ import { selfHostedAI } from "./self-hosted-ai-engine";
 import { complianceEngine } from "./international-compliance";
 import { localizationEngine } from "./localization-engine";
 import { advancedComplianceSuite } from "./advanced-compliance-suite";
+import { realDataActivator } from "./real-data-activator";
 import { contentManagement } from "./content-management";
 import { alternativeLoadSources } from "./alternative-load-sources";
 import { aggressiveCustomerAcquisition } from "./aggressive-customer-acquisition";
@@ -5018,6 +5019,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register AI Load Board Platform routes
   registerLoadBoardRoutes(app);
+
+  // ==========================================
+  // DEPLOYMENT ACTIVATION ENDPOINTS
+  // ==========================================
+  
+  // Deploy live system with real data
+  app.post('/api/deploy/activate', async (req, res) => {
+    try {
+      const result = await realDataActivator.deployLive();
+      res.json(result);
+    } catch (error) {
+      console.error("Error activating deployment:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Deployment activation failed",
+        error: error.message 
+      });
+    }
+  });
+
+  // Clear demo data
+  app.post('/api/deploy/clear-demo', async (req, res) => {
+    try {
+      await realDataActivator.clearDemoData();
+      res.json({ 
+        success: true, 
+        message: "Demo data cleared successfully" 
+      });
+    } catch (error) {
+      console.error("Error clearing demo data:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to clear demo data",
+        error: error.message 
+      });
+    }
+  });
+
+  // Get deployment status
+  app.get('/api/deploy/status', async (req, res) => {
+    try {
+      const status = realDataActivator.getDeploymentStatus();
+      const validation = realDataActivator.validateApiKeys();
+      
+      res.json({
+        ...status,
+        api_validation: validation,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error getting deployment status:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to get deployment status" 
+      });
+    }
+  });
+
+  // Validate API keys
+  app.get('/api/deploy/validate-keys', async (req, res) => {
+    try {
+      const validation = realDataActivator.validateApiKeys();
+      res.json(validation);
+    } catch (error) {
+      console.error("Error validating API keys:", error);
+      res.status(500).json({ 
+        valid: false, 
+        message: "Failed to validate API keys" 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   

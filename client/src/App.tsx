@@ -48,6 +48,7 @@ import LiveTrackingDashboard from "@/pages/live-tracking-dashboard";
 import DirectShipperDashboard from "@/pages/direct-shipper-dashboard";
 import LoadBoardManagement from "@/pages/load-board-management";
 import EnhancedWellnessDashboard from "@/pages/enhanced-wellness-dashboard";
+import DeploymentDashboard from "@/pages/deployment-dashboard";
 import LoadProbabilityDashboard from "@/pages/load-probability-dashboard";
 import LoadBoardDashboard from "@/pages/LoadBoardDashboard";
 import CarrierRegistrationDashboard from "@/pages/carrier-registration-dashboard";
@@ -161,6 +162,7 @@ function Router() {
           <Route path="/direct-shipper-dashboard" component={DirectShipperDashboard} />
           <Route path="/load-board-management" component={LoadBoardManagement} />
           <Route path="/enhanced-wellness" component={EnhancedWellnessDashboard} />
+          <Route path="/deployment" component={DeploymentDashboard} />
           <Route path="/load-probability" component={LoadProbabilityDashboard} />
           <Route path="/ai-load-board" component={LoadBoardDashboard} />
           <Route path="/carrier-registration" component={CarrierRegistrationDashboard} />
