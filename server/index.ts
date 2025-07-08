@@ -73,8 +73,11 @@ app.use((req, res, next) => {
   app.use(notFound);
   app.use(errorHandler);
 
-  // Use Railway port in production, 5000 in development
+  // Use Railway port in production, 5000 in development  
   const port = process.env.PORT || process.env.RAILWAY_STATIC_PORT || 5000;
+  
+  // Log port configuration for debugging
+  console.log(`🚀 Server starting on port ${port} (NODE_ENV: ${process.env.NODE_ENV})`);
   server.listen({
     port,
     host: "0.0.0.0",

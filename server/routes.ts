@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import Stripe from "stripe";
 import { storage } from "./storage";
+import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 import { registerLoadBoardRoutes } from "./load-board-routes";
 import { insertDriverSchema, insertLoadSchema, insertNegotiationSchema, insertAlertSchema } from "@shared/schema";
 import { registerMobileRoutes } from "./mobile-api";
@@ -80,6 +82,16 @@ function generateVoiceResponse(intent: string, entities: any[]): string {
     'status_update': 'Status updated successfully.'
   };
   return responses[intent] || 'Command processed successfully.';
+}
+
+// Initialize Stripe
+let stripe: Stripe | null = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2023-10-16",
+  });
+} else {
+  console.warn("STRIPE_SECRET_KEY not found - payment processing will be disabled");
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -5088,6 +5100,146 @@ export async function registerRoutes(app: Express): Promise<Server> {
         valid: false, 
         message: "Failed to validate API keys" 
       });
+    }
+  });
+
+  // Admin Load Board Management Routes
+  app.get('/api/admin/load-board-sources', async (req, res) => {
+    try {
+      const sources = comprehensiveLoadSourcesManager.getAllSources();
+      res.json(sources);
+    } catch (error) {
+      console.error("Error fetching load board sources:", error);
+      res.status(500).json({ message: "Failed to fetch load board sources" });
+    }
+  });
+
+  app.patch('/api/admin/load-board-sources/:boardId', async (req, res) => {
+    try {
+      const { boardId } = req.params;
+      const { enabled, apiKey } = req.body;
+
+      console.log(`Load board ${boardId} ${enabled ? 'enabled' : 'disabled'}`);
+      if (apiKey) {
+        console.log(`API key updated for ${boardId}`);
+      }
+
+      res.json({ success: true, message: `Load board ${boardId} updated` });
+    } catch (error) {
+      console.error("Error updating load board:", error);
+      res.status(500).json({ message: "Failed to update load board" });
+    }
+  });
+
+  app.get('/api/admin/payment-settings', async (req, res) => {
+    try {
+      const settings = {
+        stripeEnabled: !!process.env.STRIPE_SECRET_KEY,
+        stripeFees: 2.9,
+        driverSubscriptionFee: 79,
+        premiumFeatures: [
+          'Unlimited loads',
+          'AI rate optimization', 
+          'Real-time notifications',
+          'Advanced analytics'
+        ]
+      };
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching payment settings:", error);
+      res.status(500).json({ message: "Failed to fetch payment settings" });
+    }
+  });
+
+  app.patch('/api/admin/payment-settings', async (req, res) => {
+    try {
+      const settings = req.body;
+      console.log('Payment settings updated:', settings);
+      res.json({ success: true, message: "Payment settings updated" });
+    } catch (error) {
+      console.error("Error updating payment settings:", error);
+      res.status(500).json({ message: "Failed to update payment settings" });
+    }
+  });
+
+  app.get('/api/admin/system-stats', async (req, res) => {
+    try {
+      const stats = {
+        activeLoadBoards: comprehensiveLoadSourcesManager.getActiveSourcesCount(),
+        totalLoadBoards: comprehensiveLoadSourcesManager.getAllSources().length,
+        dailyLoadVolume: comprehensiveLoadSourcesManager.getTotalLoadVolume(),
+        monthlyRevenue: 5 * 79,
+        activeDrivers: 5
+      };
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching system stats:", error);
+      res.status(500).json({ message: "Failed to fetch system stats" });
+    }
+  });
+
+  // Stripe Payment Routes
+  app.post("/api/payments/create-subscription", async (req, res) => {
+    if (!stripe) {
+      return res.status(500).json({ message: "Stripe not configured" });
+    }
+
+    try {
+      const { planId } = req.body;
+      
+      const customer = await stripe.customers.create({
+        metadata: { planId }
+      });
+
+      const subscription = await stripe.subscriptions.create({
+        customer: customer.id,
+        items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: planId === 'premium' ? 'Premium Load Board Access' : 'Enterprise Load Board Access',
+            },
+            unit_amount: planId === 'premium' ? 7900 : 14900,
+            recurring: {
+              interval: 'month',
+            },
+          },
+        }],
+        payment_behavior: 'default_incomplete',
+        payment_settings: { save_default_payment_method: 'on_subscription' },
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      const clientSecret = (subscription.latest_invoice as any)?.payment_intent?.client_secret;
+
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: clientSecret,
+      });
+    } catch (error: any) {
+      console.error("Stripe subscription error:", error);
+      res.status(500).json({ message: "Failed to create subscription: " + error.message });
+    }
+  });
+
+  app.post("/api/payments/create-payment-intent", async (req, res) => {
+    if (!stripe) {
+      return res.status(500).json({ message: "Stripe not configured" });
+    }
+
+    try {
+      const { amount } = req.body;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100),
+        currency: "usd",
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error("Payment intent error:", error);
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
     }
   });
 

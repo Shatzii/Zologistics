@@ -67,6 +67,8 @@ import OpenSourceELDDashboard from "@/pages/open-source-eld-dashboard";
 import CarrierSolutionsDashboard from "@/pages/carrier-solutions-dashboard";
 import FeatureCompletionDashboard from "@/pages/feature-completion-dashboard";
 import MultiModalLogistics from "@/pages/multi-modal-logistics";
+import AdminPanel from "@/pages/admin";
+import PaymentsPage from "@/pages/payments";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -196,6 +198,8 @@ function Router() {
             const GlobalExpansion = React.lazy(() => import("./pages/global-expansion"));
             return <GlobalExpansion />;
           }} />
+          <Route path="/admin" component={AdminPanel} />
+          <Route path="/payments" component={PaymentsPage} />
           <Route component={NotFound} />
         </Switch>
       </AppLayout>

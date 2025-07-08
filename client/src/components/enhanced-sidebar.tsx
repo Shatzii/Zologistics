@@ -26,7 +26,31 @@ import {
   Smartphone,
   Mic,
   Brain,
-  Zap
+  Zap,
+  CreditCard,
+  UserCheck,
+  Activity,
+  Wrench,
+  Languages,
+  DollarSign,
+  TrendingUp,
+  Navigation,
+  Coins,
+  Target,
+  Route,
+  ShieldCheck,
+  Star,
+  Gift,
+  Repeat,
+  Calculator,
+  MonitorSpeaker,
+  Building2,
+  Package,
+  Plane,
+  Ship,
+  Upload,
+  Users2,
+  Bot
 } from "lucide-react";
 
 const navigation = [
@@ -116,106 +140,188 @@ const aiSection = [
   }
 ];
 
-const advancedSection = [
+// Payment & Admin Section
+const paymentSection = [
+  {
+    name: "Admin Panel",
+    href: "/admin",
+    icon: Shield,
+    badge: "ADMIN"
+  },
+  {
+    name: "Payment Plans",
+    href: "/payments",
+    icon: CreditCard,
+    badge: "STRIPE"
+  },
+  {
+    name: "Payment Processing",
+    href: "/payment-processing",
+    icon: DollarSign,
+    badge: "LIVE"
+  }
+];
+
+// Advanced Analytics Section
+const analyticsSection = [
+  {
+    name: "Enhanced Analytics",
+    href: "/enhanced-analytics",
+    icon: TrendingUp,
+    badge: "AI"
+  },
+  {
+    name: "Predictive Maintenance",
+    href: "/predictive-maintenance",
+    icon: Wrench,
+    badge: "IOT"
+  },
+  {
+    name: "Compliance Monitoring",
+    href: "/compliance-monitoring",
+    icon: ShieldCheck,
+    badge: "AUTO"
+  },
+  {
+    name: "Driver Performance",
+    href: "/enhanced-drivers",
+    icon: Users2,
+    badge: "METRICS"
+  }
+];
+
+// Driver-Focused Section
+const driverSection = [
   {
     name: "Driver Wellness",
-    href: "/wellness",
+    href: "/enhanced-wellness",
     icon: Heart,
     badge: "ACTIVE"
   },
   {
-    name: "Collaborative Network", 
-    href: "/collaborative-network",
-    icon: Handshake,
-    badge: "LIVE"
+    name: "Driver Route Optimizer",
+    href: "/driver-earnings",
+    icon: Route,
+    badge: "AI"
+  },
+  {
+    name: "Referral System",
+    href: "/referral-dashboard",
+    icon: Gift,
+    badge: "VIRAL"
+  },
+  {
+    name: "Load Board Optimizer",
+    href: "/load-board-optimizer",
+    icon: Target,
+    badge: "SMART"
+  },
+  {
+    name: "Backhaul Optimizer",
+    href: "/backhaul-optimizer",
+    icon: Repeat,
+    badge: "AI"
+  }
+];
+
+// International & Global Section
+const globalSection = [
+  {
+    name: "International Compliance",
+    href: "/international-compliance",
+    icon: Globe,
+    badge: "GLOBAL"
+  },
+  {
+    name: "Multi-Language Support",
+    href: "/multi-language",
+    icon: Languages,
+    badge: "5 LANGS"
   },
   {
     name: "International Regions",
     href: "/international-regions",
     icon: Globe,
-    badge: "8 Regions"
+    badge: "8 REGIONS"
   },
   {
-    name: "Ghost Loads",
-    href: "/ghost-loads",
-    icon: Ghost,
-    badge: "LIVE"
+    name: "International Load Boards",
+    href: "/international-load-boards",
+    icon: Globe,
+    badge: "11 BOARDS"
   },
   {
-    name: "Live Tracking",
-    href: "/live-tracking",
-    icon: MapPin,
-    badge: "GPS"
+    name: "Global Expansion",
+    href: "/global-expansion",
+    icon: Globe,
+    badge: "NEW"
   }
 ];
 
-const managementSection = [
-  {
-    name: "Deployment",
-    href: "/deployment",
-    icon: Database,
-    badge: "CRITICAL"
-  },
-  {
-    name: "Platform Improvements",
-    href: "/improvements",
-    icon: Settings,
-    badge: "ROADMAP"
-  },
-  {
-    name: "Multi-Vehicle Brokerage",
-    href: "/multi-vehicle-brokerage",
-    icon: Truck,
-    badge: "AI"
-  },
-  {
-    name: "Production Dashboard",
-    href: "/production-dashboard",
-    icon: Settings,
-    badge: "Live"
-  },
-  {
-    name: "Load Sources",
-    href: "/load-sources",
-    icon: Database,
-    badge: "17+"
-  },
-  {
-    name: "Driver Marketing",
-    href: "/driver-marketing",
-    icon: Users,
-    badge: "AI"
-  },
-  {
-    name: "Driver Loads",
-    href: "/driver-loads",
-    icon: Truck,
-    badge: "$498 Saved"
-  },
+// Revenue & Business Section
+const revenueSection = [
   {
     name: "Ghost Loads",
     href: "/ghost-loads",
     icon: Ghost,
-    badge: "$1B Market"
+    badge: "$1.2B"
   },
   {
     name: "Earnings Simulator",
     href: "/earnings-simulator",
-    icon: BarChart3,
+    icon: Calculator,
     badge: "LIVE"
   },
   {
     name: "Global Valuation",
     href: "/global-valuation",
-    icon: Globe,
+    icon: Coins,
     badge: "$246B"
   },
   {
-    name: "Driver Route Optimizer",
-    href: "/driver-earnings",
-    icon: Truck,
-    badge: "AI"
+    name: "Multi-Modal Logistics",
+    href: "/multi-modal",
+    icon: Package,
+    badge: "$29.85B"
+  }
+];
+
+// Tech & Innovation Section
+const innovationSection = [
+  {
+    name: "Revolutionary Features",
+    href: "/revolutionary-features",
+    icon: Star,
+    badge: "NEXT-GEN"
   },
+  {
+    name: "Self-Hosted AI",
+    href: "/self-hosted-ai",
+    icon: Bot,
+    badge: "LOCAL"
+  },
+  {
+    name: "Advanced Compliance",
+    href: "/advanced-compliance",
+    icon: ShieldCheck,
+    badge: "AUTO"
+  },
+  {
+    name: "Collaborative Network",
+    href: "/collaborative-network",
+    icon: Handshake,
+    badge: "LIVE"
+  },
+  {
+    name: "Web3 Blockchain",
+    href: "/web3-blockchain",
+    icon: Coins,
+    badge: "BLOCKCHAIN"
+  }
+];
+
+// Operations Section
+const operationsSection = [
   {
     name: "Live GPS Tracking",
     href: "/live-tracking",
@@ -223,10 +329,62 @@ const managementSection = [
     badge: "LIVE"
   },
   {
-    name: "Sea & Air Freight",
+    name: "Load Board Management",
+    href: "/load-board-management",
+    icon: Database,
+    badge: "17+"
+  },
+  {
+    name: "Production Dashboard",
+    href: "/production-dashboard",
+    icon: MonitorSpeaker,
+    badge: "PROD"
+  },
+  {
+    name: "Direct Shipper",
+    href: "/direct-shipper-dashboard",
+    icon: Building2,
+    badge: "DIRECT"
+  },
+  {
+    name: "Feature Completion",
+    href: "/feature-completion",
+    icon: Star,
+    badge: "100%"
+  }
+];
+
+// Specialized Transportation
+const specializedSection = [
+  {
+    name: "Air Freight",
     href: "/multi-modal",
-    icon: Globe,
-    badge: "$9.35B"
+    icon: Plane,
+    badge: "$3.65B"
+  },
+  {
+    name: "Sea Freight",
+    href: "/multi-modal",
+    icon: Ship,
+    badge: "$5.7B"
+  },
+  {
+    name: "Multi-Vehicle Brokerage",
+    href: "/multi-vehicle-brokerage",
+    icon: Truck,
+    badge: "FLEET"
+  },
+  {
+    name: "Carrier Solutions",
+    href: "/carrier-solutions",
+    icon: Building2,
+    badge: "B2B"
+  },
+  {
+    name: "Open Source ELD",
+    href: "/open-source-eld",
+    icon: Upload,
+    badge: "FREE"
   }
 ];
 
@@ -282,7 +440,314 @@ export function EnhancedSidebar({ collapsed = false, onToggle }: EnhancedSidebar
       {/* Navigation */}
       <ScrollArea className="flex-1 px-3">
         <div className="space-y-1 py-2">
+          {/* Core Navigation */}
           {navigation.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Payment & Admin Section */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Payment & Admin</p>}
+          {paymentSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* AI & Mobile Apps */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">AI & Mobile</p>}
+          {[...aiSection, ...mobileAppsSection].map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Analytics Section */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Advanced Analytics</p>}
+          {analyticsSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Driver-Focused Section */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Driver Tools</p>}
+          {driverSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Global Operations */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Global Operations</p>}
+          {globalSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Revenue & Business */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Revenue Streams</p>}
+          {revenueSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Innovation & Tech */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Innovation</p>}
+          {innovationSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Operations */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Operations</p>}
+          {operationsSection.map((item) => {
+            const isActive = location === item.href;
+            const Icon = item.icon;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-10",
+                    collapsed && "px-2",
+                    isActive && "bg-primary/10 text-primary border-primary/20"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 text-left">{item.name}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto h-5 text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+
+          {!collapsed && <Separator className="my-3" />}
+          
+          {/* Specialized Transportation */}
+          {!collapsed && <p className="text-xs font-medium text-muted-foreground px-3 pb-2">Specialized Transport</p>}
+          {specializedSection.map((item) => {
             const isActive = location === item.href;
             const Icon = item.icon;
             
