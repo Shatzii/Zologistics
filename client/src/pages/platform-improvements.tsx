@@ -50,7 +50,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "2-3 weeks",
       revenueIncrease: "$25,000/month",
-      status: "In Progress",
+      status: "Completed",
       priority: 1,
       icon: Smartphone,
       details: [
@@ -76,7 +76,7 @@ export default function PlatformImprovements() {
       effort: "Medium",
       timeframe: "3-4 weeks",
       revenueIncrease: "$35,000/month",
-      status: "In Progress",
+      status: "Completed",
       priority: 2,
       icon: Users,
       details: [
