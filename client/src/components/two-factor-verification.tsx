@@ -93,7 +93,7 @@ export default function TwoFactorVerification({
         return {
           icon: Phone,
           title: 'SMS Verification',
-          description: `We've sent a 6-digit code to ${contact}`,
+          description: `We've sent a 6-digit code to ${contact || '+1 205 434 8405'}`,
           badge: 'SMS'
         };
       case 'email':
@@ -182,9 +182,9 @@ export default function TwoFactorVerification({
             <div className="bg-muted p-4 rounded-lg">
               <h4 className="font-medium text-sm mb-2">Demo Verification Codes:</h4>
               <div className="text-sm text-muted-foreground space-y-1">
-                <div>SMS: <code className="bg-background px-1 rounded">123456</code></div>
-                <div>Email: <code className="bg-background px-1 rounded">789012</code></div>
-                <div>TOTP: <code className="bg-background px-1 rounded">123456</code></div>
+                <div>SMS (+1 205 434 8405): <code className="bg-background px-1 rounded">123456</code></div>
+                <div>Email (admin@zologistics.com): <code className="bg-background px-1 rounded">789012</code></div>
+                <div>TOTP (Authenticator App): <code className="bg-background px-1 rounded">123456</code></div>
               </div>
             </div>
 

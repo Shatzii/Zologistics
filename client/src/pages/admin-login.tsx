@@ -61,7 +61,7 @@ export default function AdminLogin() {
   };
 
   const handleTwoFactorSetup = (method: 'sms' | 'email' | 'totp', secret?: string) => {
-    const contact = method === 'sms' ? '+1 (555) 123-4567' : method === 'email' ? 'admin@zologistics.com' : undefined;
+    const contact = method === 'sms' ? '+1 205 434 8405' : method === 'email' ? 'admin@zologistics.com' : undefined;
     completeTwoFactorSetup(method, contact, secret);
     setShowTwoFactorSetup(false);
     setLocation("/platform");

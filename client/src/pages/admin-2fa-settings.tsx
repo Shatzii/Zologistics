@@ -47,7 +47,7 @@ export default function AdminTwoFactorSettings() {
   };
 
   const handleSetupComplete = (method: 'sms' | 'email' | 'totp', secret?: string) => {
-    const contact = method === 'sms' ? '+1 (555) 123-4567' : method === 'email' ? 'admin@zologistics.com' : undefined;
+    const contact = method === 'sms' ? '+1 205 434 8405' : method === 'email' ? 'admin@zologistics.com' : undefined;
     saveTwoFactorSettings({
       enabled: true,
       method,

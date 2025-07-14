@@ -24,7 +24,7 @@ interface TwoFactorSetupProps {
 
 export default function TwoFactorSetup({ onSetupComplete, onSkip }: TwoFactorSetupProps) {
   const [selectedMethod, setSelectedMethod] = useState<'sms' | 'email' | 'totp'>('totp');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+1 205 434 8405');
   const [email, setEmail] = useState('admin@zologistics.com');
   const [verificationCode, setVerificationCode] = useState('');
   const [totpSecret] = useState('JBSWY3DPEHPK3PXP'); // Demo secret
@@ -159,7 +159,7 @@ export default function TwoFactorSetup({ onSetupComplete, onSkip }: TwoFactorSet
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+1 205 434 8405"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                     />
@@ -262,9 +262,9 @@ export default function TwoFactorSetup({ onSetupComplete, onSkip }: TwoFactorSet
               <div className="bg-muted p-4 rounded-lg">
                 <h4 className="font-medium mb-2">Demo Verification Codes:</h4>
                 <div className="text-sm text-muted-foreground space-y-1">
-                  <div>SMS: <code className="bg-background px-1 rounded">123456</code></div>
-                  <div>Email: <code className="bg-background px-1 rounded">789012</code></div>
-                  <div>TOTP: <code className="bg-background px-1 rounded">123456</code></div>
+                  <div>SMS (+1 205 434 8405): <code className="bg-background px-1 rounded">123456</code></div>
+                  <div>Email (admin@zologistics.com): <code className="bg-background px-1 rounded">789012</code></div>
+                  <div>TOTP (Authenticator App): <code className="bg-background px-1 rounded">123456</code></div>
                 </div>
               </div>
 
