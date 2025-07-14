@@ -90,11 +90,16 @@ export default function BusinessLanding() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/platform">
-                <Button variant="outline">Member Login</Button>
-              </Link>
               <Link href="/demo">
-                <Button>Watch Demo</Button>
+                <Button variant="outline">View Demo</Button>
+              </Link>
+              <Link href="/admin-login">
+                <Button variant="outline">Admin Login</Button>
+              </Link>
+              <Link href="/platform">
+                <Button>
+                  Start Free Trial
+                </Button>
               </Link>
             </div>
           </div>

@@ -74,6 +74,8 @@ import BusinessLanding from "@/pages/business-landing";
 import InvestorOverview from "@/pages/investor-overview";
 import AcquisitionOverview from "@/pages/acquisition-overview";
 import Demo from "@/pages/demo";
+import AdminLogin from "@/pages/admin-login";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -129,6 +131,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 function Router() {
   const [showConfidentialityPopup, setShowConfidentialityPopup] = useState(false);
   const [location] = useLocation();
+  const { isAuthenticated, isLoading } = useAdminAuth();
   
   // Check for NDA acceptance on mount
   useEffect(() => {
@@ -143,7 +146,7 @@ function Router() {
   };
 
   // Business landing pages (no sidebar/layout)
-  const isBusinessPage = location === '/' || location === '/investor-overview' || location === '/acquisition-overview' || location === '/demo';
+  const isBusinessPage = location === '/' || location === '/investor-overview' || location === '/acquisition-overview' || location === '/demo' || location === '/admin-login';
 
   return (
     <>
@@ -153,8 +156,10 @@ function Router() {
           <Route path="/investor-overview" component={InvestorOverview} />
           <Route path="/acquisition-overview" component={AcquisitionOverview} />
           <Route path="/demo" component={Demo} />
+          <Route path="/admin-login" component={AdminLogin} />
         </Switch>
       ) : (
+        isAuthenticated ? (
         <AppLayout>
           <Switch>
             <Route path="/platform" component={Dashboard} />
@@ -220,7 +225,10 @@ function Router() {
           <Route path="/payments" component={PaymentsPage} />
           <Route component={NotFound} />
         </Switch>
-      </AppLayout>
+        </AppLayout>
+        ) : (
+          <AdminLogin />
+        )
       )}
       
       {showConfidentialityPopup && (
