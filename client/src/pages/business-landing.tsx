@@ -18,6 +18,7 @@ import {
   BarChart3
 } from "lucide-react";
 import { Link } from "wouter";
+import logoPath from "@assets/ChatGPT Image Jul 10, 2025, 07_30_44 AM_1752499822142.png";
 
 export default function BusinessLanding() {
   const [activeTab, setActiveTab] = useState<'dispatchers' | 'truckers' | 'logistics'>('dispatchers');
@@ -72,18 +73,20 @@ export default function BusinessLanding() {
   const Icon = currentAudience.icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b">
+      <header className="bg-card dark:bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-2">
-              <div className="bg-blue-600 text-white p-2 rounded-lg">
-                <Truck className="h-6 w-6" />
-              </div>
+            <div className="flex items-center space-x-3">
+              <img 
+                src={logoPath} 
+                alt="Zologistics Logo" 
+                className="h-12 w-12 object-contain"
+              />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">TruckFlow AI</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Revolutionary Logistics Platform</p>
+                <h1 className="text-2xl font-bold text-foreground">Zologistics</h1>
+                <p className="text-sm text-muted-foreground">Global AI-Powered Logistics Company</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -99,62 +102,62 @@ export default function BusinessLanding() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+          <Badge className="mb-4 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20">
             Currently Generating $60,000+ Monthly Revenue
           </Badge>
-          <h2 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            AI-Powered Logistics Platform
+          <h2 className="text-5xl font-bold text-foreground mb-6">
+            Global AI-Powered Logistics Platform
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Revolutionary platform serving dispatchers, truckers, and logistics companies with autonomous operations,
-            AI optimization, and real-time revenue generation.
+            AI optimization, and real-time revenue generation worldwide.
           </p>
           
           {/* Live Revenue Metrics */}
           <div className="grid md:grid-cols-4 gap-6 mb-12">
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <Card className="bg-card/80 backdrop-blur border-border">
               <CardContent className="p-6 text-center">
-                <DollarSign className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <DollarSign className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                <p className="text-2xl font-bold text-foreground">
                   ${revenueMetics.monthlyRevenue.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+                <p className="text-sm text-muted-foreground">Monthly Revenue</p>
               </CardContent>
             </Card>
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <Card className="bg-card/80 backdrop-blur border-border">
               <CardContent className="p-6 text-center">
-                <Users className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <Users className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                <p className="text-2xl font-bold text-foreground">
                   {revenueMetics.activeUsers.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Users</p>
+                <p className="text-sm text-muted-foreground">Active Users</p>
               </CardContent>
             </Card>
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <Card className="bg-card/80 backdrop-blur border-border">
               <CardContent className="p-6 text-center">
-                <Truck className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <Truck className="h-8 w-8 mx-auto mb-2 text-purple-500" />
+                <p className="text-2xl font-bold text-foreground">
                   {revenueMetics.loadProcessed.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Loads Processed</p>
+                <p className="text-sm text-muted-foreground">Loads Processed</p>
               </CardContent>
             </Card>
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <Card className="bg-card/80 backdrop-blur border-border">
               <CardContent className="p-6 text-center">
-                <TrendingUp className="h-8 w-8 mx-auto mb-2 text-orange-600" />
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <TrendingUp className="h-8 w-8 mx-auto mb-2 text-orange-500" />
+                <p className="text-2xl font-bold text-foreground">
                   ${revenueMetics.avgSavings.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Avg Monthly Savings</p>
+                <p className="text-sm text-muted-foreground">Avg Monthly Savings</p>
               </CardContent>
             </Card>
           </div>
 
           <div className="flex justify-center space-x-4">
             <Link href="/platform">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+              <Button size="lg">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -169,28 +172,28 @@ export default function BusinessLanding() {
       </section>
 
       {/* Audience Tabs */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Built for Every Role in Logistics
+            <h3 className="text-3xl font-bold text-foreground mb-4">
+              Built for Every Role in Global Logistics
             </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Specialized features for dispatchers, truckers, and logistics companies
+            <p className="text-lg text-muted-foreground">
+              Specialized features for dispatchers, truckers, and logistics companies worldwide
             </p>
           </div>
 
           {/* Tab Navigation */}
           <div className="flex justify-center mb-8">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="bg-muted rounded-lg p-1">
               {Object.entries(audiences).map(([key, audience]) => (
                 <button
                   key={key}
                   onClick={() => setActiveTab(key as any)}
                   className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                     activeTab === key
-                      ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-background text-primary shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {audience.title}
@@ -203,14 +206,14 @@ export default function BusinessLanding() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="flex items-center mb-6">
-                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
-                  <Icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                  <Icon className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h4 className="text-2xl font-bold text-foreground">
                     {currentAudience.title}
                   </h4>
-                  <p className="text-blue-600 dark:text-blue-400 font-medium">
+                  <p className="text-primary font-medium">
                     {currentAudience.benefits}
                   </p>
                 </div>
@@ -220,30 +223,30 @@ export default function BusinessLanding() {
                 {currentAudience.features.map((feature, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                    <span className="text-foreground">{feature}</span>
                   </div>
                 ))}
               </div>
 
               <div className="flex items-center space-x-4">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                <div className="text-3xl font-bold text-foreground">
                   {currentAudience.pricing}
                 </div>
                 <Link href="/platform">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button>
                     Get Started
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
+            <div className="bg-muted rounded-lg p-8">
               <div className="text-center">
-                <Play className="h-16 w-16 mx-auto text-blue-600 dark:text-blue-400 mb-4" />
-                <h5 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <Play className="h-16 w-16 mx-auto text-primary mb-4" />
+                <h5 className="text-xl font-semibold text-foreground mb-2">
                   Live Platform Demo
                 </h5>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-muted-foreground mb-6">
                   See {currentAudience.title.toLowerCase()} features in action
                 </p>
                 <Link href="/demo">
@@ -258,23 +261,23 @@ export default function BusinessLanding() {
       </section>
 
       {/* Investment Opportunity */}
-      <section className="py-16 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900">
+      <section className="py-16 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
-            <Badge className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-              Investment Opportunity
+            <Badge className="mb-4 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20">
+              Global Investment Opportunity
             </Badge>
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Autonomous Revenue Generation
+            <h3 className="text-3xl font-bold text-foreground mb-4">
+              Autonomous Revenue Generation Worldwide
             </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              Platform operates 24/7 with autonomous sales agents, ghost load capture, and 
-              multi-modal logistics optimization. Currently generating $60,000+ monthly with 
+            <p className="text-lg text-muted-foreground mb-8">
+              Zologistics operates 24/7 with autonomous sales agents, ghost load capture, and 
+              multi-modal logistics optimization across global markets. Currently generating $60,000+ monthly with 
               projections to $180,000+ within 6 months.
             </p>
             <div className="flex justify-center space-x-4">
               <Link href="/investor-overview">
-                <Button size="lg" className="bg-green-600 hover:bg-green-700">
+                <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
                   View Investment Package
                 </Button>
               </Link>
@@ -289,47 +292,49 @@ export default function BusinessLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-card border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                  <Truck className="h-5 w-5" />
-                </div>
-                <span className="text-xl font-bold">TruckFlow AI</span>
+              <div className="flex items-center space-x-3 mb-4">
+                <img 
+                  src={logoPath} 
+                  alt="Zologistics Logo" 
+                  className="h-8 w-8 object-contain"
+                />
+                <span className="text-xl font-bold text-foreground">Zologistics</span>
               </div>
-              <p className="text-gray-400">
-                Revolutionary AI-powered logistics platform transforming freight operations.
+              <p className="text-muted-foreground">
+                Global AI-powered logistics platform transforming freight operations worldwide.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/platform" className="hover:text-white">Member Portal</Link></li>
-                <li><Link href="/demo" className="hover:text-white">Live Demo</Link></li>
-                <li><Link href="/features" className="hover:text-white">Features</Link></li>
+              <h4 className="font-semibold mb-4 text-foreground">Platform</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/platform" className="hover:text-foreground">Member Portal</Link></li>
+                <li><Link href="/demo" className="hover:text-foreground">Live Demo</Link></li>
+                <li><Link href="/features" className="hover:text-foreground">Features</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Business</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/investor-overview" className="hover:text-white">Investors</Link></li>
-                <li><Link href="/acquisition-overview" className="hover:text-white">Acquisition</Link></li>
-                <li><Link href="/pricing" className="hover:text-white">Pricing</Link></li>
+              <h4 className="font-semibold mb-4 text-foreground">Business</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/investor-overview" className="hover:text-foreground">Investors</Link></li>
+                <li><Link href="/acquisition-overview" className="hover:text-foreground">Acquisition</Link></li>
+                <li><Link href="/pricing" className="hover:text-foreground">Pricing</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>Business: business@truckflow.ai</li>
-                <li>Support: support@truckflow.ai</li>
-                <li>Investors: investors@truckflow.ai</li>
+              <h4 className="font-semibold mb-4 text-foreground">Contact</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>Business: business@zologistics.ai</li>
+                <li>Support: support@zologistics.ai</li>
+                <li>Investors: investors@zologistics.ai</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 TruckFlow AI. Revolutionary logistics platform generating autonomous revenue.</p>
+          <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
+            <p>&copy; 2025 Zologistics. Global AI-powered logistics platform generating autonomous revenue worldwide.</p>
           </div>
         </div>
       </footer>

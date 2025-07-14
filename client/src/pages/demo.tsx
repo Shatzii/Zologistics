@@ -16,6 +16,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Link } from "wouter";
+import logoPath from "@assets/ChatGPT Image Jul 10, 2025, 07_30_44 AM_1752499822142.png";
 
 export default function Demo() {
   const [activeDemo, setActiveDemo] = useState<'dispatchers' | 'truckers' | 'logistics'>('dispatchers');
@@ -82,25 +83,32 @@ export default function Demo() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                TruckFlow AI - Live Demo
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Experience the platform revolutionizing logistics operations
-              </p>
+            <div className="flex items-center space-x-3">
+              <img 
+                src={logoPath} 
+                alt="Zologistics Logo" 
+                className="h-12 w-12 object-contain"
+              />
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Zologistics - Live Demo
+                </h1>
+                <p className="text-muted-foreground">
+                  Experience the global AI-powered logistics platform in action
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/">
                 <Button variant="outline">Back to Home</Button>
               </Link>
               <Link href="/platform">
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button>
                   Start Free Trial
                 </Button>
               </Link>
@@ -110,25 +118,25 @@ export default function Demo() {
       </header>
 
       {/* Live Metrics Banner */}
-      <section className="py-8 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900">
+      <section className="py-8 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6">
-            <Badge className="mb-2 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            <Badge className="mb-2 bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20">
               Live Platform Metrics
             </Badge>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Real-time data from our active platform
+            <p className="text-lg text-muted-foreground">
+              Real-time data from our active global platform
             </p>
           </div>
           
           <div className="grid md:grid-cols-4 gap-6">
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
+            <Card className="bg-card/80 backdrop-blur border-border">
               <CardContent className="p-4 text-center">
-                <Users className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                <Users className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                <div className="text-2xl font-bold text-foreground">
                   {liveMetrics.activeUsers}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Active Users</div>
+                <div className="text-sm text-muted-foreground">Active Users</div>
               </CardContent>
             </Card>
             

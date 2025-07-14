@@ -15,6 +15,7 @@ import {
   Download
 } from "lucide-react";
 import { Link } from "wouter";
+import logoPath from "@assets/ChatGPT Image Jul 10, 2025, 07_30_44 AM_1752499822142.png";
 
 export default function InvestorOverview() {
   const [activeTab, setActiveTab] = useState<'revenue' | 'valuation' | 'technology'>('revenue');
@@ -47,18 +48,25 @@ export default function InvestorOverview() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                TruckFlow AI - Investor Overview
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Autonomous logistics platform generating $60K+ monthly revenue
-              </p>
+            <div className="flex items-center space-x-3">
+              <img 
+                src={logoPath} 
+                alt="Zologistics Logo" 
+                className="h-12 w-12 object-contain"
+              />
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Zologistics - Investor Overview
+                </h1>
+                <p className="text-muted-foreground">
+                  Global AI-powered logistics platform generating $60K+ monthly revenue
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/">

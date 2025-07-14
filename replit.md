@@ -1,8 +1,8 @@
-# TruckFlow AI - Revolutionary Trucking Dispatch Platform
+# Zologistics - Global AI-Powered Logistics Platform
 
 ## Overview
 
-TruckFlow AI is a comprehensive, enterprise-grade trucking dispatch platform that leverages artificial intelligence, IoT integration, and advanced collaboration features to revolutionize freight operations. The platform combines traditional dispatch management with cutting-edge technologies including blockchain smart contracts, autonomous vehicle integration, and a unique cross-company driver collaboration network.
+Zologistics is a comprehensive, enterprise-grade global logistics platform that leverages artificial intelligence, IoT integration, and advanced collaboration features to revolutionize freight operations worldwide. The platform combines traditional dispatch management with cutting-edge technologies including blockchain smart contracts, autonomous vehicle integration, and a unique cross-company driver collaboration network across multiple transportation modes (trucking, sea freight, air freight).
 
 ## System Architecture
 
@@ -229,6 +229,10 @@ TruckFlow AI is a comprehensive, enterprise-grade trucking dispatch platform tha
 ```
 Changelog:
 - June 21, 2025. Initial setup
+- July 14, 2025. OFFICIAL REBRANDING COMPLETE: Platform officially rebranded to "Zologistics" - Global AI-Powered Logistics Company
+- July 14, 2025. Integrated official company logo across all business presentation pages
+- July 14, 2025. Updated visual styling to match existing platform design for consistent user experience
+- July 14, 2025. Complete business presentation transformation with professional landing, investor overview, acquisition overview, and demo pages
 - June 21, 2025. Added comprehensive Web3 blockchain integration with smart contracts, NFTs, and cryptocurrency payments
 - June 21, 2025. Implemented TRUCK token economics with staking pools and DeFi protocols
 - June 21, 2025. Created self-hosted AI deployment architecture for distributed processing

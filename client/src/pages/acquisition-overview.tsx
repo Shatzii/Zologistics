@@ -13,6 +13,7 @@ import {
   Download
 } from "lucide-react";
 import { Link } from "wouter";
+import logoPath from "@assets/ChatGPT Image Jul 10, 2025, 07_30_44 AM_1752499822142.png";
 
 export default function AcquisitionOverview() {
   const acquisitionData = {
@@ -52,18 +53,25 @@ export default function AcquisitionOverview() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Strategic Acquisition Opportunity
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Complete platform acquisition - TruckFlow AI
-              </p>
+            <div className="flex items-center space-x-3">
+              <img 
+                src={logoPath} 
+                alt="Zologistics Logo" 
+                className="h-12 w-12 object-contain"
+              />
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Strategic Acquisition Opportunity
+                </h1>
+                <p className="text-muted-foreground">
+                  Complete platform acquisition - Zologistics
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/">
