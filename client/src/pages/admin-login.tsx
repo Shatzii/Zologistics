@@ -7,9 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 import logoPath from "@assets/ChatGPT Image Jul 10, 2025, 07_30_44 AM_1752499822142.png";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+import TwoFactorSetup from "@/components/two-factor-setup";
+import TwoFactorVerification from "@/components/two-factor-verification";
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
+  const { twoFactorSettings, completeTwoFactorSetup, verifyTwoFactor } = useAdminAuth();
   const [credentials, setCredentials] = useState({
     username: "",
     password: ""
@@ -17,6 +21,8 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
+  const [showTwoFactorVerification, setShowTwoFactorVerification] = useState(false);
 
   // Admin credentials - in production these would be hashed and stored securely
   const ADMIN_CREDENTIALS = {
@@ -40,13 +46,43 @@ export default function AdminLogin() {
       localStorage.setItem("zolo_admin_authenticated", "true");
       localStorage.setItem("zolo_admin_login_time", Date.now().toString());
       
-      // Redirect to platform
-      setLocation("/platform");
+      // Check if 2FA is enabled
+      if (twoFactorSettings.enabled) {
+        setShowTwoFactorVerification(true);
+      } else {
+        // Offer to set up 2FA
+        setShowTwoFactorSetup(true);
+      }
     } else {
       setError("Invalid username or password. Please try again.");
     }
     
     setIsLoading(false);
+  };
+
+  const handleTwoFactorSetup = (method: 'sms' | 'email' | 'totp', secret?: string) => {
+    const contact = method === 'sms' ? '+1 (555) 123-4567' : method === 'email' ? 'admin@zologistics.com' : undefined;
+    completeTwoFactorSetup(method, contact, secret);
+    setShowTwoFactorSetup(false);
+    setLocation("/platform");
+  };
+
+  const handleSkipTwoFactor = () => {
+    setShowTwoFactorSetup(false);
+    setLocation("/platform");
+  };
+
+  const handleTwoFactorVerification = () => {
+    verifyTwoFactor();
+    setShowTwoFactorVerification(false);
+    setLocation("/platform");
+  };
+
+  const handleCancelTwoFactor = () => {
+    setShowTwoFactorVerification(false);
+    // Clear authentication since 2FA was cancelled
+    localStorage.removeItem("zolo_admin_authenticated");
+    localStorage.removeItem("zolo_admin_login_time");
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -56,6 +92,28 @@ export default function AdminLogin() {
     }));
     setError(""); // Clear error when user types
   };
+
+  // Show 2FA setup if requested
+  if (showTwoFactorSetup) {
+    return (
+      <TwoFactorSetup
+        onSetupComplete={handleTwoFactorSetup}
+        onSkip={handleSkipTwoFactor}
+      />
+    );
+  }
+
+  // Show 2FA verification if required
+  if (showTwoFactorVerification) {
+    return (
+      <TwoFactorVerification
+        method={twoFactorSettings.method}
+        contact={twoFactorSettings.contact}
+        onSuccess={handleTwoFactorVerification}
+        onCancel={handleCancelTwoFactor}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

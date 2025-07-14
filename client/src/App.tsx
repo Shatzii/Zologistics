@@ -75,6 +75,7 @@ import InvestorOverview from "@/pages/investor-overview";
 import AcquisitionOverview from "@/pages/acquisition-overview";
 import Demo from "@/pages/demo";
 import AdminLogin from "@/pages/admin-login";
+import AdminTwoFactorSettings from "@/pages/admin-2fa-settings";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -221,6 +222,7 @@ function Router() {
             return <GlobalExpansion />;
           }} />
           <Route path="/admin" component={AdminPanel} />
+          <Route path="/admin-2fa-settings" component={AdminTwoFactorSettings} />
           <Route path="/secrets-config" component={SecretsConfig} />
           <Route path="/payments" component={PaymentsPage} />
           <Route component={NotFound} />
