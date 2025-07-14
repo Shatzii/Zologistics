@@ -70,6 +70,10 @@ import MultiModalLogistics from "@/pages/multi-modal-logistics";
 import AdminPanel from "@/pages/admin";
 import PaymentsPage from "@/pages/payments";
 import SecretsConfig from "@/pages/secrets-config";
+import BusinessLanding from "@/pages/business-landing";
+import InvestorOverview from "@/pages/investor-overview";
+import AcquisitionOverview from "@/pages/acquisition-overview";
+import Demo from "@/pages/demo";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -124,6 +128,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
 function Router() {
   const [showConfidentialityPopup, setShowConfidentialityPopup] = useState(false);
+  const [location] = useLocation();
   
   // Check for NDA acceptance on mount
   useEffect(() => {
@@ -137,11 +142,22 @@ function Router() {
     setShowConfidentialityPopup(false);
   };
 
+  // Business landing pages (no sidebar/layout)
+  const isBusinessPage = location === '/' || location === '/investor-overview' || location === '/acquisition-overview' || location === '/demo';
+
   return (
     <>
-      <AppLayout>
+      {isBusinessPage ? (
         <Switch>
-          <Route path="/" component={Dashboard} />
+          <Route path="/" component={BusinessLanding} />
+          <Route path="/investor-overview" component={InvestorOverview} />
+          <Route path="/acquisition-overview" component={AcquisitionOverview} />
+          <Route path="/demo" component={Demo} />
+        </Switch>
+      ) : (
+        <AppLayout>
+          <Switch>
+            <Route path="/platform" component={Dashboard} />
           <Route path="/loads" component={LoadsPage} />
           <Route path="/drivers" component={DriversPage} />
           <Route path="/enhanced-drivers" component={EnhancedDriversPage} />
@@ -205,6 +221,7 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </AppLayout>
+      )}
       
       {showConfidentialityPopup && (
         <ConfidentialityPopup onAccept={handlePopupAccept} />
