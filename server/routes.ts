@@ -43,6 +43,8 @@ import { authenticLoadIntegration } from "./authentic-load-integration";
 import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 import { driverAcquisitionEngine } from "./driver-acquisition-engine";
 import { loadAggregationService } from "./load-aggregation-service";
+import { smsService } from "./production-sms-service";
+import { emailService } from "./production-email-service";
 import { driverReferralSystem } from "./driver-referral-system";
 import { web3Integration } from "./web3-integration";
 import { ghostLoadEngine } from "./ghost-load-optimization-engine";

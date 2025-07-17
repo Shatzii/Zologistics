@@ -2,8 +2,10 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { envValidator } from "./env-validator";
+import { productionEnvValidator } from "./production-env-validator";
 import { configureProduction } from "./production-config";
 import { errorHandler, notFound } from "./error-handler";
+import { setupMonitoring } from "./production-monitoring";
 
 // Initialize all autonomous systems
 import "./dynamic-pricing-engine";
@@ -58,7 +60,17 @@ app.use((req, res, next) => {
   // Validate critical environment variables
   envValidator.validateOrExit();
   
+  // Production environment validation
+  if (process.env.NODE_ENV === 'production') {
+    productionEnvValidator.validateOrExit();
+  }
+  
   const server = await registerRoutes(app);
+
+  // Setup production monitoring endpoints
+  if (process.env.NODE_ENV === 'production') {
+    setupMonitoring(app);
+  }
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
