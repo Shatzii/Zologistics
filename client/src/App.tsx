@@ -76,6 +76,7 @@ import AcquisitionOverview from "@/pages/acquisition-overview";
 import Demo from "@/pages/demo";
 import AdminLogin from "@/pages/admin-login";
 import AdminTwoFactorSettings from "@/pages/admin-2fa-settings";
+import LandingPage from "@/pages/landing";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -147,13 +148,15 @@ function Router() {
   };
 
   // Business landing pages (no sidebar/layout)
-  const isBusinessPage = location === '/' || location === '/investor-overview' || location === '/acquisition-overview' || location === '/demo' || location === '/admin-login';
+  const isBusinessPage = location === '/' || location === '/landing' || location === '/investor-overview' || location === '/acquisition-overview' || location === '/demo' || location === '/admin-login';
 
   return (
     <>
       {isBusinessPage ? (
         <Switch>
-          <Route path="/" component={BusinessLanding} />
+          <Route path="/" component={LandingPage} />
+          <Route path="/landing" component={LandingPage} />
+          <Route path="/business" component={BusinessLanding} />
           <Route path="/investor-overview" component={InvestorOverview} />
           <Route path="/acquisition-overview" component={AcquisitionOverview} />
           <Route path="/demo" component={Demo} />
@@ -163,6 +166,7 @@ function Router() {
         isAuthenticated ? (
         <AppLayout>
           <Switch>
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/platform" component={Dashboard} />
           <Route path="/loads" component={LoadsPage} />
           <Route path="/drivers" component={DriversPage} />
