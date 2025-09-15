@@ -24,37 +24,47 @@ export default function AdminLogin() {
   const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
   const [showTwoFactorVerification, setShowTwoFactorVerification] = useState(false);
 
-  // Admin credentials - in production these would be hashed and stored securely
-  const ADMIN_CREDENTIALS = {
-    username: "zolo_admin",
-    password: "Zologistics2025!"
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: credentials.username,
+          password: credentials.password
+        }),
+      });
 
-    if (
-      credentials.username === ADMIN_CREDENTIALS.username && 
-      credentials.password === ADMIN_CREDENTIALS.password
-    ) {
-      // Store admin session
-      localStorage.setItem("zolo_admin_authenticated", "true");
-      localStorage.setItem("zolo_admin_login_time", Date.now().toString());
-      
-      // Check if 2FA is enabled
-      if (twoFactorSettings.enabled) {
-        setShowTwoFactorVerification(true);
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Store secure JWT token and user info
+        localStorage.setItem("zolo_admin_token", data.token);
+        localStorage.setItem("zolo_admin_user", JSON.stringify(data.user));
+        localStorage.setItem("zolo_admin_login_time", Date.now().toString());
+        
+        // Legacy flags for compatibility with existing 2FA setup
+        localStorage.setItem("zolo_admin_authenticated", "true");
+        
+        // Check if 2FA is enabled
+        if (twoFactorSettings.enabled) {
+          setShowTwoFactorVerification(true);
+        } else {
+          // Offer to set up 2FA
+          setShowTwoFactorSetup(true);
+        }
       } else {
-        // Offer to set up 2FA
-        setShowTwoFactorSetup(true);
+        setError(data.error || "Invalid username or password. Please try again.");
       }
-    } else {
-      setError("Invalid username or password. Please try again.");
+    } catch (error) {
+      console.error('Login error:', error);
+      setError("Login failed. Please check your connection and try again.");
     }
     
     setIsLoading(false);

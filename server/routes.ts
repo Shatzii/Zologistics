@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { comprehensiveLoadSourcesManager } from "./comprehensive-load-sources";
 import { registerLoadBoardRoutes } from "./load-board-routes";
@@ -72,6 +74,9 @@ import { multiModalLogisticsEngine } from "./multi-modal-logistics-engine";
 import { autonomousSalesAgent } from "./autonomous-sales-agent";
 import { programmableSalesTargeting } from "./programmable-sales-targeting";
 
+// JWT secret for authentication
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+
 // Self-hosted AI engine replaces external dependencies
 
 function generateVoiceResponse(intent: string, entities: any[]): string {
@@ -98,8 +103,115 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Secrets management route
-  app.post("/api/admin/secrets", async (req, res) => {
+  // Admin authentication middleware
+  const authenticateAdmin = async (req: any, res: any, next: any) => {
+    try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+      }
+
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const user = await storage.getUserById(decoded.userId);
+      
+      if (!user || user.role !== 'admin') {
+        return res.status(401).json({ error: 'Admin access required' });
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      res.status(401).json({ error: 'Invalid token' });
+    }
+  };
+
+  // Admin login endpoint
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Get admin credentials from environment variables
+      const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'zolo_admin';
+      const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Zologistics2025!';
+      
+      if (username !== ADMIN_USERNAME) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      // In production, this should be a hashed password comparison
+      // For now, direct comparison but will be improved
+      if (password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      // Create/get admin user record
+      let adminUser = await storage.getUserByEmail(ADMIN_USERNAME);
+      if (!adminUser) {
+        // Create admin user if doesn't exist
+        const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+        adminUser = await storage.createUser({
+          username: ADMIN_USERNAME,
+          email: ADMIN_USERNAME + '@zologistics.com',
+          password: hashedPassword,
+          name: 'System Administrator',
+          role: 'admin'
+        });
+      }
+
+      const token = jwt.sign(
+        { userId: adminUser.id, role: 'admin' }, 
+        JWT_SECRET, 
+        { expiresIn: '8h' }
+      );
+      
+      await storage.updateUserLastLogin(adminUser.id);
+
+      res.json({
+        success: true,
+        token,
+        user: {
+          id: adminUser.id,
+          username: adminUser.username,
+          name: adminUser.name,
+          role: adminUser.role
+        }
+      });
+    } catch (error) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ error: 'Login failed' });
+    }
+  });
+
+  // Admin logout endpoint
+  app.post("/api/admin/logout", authenticateAdmin, async (req, res) => {
+    try {
+      // In a production system, you'd invalidate the JWT token
+      // For now, just return success
+      res.json({ success: true, message: 'Logged out successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Logout failed' });
+    }
+  });
+
+  // Admin verification endpoint
+  app.get("/api/admin/verify", authenticateAdmin, async (req, res) => {
+    try {
+      res.json({
+        success: true,
+        user: {
+          id: req.user.id,
+          username: req.user.username,
+          name: req.user.name,
+          role: req.user.role
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Verification failed' });
+    }
+  });
+
+  // Secrets management route (now protected)
+  app.post("/api/admin/secrets", authenticateAdmin, async (req, res) => {
     try {
       const { secrets } = req.body;
       

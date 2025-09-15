@@ -17,27 +17,54 @@ export function useAdminAuth() {
   });
 
   useEffect(() => {
-    checkAuthStatus();
-    loadTwoFactorSettings();
+    const initAuth = async () => {
+      await checkAuthStatus();
+      loadTwoFactorSettings();
+    };
+    initAuth();
   }, []);
 
-  const checkAuthStatus = () => {
-    const isAuth = localStorage.getItem("zolo_admin_authenticated") === "true";
+  const checkAuthStatus = async () => {
+    const token = localStorage.getItem("zolo_admin_token");
     const loginTime = localStorage.getItem("zolo_admin_login_time");
     const twoFactorVerified = localStorage.getItem("zolo_admin_2fa_verified") === "true";
     
-    if (isAuth && loginTime) {
+    if (token && loginTime) {
       const now = Date.now();
       const loginTimestamp = parseInt(loginTime);
-      const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+      const sessionDuration = 8 * 60 * 60 * 1000; // 8 hours (matches JWT expiry)
       
       if (now - loginTimestamp < sessionDuration) {
-        if (twoFactorSettings.enabled && !twoFactorVerified) {
-          setNeedsTwoFactor(true);
-          setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(true);
-          setNeedsTwoFactor(false);
+        try {
+          // Verify token with server
+          const response = await fetch('/api/admin/verify', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              if (twoFactorSettings.enabled && !twoFactorVerified) {
+                setNeedsTwoFactor(true);
+                setIsAuthenticated(false);
+              } else {
+                setIsAuthenticated(true);
+                setNeedsTwoFactor(false);
+              }
+            } else {
+              logout();
+            }
+          } else {
+            // Token is invalid
+            logout();
+          }
+        } catch (error) {
+          console.error('Auth verification error:', error);
+          logout();
         }
       } else {
         // Session expired
@@ -81,7 +108,27 @@ export function useAdminAuth() {
     setIsAuthenticated(true);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const token = localStorage.getItem("zolo_admin_token");
+    
+    // Call server logout endpoint if token exists
+    if (token) {
+      try {
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+    
+    // Clear all local storage
+    localStorage.removeItem("zolo_admin_token");
+    localStorage.removeItem("zolo_admin_user");
     localStorage.removeItem("zolo_admin_authenticated");
     localStorage.removeItem("zolo_admin_login_time");
     localStorage.removeItem("zolo_admin_2fa_verified");
