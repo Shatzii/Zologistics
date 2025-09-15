@@ -1,5 +1,11 @@
 # Zologistics - Marketing Features & Services Guide
 
+<div align="center">
+  <img src="company-logo.svg" alt="Zologistics Logo" width="300" height="120">
+</div>
+
+---
+
 ## 🚀 Platform Overview
 
 Zologistics is a revolutionary, enterprise-grade multi-modal logistics platform that leverages AI, blockchain, and autonomous operations across trucking, sea freight, and air freight. Built for the $29.85B global logistics market, our platform delivers unprecedented efficiency, profitability, and operational excellence.

@@ -59,6 +59,8 @@ if (process.env.STRIPE_SECRET_KEY) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  try {
+    console.log('🔧 Setting up route handlers...');
   
   // SSO Authentication routes
   app.get("/api/auth/providers", (req, res) => {
@@ -6228,4 +6230,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
   
   return httpServer;
+  } catch (error) {
+    console.error('❌ Error during route registration:', error);
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+    throw error; // Re-throw to let the caller handle it
+  }
 }

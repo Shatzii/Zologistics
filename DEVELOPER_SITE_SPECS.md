@@ -1,5 +1,11 @@
 # Zologistics - Developer Site Specifications
 
+<div align="center">
+  <img src="company-logo.svg" alt="Zologistics Logo" width="300" height="120">
+</div>
+
+---
+
 ## 🚀 Technical Overview
 
 Zologistics is a full-stack enterprise logistics platform built with modern web technologies, featuring AI-powered dispatch automation, real-time analytics, and multi-modal transport coordination.

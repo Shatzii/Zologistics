@@ -54,47 +54,80 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Validate environment variables on startup
-  console.log('🚀 Starting trucking dispatch system...');
-  
-  // Validate critical environment variables
-  envValidator.validateOrExit();
-  
-  // Production environment validation
-  if (process.env.NODE_ENV === 'production') {
-    productionEnvValidator.validateOrExit();
+  try {
+    // Validate environment variables on startup
+    console.log('🚀 Starting trucking dispatch system...');
+    
+    // Validate critical environment variables
+    envValidator.validateOrExit();
+    
+    // Production environment validation
+    if (process.env.NODE_ENV === 'production') {
+      productionEnvValidator.validateOrExit();
+    }
+    
+    // Initialize optional services conditionally
+    console.log('🔧 Initializing optional services...');
+    
+    // Check for Twilio configuration
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+      console.log('✅ SMS service (Twilio) configured and ready');
+    } else {
+      console.log('⚠️  SMS service (Twilio) not configured - SMS features disabled');
+    }
+    
+    // Check for email service configuration
+    if (process.env.SENDGRID_API_KEY) {
+      console.log('✅ Email service (SendGrid) configured and ready');
+    } else {
+      console.log('⚠️  Email service (SendGrid) not configured - email notifications disabled');
+    }
+    
+    // Check for Anthropic API configuration
+    if (process.env.ANTHROPIC_API_KEY) {
+      console.log('✅ AI service (Anthropic) configured and ready');
+    } else {
+      console.log('⚠️  AI service (Anthropic) not configured - some AI features may be limited');
+    }
+    
+    console.log('📡 Registering routes...');
+    const server = await registerRoutes(app);
+    console.log('✅ Routes registered successfully');
+    
+    // Setup production monitoring endpoints
+    if (process.env.NODE_ENV === 'production') {
+      setupMonitoring(app);
+    }
+
+    // importantly only setup vite in development and after
+    // setting up all the other routes so the catch-all route
+    // doesn't interfere with the other routes
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
+    }
+
+    // Add error handling middleware (must be after routes)
+    app.use(notFound);
+    app.use(errorHandler);
+
+    // Use Railway port in production, 5000 in development  
+    const port = process.env.PORT || process.env.RAILWAY_STATIC_PORT || 5000;
+    
+    // Log port configuration for debugging
+    console.log(`🚀 Server starting on port ${port} (NODE_ENV: ${process.env.NODE_ENV})`);
+    server.listen({
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    }, () => {
+      log(`serving on port ${port}`);
+    });
+    
+  } catch (error) {
+    console.error('❌ Fatal error during server startup:', error);
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+    process.exit(1);
   }
-  
-  const server = await registerRoutes(app);
-
-  // Setup production monitoring endpoints
-  if (process.env.NODE_ENV === 'production') {
-    setupMonitoring(app);
-  }
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  // Add error handling middleware (must be after routes)
-  app.use(notFound);
-  app.use(errorHandler);
-
-  // Use Railway port in production, 5000 in development  
-  const port = process.env.PORT || process.env.RAILWAY_STATIC_PORT || 5000;
-  
-  // Log port configuration for debugging
-  console.log(`🚀 Server starting on port ${port} (NODE_ENV: ${process.env.NODE_ENV})`);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
 })();
