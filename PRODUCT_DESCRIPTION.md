@@ -1,8 +1,8 @@
-# TruckFlow AI - The Future of Trucking Dispatch
+# Zologistics - The Future of Trucking Dispatch
 
 ## Product Overview
 
-TruckFlow AI is an enterprise-grade, AI-powered trucking dispatch platform that revolutionizes freight operations through cutting-edge technology. Our comprehensive solution combines artificial intelligence, IoT integration, and real-time analytics to deliver unmatched efficiency, profitability, and operational excellence.
+Zologistics is an enterprise-grade, AI-powered trucking dispatch platform that revolutionizes freight operations through cutting-edge technology. Our comprehensive solution combines artificial intelligence, IoT integration, and real-time analytics to deliver unmatched efficiency, profitability, and operational excellence.
 
 ## Key Features
 
@@ -150,11 +150,11 @@ TruckFlow AI is an enterprise-grade, AI-powered trucking dispatch platform that 
 
 ## ROI Guarantee
 
-We're so confident in TruckFlow AI that we offer a **90-day ROI guarantee**. If you don't see measurable improvements in efficiency and profitability within 90 days, we'll provide a full refund.
+We're so confident in Zologistics that we offer a **90-day ROI guarantee**. If you don't see measurable improvements in efficiency and profitability within 90 days, we'll provide a full refund.
 
 ## Success Stories
 
-> "TruckFlow AI increased our profit margins by 22% in the first quarter. The AI rate optimization alone paid for the entire platform." 
+> "Zologistics increased our profit margins by 22% in the first quarter. The AI rate optimization alone paid for the entire platform." 
 > - *Mike Rodriguez, CEO, Rodriguez Transport*
 
 > "The autonomous vehicle integration saved us 6 hours per day in driver coordination. Our drivers love the voice commands."
@@ -165,7 +165,7 @@ We're so confident in TruckFlow AI that we offer a **90-day ROI guarantee**. If 
 
 ## Get Started Today
 
-Transform your trucking operations with TruckFlow AI. Join over 500 fleets already using our platform to maximize efficiency and profitability.
+Transform your trucking operations with Zologistics. Join over 500 fleets already using our platform to maximize efficiency and profitability.
 
 **Contact Us:**
 - Phone: 1-800-TRUCKFLOW

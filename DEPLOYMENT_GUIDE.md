@@ -1,6 +1,6 @@
-# TruckFlow AI - GitHub Deployment Guide
+# Zologistics - GitHub Deployment Guide
 
-This guide covers deploying TruckFlow AI from GitHub to various platforms including Replit, Railway, Vercel, and self-hosted environments.
+This guide covers deploying Zologistics from GitHub to various platforms including Replit, Railway, Vercel, and self-hosted environments.
 
 ## 🚀 Quick Deploy Options
 
@@ -34,7 +34,7 @@ This guide covers deploying TruckFlow AI from GitHub to various platforms includ
 1. **Connect GitHub Repository**
    - Visit [Railway](https://railway.app)
    - Click "Deploy from GitHub repo"
-   - Select TruckFlow AI repository
+   - Select Zologistics repository
 
 2. **Configure Services**
    ```yaml
@@ -330,6 +330,6 @@ services:
 
 ---
 
-**TruckFlow AI** is production-ready and designed for enterprise-scale deployment.
+**Zologistics** is production-ready and designed for enterprise-scale deployment.
 
 For deployment assistance, contact our support team or join our Discord community.

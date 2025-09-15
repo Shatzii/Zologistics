@@ -1,4 +1,4 @@
-# TruckFlow AI - Revolutionary Multi-Modal Logistics Platform
+# Zologistics - Revolutionary Multi-Modal Logistics Platform
 
 A comprehensive, enterprise-grade logistics platform leveraging AI, blockchain, and autonomous operations across trucking, sea freight, and air freight. Built for the $29.85B global logistics market.
 
@@ -243,6 +243,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**TruckFlow AI** - Revolutionizing logistics through autonomous AI-powered operations.
+**Zologistics** - Revolutionizing logistics through autonomous AI-powered operations.
 
 Built with ❤️ for the trucking industry.
