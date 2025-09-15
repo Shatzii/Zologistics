@@ -17,121 +17,165 @@ export function useAdminAuth() {
   });
 
   useEffect(() => {
-    const initAuth = async () => {
-      await checkAuthStatus();
-      loadTwoFactorSettings();
-    };
-    initAuth();
+    checkAuthStatus();
+    loadTwoFactorSettings();
   }, []);
 
   const checkAuthStatus = async () => {
-    const token = localStorage.getItem("zolo_admin_token");
-    const loginTime = localStorage.getItem("zolo_admin_login_time");
-    const twoFactorVerified = localStorage.getItem("zolo_admin_2fa_verified") === "true";
-    
-    if (token && loginTime) {
-      const now = Date.now();
-      const loginTimestamp = parseInt(loginTime);
-      const sessionDuration = 8 * 60 * 60 * 1000; // 8 hours (matches JWT expiry)
-      
-      if (now - loginTimestamp < sessionDuration) {
-        try {
-          // Verify token with server
-          const response = await fetch('/api/admin/verify', {
+    try {
+      // Check authentication status with server using HttpOnly cookies
+      const response = await fetch('/api/admin/verify', {
+        method: 'GET',
+        credentials: 'include', // Include HttpOnly cookies
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setIsAuthenticated(true);
+          setNeedsTwoFactor(false);
+        } else {
+          setIsAuthenticated(false);
+          setNeedsTwoFactor(false);
+        }
+      } else if (response.status === 401) {
+        // Try to refresh token
+        const refreshResponse = await fetch('/api/admin/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (refreshResponse.ok) {
+          // Token refreshed successfully, check auth again
+          const verifyResponse = await fetch('/api/admin/verify', {
             method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
+            credentials: 'include',
           });
 
-          if (response.ok) {
-            const data = await response.json();
-            if (data.success) {
-              if (twoFactorSettings.enabled && !twoFactorVerified) {
-                setNeedsTwoFactor(true);
-                setIsAuthenticated(false);
-              } else {
-                setIsAuthenticated(true);
-                setNeedsTwoFactor(false);
-              }
-            } else {
-              logout();
-            }
+          if (verifyResponse.ok) {
+            const data = await verifyResponse.json();
+            setIsAuthenticated(data.success);
           } else {
-            // Token is invalid
-            logout();
+            setIsAuthenticated(false);
           }
-        } catch (error) {
-          console.error('Auth verification error:', error);
-          logout();
+        } else {
+          setIsAuthenticated(false);
         }
       } else {
-        // Session expired
-        logout();
+        setIsAuthenticated(false);
       }
-    } else {
+    } catch (error) {
+      console.error('Auth verification error:', error);
       setIsAuthenticated(false);
-      setNeedsTwoFactor(false);
-    }
-    
-    setIsLoading(false);
-  };
-
-  const loadTwoFactorSettings = () => {
-    const settings = localStorage.getItem("zolo_admin_2fa_settings");
-    if (settings) {
-      setTwoFactorSettings(JSON.parse(settings));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const saveTwoFactorSettings = (settings: TwoFactorSettings) => {
-    localStorage.setItem("zolo_admin_2fa_settings", JSON.stringify(settings));
-    setTwoFactorSettings(settings);
+  const loadTwoFactorSettings = async () => {
+    try {
+      // Load 2FA settings from server instead of localStorage
+      const response = await fetch('/api/admin/2fa/settings', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.settings) {
+          setTwoFactorSettings(data.settings);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load 2FA settings:', error);
+      // Fallback to localStorage for now (will be removed after server-side storage)
+      const settings = localStorage.getItem("zolo_admin_2fa_settings");
+      if (settings) {
+        setTwoFactorSettings(JSON.parse(settings));
+      }
+    }
   };
 
-  const completeTwoFactorSetup = (method: 'sms' | 'email' | 'totp', contact?: string, secret?: string) => {
+  const saveTwoFactorSettings = async (settings: TwoFactorSettings) => {
+    try {
+      // Save 2FA settings to server
+      const response = await fetch('/api/admin/2fa/settings', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ settings }),
+      });
+
+      if (response.ok) {
+        setTwoFactorSettings(settings);
+      }
+    } catch (error) {
+      console.error('Failed to save 2FA settings:', error);
+      // Fallback to localStorage (will be removed)
+      localStorage.setItem("zolo_admin_2fa_settings", JSON.stringify(settings));
+      setTwoFactorSettings(settings);
+    }
+  };
+
+  const completeTwoFactorSetup = async (method: 'sms' | 'email' | 'totp', contact?: string, secret?: string) => {
     const settings: TwoFactorSettings = {
       enabled: true,
       method,
       contact,
       secret
     };
-    saveTwoFactorSettings(settings);
+
+    await saveTwoFactorSettings(settings);
     setNeedsTwoFactor(false);
     setIsAuthenticated(true);
   };
 
-  const verifyTwoFactor = () => {
-    localStorage.setItem("zolo_admin_2fa_verified", "true");
-    setNeedsTwoFactor(false);
-    setIsAuthenticated(true);
+  const verifyTwoFactor = async (code: string) => {
+    try {
+      const response = await fetch('/api/admin/2fa/verify', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setNeedsTwoFactor(false);
+          setIsAuthenticated(true);
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error('2FA verification error:', error);
+      return false;
+    }
   };
 
   const logout = async () => {
-    const token = localStorage.getItem("zolo_admin_token");
-    
-    // Call server logout endpoint if token exists
-    if (token) {
-      try {
-        await fetch('/api/admin/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
+    try {
+      // Call server logout endpoint
+      await fetch('/api/admin/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
     }
-    
-    // Clear all local storage
+
+    // Clear any remaining localStorage (for backward compatibility)
     localStorage.removeItem("zolo_admin_token");
     localStorage.removeItem("zolo_admin_user");
     localStorage.removeItem("zolo_admin_authenticated");
     localStorage.removeItem("zolo_admin_login_time");
     localStorage.removeItem("zolo_admin_2fa_verified");
+
     setIsAuthenticated(false);
     setNeedsTwoFactor(false);
   };
@@ -144,12 +188,13 @@ export function useAdminAuth() {
     return true;
   };
 
-  const disableTwoFactor = () => {
+  const disableTwoFactor = async () => {
     const settings: TwoFactorSettings = {
       enabled: false,
       method: 'totp'
     };
-    saveTwoFactorSettings(settings);
+
+    await saveTwoFactorSettings(settings);
     localStorage.removeItem("zolo_admin_2fa_verified");
   };
 

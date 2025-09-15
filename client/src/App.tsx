@@ -78,6 +78,9 @@ import AdminLogin from "@/pages/admin-login";
 import AdminTwoFactorSettings from "@/pages/admin-2fa-settings";
 import LandingPage from "@/pages/landing";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import TenantManagementPage from "@/pages/tenant-management";
+import MonitoringDashboardPage from "@/pages/monitoring-dashboard";
+import ComplianceDashboardPage from "@/pages/compliance-dashboard";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -229,6 +232,9 @@ function Router() {
           <Route path="/admin-2fa-settings" component={AdminTwoFactorSettings} />
           <Route path="/secrets-config" component={SecretsConfig} />
           <Route path="/payments" component={PaymentsPage} />
+          <Route path="/tenant-management" component={TenantManagementPage} />
+          <Route path="/monitoring-dashboard" component={MonitoringDashboardPage} />
+          <Route path="/compliance-dashboard" component={ComplianceDashboardPage} />
           <Route component={NotFound} />
         </Switch>
         </AppLayout>
